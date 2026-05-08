@@ -610,8 +610,8 @@ body{
 </style>
 </head>
 <body>
-<button class="settings-gear" onclick="toggleSettings()" title="Settings">⚙️</button>
-<div class="settings-panel" id="settingsPanel">
+<button class="settings-gear" onclick="toggleSettings()" title="Settings" aria-label="Settings">⚙️</button>
+<div class="settings-panel" id="settingsPanel" role="dialog" aria-label="Settings panel">
   <h4 id="settingsThemeLabel">Theme</h4>
   <div class="theme-btns">
     <button class="theme-btn space active" onclick="setTheme('space')" title="Space (default)"></button>
@@ -949,7 +949,7 @@ const ALIASES = {
   ubuntu:     ['ubuntu','ubunto','ubunt','ubunty'],
   mint:       ['mint','linux mint','linuxmint'],
   zorin:      ['zorin','zorin os','zorinos'],
-  elementary: ['elementary','eos'],
+  elementary: ['elementary'],
   deepin:     ['deepin'],
   popos:      ['pop','popos','pop os','pop!_os'],
   fedora:     ['fedora'],
@@ -1669,7 +1669,7 @@ function triggerJumpscare() {
   const overlay = document.createElement('div');
   overlay.id = 'jumpscare-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:jumpscareFlash .15s ease-out';
-  const jumpscareText = currentLang==='fr' ? 'mauvais utilisateur linux' : 'bad linux user';
+  const jumpscareText = currentLang==='fr' ? 'Mauvais utilisateur Linux' : 'bad Linux user';
   overlay.innerHTML = '<div style="font-size:clamp(4rem,15vw,10rem);animation:jumpscareShake .3s ease-out">😡</div><div style="font-family:var(--mono);color:var(--coral);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">'+jumpscareText+'</div>';  document.body.appendChild(overlay);
   const style = document.createElement('style');
   style.textContent = '@keyframes jumpscareFlash{0%{background:#ff0000}50%{background:#ff0000}100%{background:#000}}@keyframes jumpscareShake{0%{transform:scale(0.3)}40%{transform:scale(1.4)}70%{transform:scale(0.9)}100%{transform:scale(1)}}';
@@ -1683,7 +1683,7 @@ function triggerJumpscare() {
 
 let goodLinuxTimeout = null;
 function showGoodLinuxUser() {
-  const msg = currentLang==='fr' ? ' bcp mieux 😇' : 'better isnt it? 😇';
+  const msg = currentLang==='fr' ? 'bcp mieux 😇' : 'better isn\'t it? 😇';
   const toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(79,255,176,.15);border:1px solid rgba(79,255,176,.35);color:var(--mint);font-family:var(--mono);font-size:.85rem;padding:10px 24px;border-radius:99px;animation:panelIn .3s ease-out;pointer-events:none';
   toast.textContent = msg;
@@ -1751,12 +1751,14 @@ function goBack() {
   tick();
 }
 
+let finishTimer1, finishTimer2;
 function finish() {
   ignoreLightweightMode = false;
+  clearTimeout(finishTimer1); clearTimeout(finishTimer2);
   swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">${t('analyzing')}<br>${t('matching')} <b>25 ${t('distros')}</b></div></div>`);
-  setTimeout(() => {
+  finishTimer1 = setTimeout(() => {
     swap(`<div class="spin-wrap screen"><div class="spinner" style="border-top-color:var(--violet)"></div><div class="spin-txt">${t('narrowing')}<br><b>${t('almostThere')}</b></div></div>`);
-    setTimeout(() => {
+    finishTimer2 = setTimeout(() => {
       currentTopThree = computeTopThree(false);
       showPickScreen();
     }, 1400);
@@ -2336,9 +2338,8 @@ const TRANSLATIONS = {
 let currentLang = 'en';
 function t(key) {
   const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]);
-  return (val && val !== key) ? val : null;
+  return (val && val !== key) ? val : key;
 }
-
 function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('distromatch-lang', lang);

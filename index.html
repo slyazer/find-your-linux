@@ -317,6 +317,93 @@ body{
   border-radius:12px;transition:all var(--ease);box-shadow:0 4px 22px rgba(79,255,176,.22);
   text-decoration:none;cursor:pointer;border:none}
 .distro-detail .detail-btn:hover{transform:translateY(-2px);box-shadow:0 8px 34px rgba(79,255,176,.34)}
+.settings-gear {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--bdr);
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--ease);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.settings-gear:hover {
+  color: var(--txt);
+  border-color: rgba(255,255,255,.3);
+  transform: rotate(30deg);
+}
+.settings-panel {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 99;
+  background: rgba(10,15,30,.95);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rl);
+  padding: 20px;
+  min-width: 220px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: none;
+  animation: panelIn .25s ease-out;
+}
+.settings-panel.open { display: block; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.settings-panel h4 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.theme-btns {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.theme-btn {
+  all: unset;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: all var(--ease);
+  position: relative;
+}
+.theme-btn:hover { transform: scale(1.15); }
+.theme-btn.active { border-color: #fff; box-shadow: 0 0 10px currentColor; }
+.theme-btn.space  { background: linear-gradient(135deg, #4fffb0, #7b61ff); }
+.theme-btn.green  { background: #4fffb0; }
+.theme-btn.light  { background: #f0f0f0; border: 2px solid #ccc; }
+.theme-btn.dark   { background: #1a1a2e; }
+.lang-select {
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--txt);
+  font-family: var(--mono);
+  font-size: .78rem;
+  outline: none;
+  cursor: pointer;
+}
+.lang-select option {
+  background: #0a0f1e;
+  color: var(--txt);
+}
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
   color:rgba(107,122,150,.45);letter-spacing:.05em}
 ::-webkit-scrollbar{width:6px}
@@ -334,6 +421,25 @@ body{
 </style>
 </head>
 <body>
+<button class="settings-gear" onclick="toggleSettings()" title="Settings">⚙️</button>
+<div class="settings-panel" id="settingsPanel">
+  <h4>Theme</h4>
+  <div class="theme-btns">
+    <button class="theme-btn space active" onclick="setTheme('space')" title="Space (default)"></button>
+    <button class="theme-btn green" onclick="setTheme('green')" title="Green"></button>
+    <button class="theme-btn light" onclick="setTheme('light')" title="Light"></button>
+    <button class="theme-btn dark" onclick="setTheme('dark')" title="Dark"></button>
+  </div>
+  <h4>Language</h4>
+  <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
+    <option value="en">🇬🇧 English</option>
+    <option value="fr">🇫🇷 Français</option>
+    <option value="de">🇩🇪 Deutsch</option>
+    <option value="es">🇪🇸 Español</option>
+    <option value="jp">🇯🇵 日本語</option>
+    <option value="ru">🇷🇺 Русский</option>
+  </select>
+</div>
 <div class="bg"><div class="stars"></div><div class="orb"></div></div>
 <div class="particles" id="particles"></div>
 <div class="app">
@@ -1405,6 +1511,83 @@ function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 7: Initialisation
 // ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 8: Settings (Theme + Language)
+// ═══════════════════════════════════════════════════════════════
+
+function toggleSettings() {
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('settingsPanel');
+  const gear = document.querySelector('.settings-gear');
+  if (!panel.contains(e.target) && e.target !== gear && !gear.contains(e.target)) {
+    panel.classList.remove('open');
+  }
+});
+
+const THEMES = {
+  space: {
+    '--bg':'#070b14', '--mint':'#4fffb0', '--violet':'#7b61ff', '--coral':'#ff6b6b',
+    '--txt':'#e8edf5', '--muted':'#9ba8bc', particle:'#4fffb0'
+  },
+  green: {
+    '--bg':'#0a1a0a', '--mint':'#00ff88', '--violet':'#00cc66', '--coral':'#ff4444',
+    '--txt':'#e0ffe0', '--muted':'#88aa88', particle:'#00ff88'
+  },
+  light: {
+    '--bg':'#f5f5f5', '--mint':'#007acc', '--violet':'#6c5ce7', '--coral':'#d63031',
+    '--txt':'#1a1a1a', '--muted':'#666', particle:'#007acc'
+  },
+  dark: {
+    '--bg':'#0d0d0d', '--mint':'#ffffff', '--violet':'#888888', '--coral':'#ff4444',
+    '--txt':'#cccccc', '--muted':'#666', particle:'#ffffff'
+  }
+};
+
+let currentTheme = 'space';
+function setTheme(name) {
+  currentTheme = name;
+  const t = THEMES[name];
+  const root = document.documentElement;
+  for (const [key, val] of Object.entries(t)) {
+    if (key === 'particle') continue;
+    root.style.setProperty(key, val);
+  }
+  document.querySelectorAll('.particle').forEach(p => {
+    p.style.background = t.particle;
+  });
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.theme-btn.${name}`).classList.add('active');
+  localStorage.setItem('distromatch-theme', name);
+}
+
+const savedTheme = localStorage.getItem('distromatch-theme');
+if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
+
+const TRANSLATIONS = {
+  en: { tagline: 'Find Your Linux', subtitle: '25 questions · 25 distros · your perfect match', start: 'Start the Quiz' },
+  fr: { tagline: 'Trouve ton Linux', subtitle: '25 questions · 25 distros · ton match parfait', start: 'Commencer le Quiz' },
+  de: { tagline: 'Finde dein Linux', subtitle: '25 Fragen · 25 Distros · dein perfektes Match', start: 'Quiz starten' },
+  es: { tagline: 'Encuentra tu Linux', subtitle: '25 preguntas · 25 distros · tu match perfecto', start: 'Iniciar Quiz' },
+  jp: { tagline: 'Linuxを見つけよう', subtitle: '25の質問 · 25のディストロ · 完璧なマッチ', start: 'クイズを始める' },
+  ru: { tagline: 'Найди свой Linux', subtitle: '25 вопросов · 25 дистрибутивов · идеальное совпадение', start: 'Начать тест' },
+};
+let currentLang = 'en';
+function setLanguage(lang) {
+  currentLang = lang;
+  const t = TRANSLATIONS[lang] || TRANSLATIONS['en'];
+  document.querySelector('.brand h1').textContent = t.tagline;
+  document.querySelector('.brand p').textContent = t.subtitle;
+  localStorage.setItem('distromatch-lang', lang);
+  if (!document.getElementById('progWrap').style.display || document.getElementById('progWrap').style.display === 'none') {
+    showStart();
+  }
+}
+const savedLang = localStorage.getItem('distromatch-lang');
+if (savedLang && TRANSLATIONS[savedLang]) setLanguage(savedLang);
 
 showStart();
 </script>

@@ -165,6 +165,10 @@ body{
 .btn-next:not(:disabled):active{transform:scale(.97)}
 .arr{font-size:1rem;transition:transform var(--ease)}
 .btn-next:not(:disabled):hover .arr{transform:translateX(4px)}
+.btn-skip:focus-visible, .btn-next:focus-visible, .btn-back:focus-visible, .opt:focus-visible, .settings-gear:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
 .btn-skip{all:unset;cursor:pointer;font-family:var(--mono);font-size:.76rem;
   color:var(--muted);padding:6px 8px;border:1px solid transparent;border-radius:8px;transition:all var(--ease)}
 .btn-skip:hover{color:var(--txt);border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04)}
@@ -533,6 +537,10 @@ body{
   border-color: #9B4A3F !important;
   background: rgba(155,74,63,.08) !important;
   color: #9B4A3F !important;
+}
+.light-mode .distro-tag:hover .distro-tag-remove {
+  color: #9B4A3F !important;
+  opacity: 1 !important;
 }
 .light-mode .res-badge {
   background: rgba(90,117,144,.08) !important;
@@ -1457,6 +1465,12 @@ function showNormalQ() {
 
 function showFollowUp(type) {
   followUpSelected = [];
+  if (!triedDistros.length) {
+    likeDone = true;
+    dislikeDone = true;
+    tick();
+    return;
+  }
   const distKey = triedDistros[0];
   const d = DB[distKey];
   const isLike = type === 'like';
@@ -1863,6 +1877,10 @@ function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
   }
 
   function update() {
+    if (document.hidden) {
+      requestAnimationFrame(update);
+      return;
+    }
     for (const p of particles) {
       p.x += p.vx; p.y += p.vy;
       if (p.x < -50) p.x = window.innerWidth + 50;
@@ -2066,7 +2084,7 @@ const TRANSLATIONS = {
     aboutLabel: 'À propos de',
     whatLiked: "Qu'est-ce que tu as aimé chez",
     whatBothered: "Qu'est-ce qui t'a dérangé chez",
-    selectAll: '(sélectionne tout ce qui sapplique)',
+    selectAll: '(sélectionne tout ce qui s\'applique)',
     skipArrow: 'Passer →',
     nextArrow: '→',
     targetEmoji: '🎯',

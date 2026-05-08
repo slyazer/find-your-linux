@@ -2338,7 +2338,7 @@ const TRANSLATIONS = {
 let currentLang = 'en';
 function t(key) {
   const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]);
-  return (val && val !== key) ? val : key;
+  return (val && val !== key) ? val : null;
 }
 function setLanguage(lang) {
   currentLang = lang;

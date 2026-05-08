@@ -593,6 +593,15 @@ body{
   -webkit-text-fill-color: transparent !important;
 }
 .light-mode .stars { opacity: .3 !important; }
+.light-mode .distro-detail .detail-desc { color: #4A4D52 !important; }
+.light-mode .distro-detail .detail-name {
+  background: linear-gradient(135deg, #4A6578 0%, #2A2D32 50%, #5A6D7E 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.light-mode .distro-detail .back-link { color: #6A6D72 !important; }
+.light-mode .distro-detail .back-link:hover { color: #5A7590 !important; }
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
   color:rgba(107,122,150,.45);letter-spacing:.05em}
 ::-webkit-scrollbar{width:6px}
@@ -1448,7 +1457,7 @@ function showNormalQ() {
   const backBtn = history.length > 0 ? `<button class="btn-back" onclick="goBack()">← ${t('previous')}</button>` : '';
 
   swap(`<div class="screen">
-    <div class="q-label">${t('question')} ${q.id} ${t('of')} ${QS.length}</div>
+    <div class="q-label">${t('question')} ${q.id} ${t('of') || 'of'} ${QS.length}</div>
     <div class="q-text">${t('q'+q.id) || q.text}</div>
     <div class="opts${q.opts.length <= 1 ? ' single-col' : ''}">${optsHTML}</div>
     ${triedHTML}
@@ -1460,8 +1469,7 @@ function showNormalQ() {
       </button>
     </div>
   </div>`);
-  setTimeout(() => { const n = document.getElementById('nxt'); if(n) n.disabled = (selectedOpts.length === 0); }, 50);
-}
+  setTimeout(() => { const n = document.getElementById('nxt'); if(n) n.disabled = (selectedOpts.length === 0 && triedDistros.length === 0); }, 50);}
 
 function showFollowUp(type) {
   followUpSelected = [];
@@ -2337,8 +2345,13 @@ const TRANSLATIONS = {
 
 let currentLang = 'en';
 function t(key) {
-  const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]);
-  return (val && val !== key) ? val : null;
+  if (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key] !== undefined) {
+    return TRANSLATIONS[currentLang][key];
+  }
+  if (TRANSLATIONS['en'][key] !== undefined) {
+    return TRANSLATIONS['en'][key];
+  }
+  return null;
 }
 function setLanguage(lang) {
   currentLang = lang;

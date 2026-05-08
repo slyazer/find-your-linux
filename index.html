@@ -77,7 +77,7 @@ body{
   transition:width .55s cubic-bezier(.4,0,.2,1);
 }
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.card{background:var(--glass);border:1px solid var(--bdr);border-radius:var(--rl);
+.card{background:rgba(10,15,30,.85);border:1px solid rgba(255,255,255,.10);border-radius:var(--rl);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:36px;
   box-shadow:0 4px 48px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);
   transition:border-color .35s,box-shadow .3s ease}
@@ -95,10 +95,11 @@ body{
 .q-text{font-size:clamp(1.05rem,3vw,1.35rem);font-weight:700;line-height:1.4;
   margin-bottom:24px;color:#fff}
 .opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px;margin-bottom:24px}
+.opts.single-col{grid-template-columns:1fr}
 @media(max-width:600px){.opts{grid-template-columns:1fr}}
 .opt{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:5px;
-  align-items:flex-start;background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);border-radius:var(--r);
+  align-items:flex-start;background:rgba(20,28,48,.6);
+  border:1px solid rgba(255,255,255,.10);border-radius:var(--r);
   padding:15px 14px;
   transition:transform .25s cubic-bezier(.4,0,.2,1), border-color .25s, box-shadow .25s, background .25s;
   position:relative;overflow:hidden;min-height:unset;width:100%;min-width:0;word-break:break-word;
@@ -126,12 +127,12 @@ body{
 .tried-wrap{margin-bottom:16px}
 .tried-label{font-family:var(--mono);font-size:.76rem;color:var(--muted);
   margin-bottom:8px;display:block;font-weight:300}
-.tried-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);
+.tried-input{width:100%;background:rgba(20,28,48,.6);border:1px solid rgba(255,255,255,.12);
   border-radius:12px;padding:13px 16px;color:var(--txt);font-family:var(--mono);
   font-size:.9rem;outline:none;transition:all var(--ease)}
 .tried-input::placeholder{color:rgba(107,122,150,.55)}
 .tried-input:focus{border-color:rgba(79,255,176,.5);
-  box-shadow:0 0 0 3px rgba(79,255,176,.07);background:rgba(255,255,255,.06)}
+  box-shadow:0 0 0 3px rgba(79,255,176,.07);background:rgba(25,35,55,.8)}
 .tried-hint{font-family:var(--mono);font-size:.7rem;color:var(--mint);
   margin-top:6px;min-height:18px}
 .distro-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
@@ -265,7 +266,7 @@ body{
 .btn-ghost:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.05);transform:translateY(-2px)}
 .pick-grid{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
 .pick-card{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  background:rgba(20,28,48,.6);border:1px solid rgba(255,255,255,.10);
   border-radius:var(--rl);padding:28px 20px;transition:all .35s var(--ease);
   width:180px;text-align:center;position:relative;overflow:hidden}
 .pick-card:hover{border-color:var(--mint);transform:scale(1.06);
@@ -325,8 +326,8 @@ body{
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--glass);
-  border: 1px solid var(--bdr);
+  background: rgba(10,15,30,.85);
+  border: 1px solid rgba(255,255,255,.10);
   color: var(--muted);
   font-size: 1.2rem;
   cursor: pointer;
@@ -348,7 +349,7 @@ body{
   right: 16px;
   z-index: 99;
   background: rgba(10,15,30,.95);
-  border: 1px solid var(--bdr);
+  border: 1px solid rgba(255,255,255,.10);
   border-radius: var(--rl);
   padding: 20px;
   min-width: 220px;
@@ -385,9 +386,7 @@ body{
 .theme-btn:hover { transform: scale(1.15); }
 .theme-btn.active { border-color: #fff; box-shadow: 0 0 10px currentColor; }
 .theme-btn.space  { background: linear-gradient(135deg, #4fffb0, #7b61ff); }
-.theme-btn.green  { background: #4fffb0; }
 .theme-btn.light  { background: #f0f0f0; border: 2px solid #ccc; }
-.theme-btn.dark   { background: #1a1a2e; }
 .lang-select {
   width: 100%;
   background: rgba(255,255,255,.05);
@@ -404,6 +403,188 @@ body{
   background: #0a0f1e;
   color: var(--txt);
 }
+/* Light Theme */
+.light-mode .card {
+  background: #D3D4D6 !important;
+  border: 1px solid #C0C1C4 !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04), inset 0 1px 0 rgba(255,255,255,.6) !important;
+}
+.light-mode .card:hover { border-color: #6B7D8E !important; }
+.light-mode .opt {
+  background: #CBCDD0 !important;
+  border: 1px solid #BEC0C3 !important;
+  box-shadow: none !important;
+}
+.light-mode .opt:hover {
+  border-color: #6B7D8E !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06) !important;
+  transform: translateY(-2px) scale(1.01) !important;
+}
+.light-mode .opt.on {
+  border-color: #5A7590 !important;
+  background: #C2C9D0 !important;
+  box-shadow: 0 0 0 1px #5A7590, 0 2px 8px rgba(0,0,0,.06) !important;
+}
+.light-mode .opt::before { background: none !important; }
+.light-mode .opt-ltr {
+  color: #5A7590 !important;
+  background: rgba(90,117,144,.10) !important;
+}
+.light-mode .opt.on .opt-ltr {
+  background: #5A7590 !important;
+  color: #F0F1F2 !important;
+}
+.light-mode .tried-input {
+  background: #CBCDD0 !important;
+  border-color: #BEC0C3 !important;
+  color: #3A3D42 !important;
+}
+.light-mode .tried-input:focus {
+  border-color: #5A7590 !important;
+  background: #D3D4D6 !important;
+  box-shadow: 0 0 0 3px rgba(90,117,144,.08) !important;
+}
+.light-mode .tried-input::placeholder { color: #8A8D92 !important; }
+.light-mode .res-desc {
+  background: #CBCDD0 !important;
+  border-left-color: #5A7590 !important;
+  color: #4A4D52 !important;
+}
+.light-mode .filter-note {
+  background: #CBD4DB !important;
+  border-color: #B0BAC4 !important;
+  color: #3A5065 !important;
+}
+.light-mode .mismatch-box {
+  background: #E8DDDA !important;
+  border-color: #D4C4C0 !important;
+}
+.light-mode .mismatch-title { color: #9B4A3F !important; }
+.light-mode .mismatch-body { color: #4A3D3A !important; }
+.light-mode .mismatch-body code {
+  color: #9B4A3F !important;
+  background: rgba(155,74,63,.08) !important;
+}
+.light-mode .settings-panel {
+  background: #D3D4D6 !important;
+  border-color: #C0C1C4 !important;
+}
+.light-mode .lang-select {
+  background: #CBCDD0 !important;
+  border-color: #BEC0C3 !important;
+  color: #3A3D42 !important;
+}
+.light-mode .lang-select option {
+  background: #D3D4D6 !important;
+  color: #3A3D42 !important;
+}
+.light-mode .tag {
+  background: #C4C8CC !important;
+  border-color: #B8BCC0 !important;
+  color: #4A5058 !important;
+}
+.light-mode .tried-box {
+  background: #D8D5E2 !important;
+  border-color: #C5C0D4 !important;
+}
+.light-mode .spin-txt { color: #6A6D72 !important; }
+.light-mode .q-text { color: #2A2D32 !important; }
+.light-mode .q-label { color: #5A7590 !important; }
+.light-mode .q-label::after { background: linear-gradient(90deg, #5A7590, transparent) !important; opacity: .25 !important; }
+.light-mode .opt-main { color: #3A3D42 !important; }
+.light-mode .opt-sub2 { color: #6A6D72 !important; }
+.light-mode .btn-skip { color: #6A6D72 !important; }
+.light-mode .btn-skip:hover { color: #3A3D42 !important; border-color: #B0B4B8 !important; background: rgba(0,0,0,.03) !important; }
+.light-mode .btn-back { color: #6A6D72 !important; }
+.light-mode .btn-back:hover { color: #3A3D42 !important; border-color: #B0B4B8 !important; background: rgba(0,0,0,.03) !important; }
+.light-mode .btn-ghost { color: #3A3D42 !important; border-color: #B0B4B8 !important; }
+.light-mode .btn-ghost:hover { border-color: #5A7590 !important; background: #CBCDD0 !important; }
+.light-mode .pick-card {
+  background: #CBCDD0 !important;
+  border-color: #BEC0C3 !important;
+}
+.light-mode .pick-card:hover { border-color: #5A7590 !important; background: #C2C9D0 !important; }
+.light-mode .pick-name { color: #3A3D42 !important; }
+.light-mode .pick-line { color: #5A7590 !important; }
+.light-mode .settings-gear {
+  background: #D3D4D6 !important;
+  border-color: #C0C1C4 !important;
+  color: #6A6D72 !important;
+}
+.light-mode .settings-gear:hover { color: #3A3D42 !important; border-color: #A0A4A8 !important; }
+.light-mode .prog-lbl { color: #6A6D72 !important; }
+.light-mode .prog-num { color: #5A7590 !important; }
+.light-mode .prog-track { background: rgba(0,0,0,.06) !important; }
+.light-mode .brand-tag { color: #5A7590 !important; opacity: .7 !important; }
+.light-mode .runners-label { color: #6A6D72 !important; }
+.light-mode .runner {
+  background: #CBCDD0 !important;
+  border-color: #BEC0C3 !important;
+}
+.light-mode .runner:hover { border-color: #A0A4A8 !important; background: #C4C8CC !important; }
+.light-mode .tried-label { color: #6A6D72 !important; }
+.light-mode .tried-hint { color: #5A7590 !important; }
+.light-mode .distro-tag {
+  background: rgba(90,117,144,.10) !important;
+  border-color: rgba(90,117,144,.25) !important;
+  color: #5A7590 !important;
+}
+.light-mode .distro-tag:hover {
+  border-color: #9B4A3F !important;
+  background: rgba(155,74,63,.08) !important;
+  color: #9B4A3F !important;
+}
+.light-mode .res-badge {
+  background: rgba(90,117,144,.08) !important;
+  border-color: rgba(90,117,144,.15) !important;
+  color: #5A7590 !important;
+}
+.light-mode .res-line { color: #5A7590 !important; }
+.light-mode .detail-tag {
+  background: #C4C8CC !important;
+  border-color: #B8BCC0 !important;
+  color: #4A5058 !important;
+}
+.light-mode .badge {
+  color: #5A7590 !important;
+  background: rgba(90,117,144,.06) !important;
+  border-color: rgba(90,117,144,.12) !important;
+}
+.light-mode .strip-item {
+  background: #CBCDD0 !important;
+  border-color: #BEC0C3 !important;
+}
+.light-mode .strip-item:hover {
+  border-color: #5A7590 !important;
+  background: #C2C9D0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06) !important;
+}
+.light-mode .strip-name { color: rgba(60,65,70,.6) !important; }
+.light-mode .logo-ring {
+  background: rgba(0,0,0,.04) !important;
+  border-color: rgba(0,0,0,.08) !important;
+}
+.light-mode .res-name {
+  background: linear-gradient(135deg, #4A6578 0%, #2A2D32 50%, #5A6D7E 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+.light-mode .start h2 {
+  background: linear-gradient(135deg, #4A6578 0%, #2A2D32 50%, #5A6D7E 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+.light-mode .footer { color: rgba(80,85,90,.35) !important; }
+.light-mode .bg::before { background: radial-gradient(circle, rgba(90,117,144,.03) 0%, transparent 70%) !important; }
+.light-mode .bg::after { background: radial-gradient(circle, rgba(107,125,142,.04) 0%, transparent 70%) !important; }
+.light-mode .orb { background: radial-gradient(circle, rgba(155,74,63,.02) 0%, transparent 70%) !important; }
+.light-mode .brand h1 {
+  background: linear-gradient(135deg, #4A6578 0%, #2A2D32 50%, #5A6D7E 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.light-mode .stars { opacity: .3 !important; }
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
   color:rgba(107,122,150,.45);letter-spacing:.05em}
 ::-webkit-scrollbar{width:6px}
@@ -423,21 +604,15 @@ body{
 <body>
 <button class="settings-gear" onclick="toggleSettings()" title="Settings">⚙️</button>
 <div class="settings-panel" id="settingsPanel">
-  <h4>Theme</h4>
+  <h4 id="settingsThemeLabel">Theme</h4>
   <div class="theme-btns">
     <button class="theme-btn space active" onclick="setTheme('space')" title="Space (default)"></button>
-    <button class="theme-btn green" onclick="setTheme('green')" title="Green"></button>
     <button class="theme-btn light" onclick="setTheme('light')" title="Light"></button>
-    <button class="theme-btn dark" onclick="setTheme('dark')" title="Dark"></button>
   </div>
-  <h4>Language</h4>
+  <h4 id="settingsLangLabel">Language</h4>
   <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
-    <option value="en">🇬🇧 English</option>
-    <option value="fr">🇫🇷 Français</option>
-    <option value="de">🇩🇪 Deutsch</option>
-    <option value="es">🇪🇸 Español</option>
-    <option value="jp">🇯🇵 日本語</option>
-    <option value="ru">🇷🇺 Русский</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
   </select>
 </div>
 <div class="bg"><div class="stars"></div><div class="orb"></div></div>
@@ -446,17 +621,17 @@ body{
   <div class="brand" id="brand">
     <div class="brand-tag">// distro.match</div>
     <h1>Find Your Linux</h1>
-    <p>25 questions · 25 distros · your perfect match</p>
+    <p>25 questions . 25 distros . your perfect match</p>
   </div>
   <div class="prog-wrap" id="progWrap" style="display:none">
     <div class="prog-meta">
-      <span class="prog-lbl">Progress</span>
+      <span class="prog-lbl" id="progLabel">Progress</span>
       <span class="prog-num" id="progNum">1 / 25</span>
     </div>
     <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
   <div class="card" id="card"></div>
-  <div class="footer">made with 💚 for the linux community</div>
+  <div class="footer" id="footerText">made with 💚 for the linux community</div>
 </div>
 
 <script>
@@ -471,137 +646,295 @@ const ICONS = {
   xfce:   '<img width="28" height="28" style="object-fit:contain;display:block" src="https://cdn.simpleicons.org/xfce/2284C9">',
 };
 
-function distroIcon(url) { return `<img width="28" height="28" style="object-fit:contain;display:block" src="${url}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:1.4rem>🐧</span>'">`; }
+function distroIcon(url) {
+  return `<img width="28" height="28" style="object-fit:contain;display:block" src="${url}" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:1.4rem>🐧</span>'">`;
+}
+
+// Helper functions for translated distro data
+function dname(d) { return currentLang==='fr'&&d.name_fr ? d.name_fr : d.name; }
+function dline(d) { return currentLang==='fr'&&d.line_fr ? d.line_fr : d.line; }
+function ddesc(d) { return currentLang==='fr'&&d.desc_fr ? d.desc_fr : d.desc; }
+function dtags(d) { return currentLang==='fr'&&d.tags_fr ? d.tags_fr : d.tags; }
 
 const DB = {
-  ubuntu:    {name:'Ubuntu',        line:'For Human Beings',
+  ubuntu: {
+    name:'Ubuntu', line:'For Human Beings',
+    name_fr:'Ubuntu', line_fr:'Pour les êtres humains',
     logo:'https://cdn.simpleicons.org/ubuntu/E95420', url:'https://ubuntu.com',
     tags:['🟠 Beginner friendly','📦 Massive repo','🏢 LTS + ESM'],
+    tags_fr:['🟠 Débutant friendly','📦 Dépôt massif','🏢 LTS + ESM'],
     desc:'The world\'s most popular Linux distro. Ubuntu is built for anyone — massive community, polished GNOME desktop, rock-solid LTS releases, and the best hardware support available. The safe default for newcomers and pros alike.',
-    defaultDE:'gnome', deLabel:'GNOME', p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:1,light:1,beauty:2}},
-  mint:      {name:'Linux Mint',    line:'From freedom came elegance',
+    desc_fr:'La distro Linux la plus populaire. Ubuntu est conçu pour tous — immense communauté, bureau GNOME soigné, LTS inébranlables et le meilleur support matériel. Le choix sûr.',
+    defaultDE:'gnome', deLabel:'GNOME',
+    p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:1,light:1,beauty:2}
+  },
+  mint: {
+    name:'Linux Mint', line:'From freedom came elegance',
+    name_fr:'Linux Mint', line_fr:'De la liberté naît l\'élégance',
     logo:'https://cdn.simpleicons.org/linuxmint/87CF3E', url:'https://linuxmint.com',
     tags:['💚 Windows-like feel','🐢 Never breaks','🎯 Zero config needed'],
+    tags_fr:['💚 Sensation Windows','🐢 Ne casse jamais','🎯 Zéro conf'],
     desc:'Consistently voted #1 for desktop Linux by real users. Mint never breaks on updates. The Cinnamon desktop feels immediately familiar to anyone coming from Windows. Install and forget.',
-    defaultDE:'other', deLabel:'Cinnamon', p:{ease:3,stable:3,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:1,light:2,beauty:2}},
-  zorin:     {name:'Zorin OS',      line:'Make your computer better',
+    desc_fr:'Constamment élu n°1 par les utilisateurs. Mint ne casse jamais lors des mises à jour. Le bureau Cinnamon est immédiatement familier. Installez et oubliez.',
+    defaultDE:'other', deLabel:'Cinnamon',
+    p:{ease:3,stable:3,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:1,light:2,beauty:2}
+  },
+  zorin: {
+    name:'Zorin OS', line:'Make your computer better',
+    name_fr:'Zorin OS', line_fr:'Rendez votre ordinateur meilleur',
     logo:'https://cdn.simpleicons.org/zorin/0CC1F3', url:'https://zorinos.com',
     tags:['🪟 Looks like Windows','✨ Premium polish','🔌 Just works'],
+    tags_fr:['🪟 Ressemble à Windows','✨ Fini premium','🔌 Fonctionne'],
     desc:'Laser-focused on Windows/macOS switchers. Its unique Layout Switcher morphs the desktop to look like Windows 11, macOS, or classic XP. Stunning UI, zero configuration.',
-    defaultDE:'gnome', deLabel:'GNOME (Zorin Desktop)', p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:1,light:1,beauty:3}},
-  elementary:{name:'elementary OS', line:'Fast, open, privacy-respecting',
+    desc_fr:'Concentré sur les switchers Windows/macOS. Son Layout Switcher transforme le bureau en Windows 11, macOS ou XP. UI superbe, zéro configuration.',
+    defaultDE:'gnome', deLabel:'GNOME (Zorin Desktop)',
+    p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:1,light:1,beauty:3}
+  },
+  elementary: {
+    name:'elementary OS', line:'Fast, open, privacy-respecting',
+    name_fr:'elementary OS', line_fr:'Rapide, ouvert, respectueux',
     logo:'https://cdn.simpleicons.org/elementary/64BAFF', url:'https://elementary.io',
     tags:['🍎 macOS-like','🎨 Pantheon DE','✏️ Design-first'],
+    tags_fr:['🍎 Façon macOS','🎨 Bureau Pantheon','✏️ Design d\'abord'],
     desc:'The most macOS-like Linux experience. Built around the Pantheon desktop with a curated AppCenter, refined typography, and strict design guidelines. Elementary OS is what happens when designers run a Linux distro.',
-    defaultDE:'other', deLabel:'Pantheon', p:{ease:3,stable:2,rolling:0,perf:1,priv:2,custom:1,cli:0,gaming:0,light:1,beauty:3}},
-  deepin:    {name:'Deepin',        line:'Beautiful, innovative, practical',
+    desc_fr:'L\'expérience Linux la plus proche de macOS. Construit autour du bureau Pantheon avec un AppCenter soigné. Le résultat quand des designers font une distro.',
+    defaultDE:'other', deLabel:'Pantheon',
+    p:{ease:3,stable:2,rolling:0,perf:1,priv:2,custom:1,cli:0,gaming:0,light:1,beauty:3}
+  },
+  deepin: {
+    name:'Deepin', line:'Beautiful, innovative, practical',
+    name_fr:'Deepin', line_fr:'Beau, innovant, pratique',
     logo:'https://cdn.simpleicons.org/deepin/2CA7F8', url:'https://deepin.org',
     tags:['💎 Stunning DDE','🎭 Unique animations','🖥️ Modern look'],
+    tags_fr:['💎 DDE superbe','🎭 Animations uniques','🖥️ Look moderne'],
     desc:'The most visually striking Linux distro. Deepin\'s own DDE features fluid animations and a unique dock-based interface. If beauty is your priority, nothing comes close.',
-    defaultDE:'other', deLabel:'DDE', p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:0,light:1,beauty:3}},
-  popos:     {name:'Pop!_OS',       line:'Built for creators & gamers',
+    desc_fr:'La distro la plus frappante visuellement. DDE propose des animations fluides et un dock unique. Si la beauté est votre priorité, rien n\'approche.',
+    defaultDE:'other', deLabel:'DDE',
+    p:{ease:3,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:0,gaming:0,light:1,beauty:3}
+  },
+  popos: {
+    name:'Pop!_OS', line:'Built for creators & gamers',
+    name_fr:'Pop!_OS', line_fr:'Conçu pour créateurs et gamers',
     logo:'https://cdn.simpleicons.org/popos/48B9C7', url:'https://pop.system76.com',
     tags:['🎮 NVIDIA ready','🔧 Dev-optimised','⚡ Auto-tiling'],
-    desc:'System76\'s gaming and developer powerhouse. Ships NVIDIA drivers out of the box, features excellent auto-tiling, and is the smoothest entry point for gamers switching from Windows. Performance-tuned without the hassle.',
-    defaultDE:'gnome', deLabel:'GNOME (COSMIC)', p:{ease:2,stable:2,rolling:0,perf:2,priv:1,custom:2,cli:2,gaming:3,light:1,beauty:2}},
-  fedora:    {name:'Fedora',        line:'Freedom. Friends. Features. First.',
+    tags_fr:['🎮 Prêt pour NVIDIA','🔧 Optimisé dev','⚡ Auto-tuilage'],
+    desc:'System76\'s gaming and developer powerhouse. Ships NVIDIA drivers out of the box, features excellent auto-tiling, and is the smoothest entry point for gamers switching from Windows.',
+    desc_fr:'La puissance gaming et dev de System76. Livré avec drivers NVIDIA, excellent auto-tuilage. Le meilleur point d\'entrée pour les gamers venant de Windows.',
+    defaultDE:'gnome', deLabel:'GNOME (COSMIC)',
+    p:{ease:2,stable:2,rolling:0,perf:2,priv:1,custom:2,cli:2,gaming:3,light:1,beauty:2}
+  },
+  fedora: {
+    name:'Fedora', line:'Freedom. Friends. Features. First.',
+    name_fr:'Fedora', line_fr:'Liberté. Amis. Fonctionnalités.',
     logo:'https://cdn.simpleicons.org/fedora/51A2DA', url:'https://getfedora.org',
     tags:['🆕 Latest GNOME','🔴 Red Hat backed','💻 Developer default'],
-    desc:'What Red Hat engineers actually use. Fedora ships the absolute latest GNOME and kernel, uses 100% pure open-source packages. The ideal workstation for developers who want fresh tech without rolling-release chaos.',
-    defaultDE:'gnome', deLabel:'GNOME', p:{ease:2,stable:2,rolling:0,perf:2,priv:2,custom:2,cli:2,gaming:1,light:1,beauty:2}},
-  debian:    {name:'Debian',        line:'The universal operating system',
+    tags_fr:['🆕 Dernier GNOME','🔴 Soutenu Red Hat','💻 Défaut développeur'],
+    desc:'What Red Hat engineers actually use. Fedora ships the absolute latest GNOME and kernel, uses 100% pure open-source packages. The ideal workstation for developers.',
+    desc_fr:'Ce que les ingénieurs Red Hat utilisent. Fedora livre le tout dernier GNOME et noyau, 100% open-source. Le poste de travail idéal pour les développeurs.',
+    defaultDE:'gnome', deLabel:'GNOME',
+    p:{ease:2,stable:2,rolling:0,perf:2,priv:2,custom:2,cli:2,gaming:1,light:1,beauty:2}
+  },
+  debian: {
+    name:'Debian', line:'The universal operating system',
+    name_fr:'Debian', line_fr:'Le système d\'exploitation universel',
     logo:'https://cdn.simpleicons.org/debian/D70751', url:'https://debian.org',
     tags:['🏔️ Rock solid stable','🧩 Foundation of 70% distros','🛡️ 30+ years strong'],
+    tags_fr:['🏔️ Stable comme le roc','🧩 Base de 70% des distros','🛡️ 30+ ans de force'],
     desc:'The grandfather of modern Linux. When people say "Debian stable" they mean it. Ubuntu, Mint, MX, and hundreds of others are built on Debian. Trust it with your server.',
-    defaultDE:'gnome', deLabel:'GNOME (or your choice)', p:{ease:1,stable:3,rolling:0,perf:1,priv:2,custom:2,cli:2,gaming:0,light:2,beauty:1}},
-  mx:        {name:'MX Linux',      line:'Midweight, stable, friendly',
+    desc_fr:'Le grand-père de Linux. Quand on dit "Debian stable", on le pense. Ubuntu, Mint, MX et des centaines d\'autres sont basés sur Debian. Faites-lui confiance.',
+    defaultDE:'gnome', deLabel:'GNOME (or your choice)',
+    p:{ease:1,stable:3,rolling:0,perf:1,priv:2,custom:2,cli:2,gaming:0,light:2,beauty:1}
+  },
+  mx: {
+    name:'MX Linux', line:'Midweight, stable, friendly',
+    name_fr:'MX Linux', line_fr:'Mi-lourd, stable, convivial',
     logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/MX_LINUX_Logo.svg/langfr-120px-MX_LINUX_Logo.svg.png',
     url:'https://mxlinux.org',
     tags:['⚖️ Midweight XFCE','🐢 Debian stable base','🏆 #1 on DistroWatch'],
+    tags_fr:['⚖️ XFCE mi-lourd','🐢 Base Debian stable','🏆 N°1 DistroWatch'],
     desc:'DistroWatch\'s most visited distro for years. Packages Debian stability into a snappy XFCE desktop with the genuinely useful MX Tools. Brilliant for older hardware.',
-    defaultDE:'xfce', deLabel:'XFCE', p:{ease:2,stable:3,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:0,light:3,beauty:1}},
-  peppermint:{name:'Peppermint OS', line:'Blazing fast, cloud-friendly',
+    desc_fr:'La distro la plus visitée sur DistroWatch. Empaquette la stabilité Debian dans un bureau XFCE réactif avec les outils MX. Brillant pour le vieux matériel.',
+    defaultDE:'xfce', deLabel:'XFCE',
+    p:{ease:2,stable:3,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:0,light:3,beauty:1}
+  },
+  peppermint: {
+    name:'Peppermint OS', line:'Blazing fast, cloud-friendly',
+    name_fr:'Peppermint OS', line_fr:'Ultra rapide, cloud-friendly',
     logo:'https://distrosea.com/distro-icons/peppermint.svg', url:'https://peppermintos.com',
     tags:['🍬 Featherlight','☁️ Cloud-app focus','💾 Old hardware hero'],
-    desc:'Peppermint OS is what you install on that dusty laptop. Built on Debian with XFCE, it boots in seconds and integrates web apps natively. Real work on a 2010 machine.',
-    defaultDE:'xfce', deLabel:'XFCE', p:{ease:2,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:0,light:3,beauty:1}},
-  opensuse:  {name:'openSUSE',      line:"The makers' choice",
+    tags_fr:['🍬 Super léger','☁️ Focus apps cloud','💾 Héros vieux matos'],
+    desc:'Peppermint OS is what you install on that dusty laptop. Built on Debian with XFCE, it boots in seconds and integrates web apps natively.',
+    desc_fr:'Peppermint OS, c\'est ce qu\'on installe sur ce vieux portable. Basé sur Debian avec XFCE, démarre en secondes et intègre les apps web.',
+    defaultDE:'xfce', deLabel:'XFCE',
+    p:{ease:2,stable:2,rolling:0,perf:1,priv:1,custom:1,cli:1,gaming:0,light:3,beauty:1}
+  },
+  opensuse: {
+    name:'openSUSE', line:"The makers' choice",
+    name_fr:'openSUSE', line_fr:'Le choix des makers',
     logo:'https://cdn.simpleicons.org/opensuse/73BA25', url:'https://opensuse.org',
     tags:['🦎 Powerful YaST','📸 BTRFS snapshots','🔄 Leap + Tumbleweed'],
-    desc:'The underrated powerhouse. YaST is the most comprehensive system admin GUI on Linux. BTRFS snapshots mean you can undo any update. Choose Leap for stability or Tumbleweed for rolling.',
-    defaultDE:'kde', deLabel:'KDE Plasma', p:{ease:1,stable:2,rolling:1,perf:2,priv:2,custom:3,cli:2,gaming:1,light:1,beauty:1}},
-  manjaro:   {name:'Manjaro',       line:'Enjoy the simplicity',
+    tags_fr:['🦎 Puissant YaST','📸 Snapshots BTRFS','🔄 Leap + Tumbleweed'],
+    desc:'The underrated powerhouse. YaST is the most comprehensive system admin GUI on Linux. BTRFS snapshots mean you can undo any update. Choose Leap or Tumbleweed.',
+    desc_fr:'La puissance sous-estimée. YaST est l\'outil d\'admin le plus complet sur Linux. Les snapshots BTRFS permettent d\'annuler toute mise à jour.',
+    defaultDE:'kde', deLabel:'KDE Plasma',
+    p:{ease:1,stable:2,rolling:1,perf:2,priv:2,custom:3,cli:2,gaming:1,light:1,beauty:1}
+  },
+  manjaro: {
+    name:'Manjaro', line:'Enjoy the simplicity',
+    name_fr:'Manjaro', line_fr:'La simplicité avant tout',
     logo:'https://cdn.simpleicons.org/manjaro/35BF5C', url:'https://manjaro.org',
     tags:['🟢 Arch made easy','🖥️ KDE / GNOME / XFCE','⚖️ Tested rolling'],
-    desc:'Arch Linux\'s power with a graphical installer. Delays Arch packages by ~2 weeks for testing, giving you rolling-release freshness without the breakage. Best entry into the Arch ecosystem.',
-    defaultDE:'kde', deLabel:'KDE Plasma', p:{ease:2,stable:1,rolling:2,perf:2,priv:1,custom:3,cli:1,gaming:2,light:1,beauty:2}},
-  endeavour: {name:'EndeavourOS',   line:'A terminal-centric Arch experience',
+    tags_fr:['🟢 Arch simplifié','🖥️ KDE / GNOME / XFCE','⚖️ Rolling testé'],
+    desc:'Arch Linux\'s power with a graphical installer. Delays Arch packages by ~2 weeks for testing, giving you rolling-release freshness without the breakage.',
+    desc_fr:'La puissance d\'Arch avec un installateur graphique. Retarde les paquets Arch d\'environ 2 semaines pour tester. La fraîcheur rolling sans la casse.',
+    defaultDE:'kde', deLabel:'KDE Plasma',
+    p:{ease:2,stable:1,rolling:2,perf:2,priv:1,custom:3,cli:1,gaming:2,light:1,beauty:2}
+  },
+  endeavour: {
+    name:'EndeavourOS', line:'A terminal-centric Arch experience',
+    name_fr:'EndeavourOS', line_fr:'Une expérience Arch centrée terminal',
     logo:'https://cdn.simpleicons.org/endeavouros/7F4ABF', url:'https://endeavouros.com',
     tags:['🚀 Arch installer','🔄 True rolling','🤝 Great community'],
-    desc:'What happens when the Arch community builds a real installer. You get a genuine Arch system — AUR, rolling release, your chosen DE — without the 4-hour install. Terminal-comfortable users only.',
-    defaultDE:'other', deLabel:'Your choice at install', p:{ease:1,stable:1,rolling:3,perf:2,priv:1,custom:3,cli:2,gaming:2,light:1,beauty:1}},
-  garuda:    {name:'Garuda Linux',  line:'Performance beyond expectations',
+    tags_fr:['🚀 Installateur Arch','🔄 Vrai rolling','🤝 Super communauté'],
+    desc:'What happens when the Arch community builds a real installer. You get a genuine Arch system — AUR, rolling release, your chosen DE — without the 4-hour install.',
+    desc_fr:'Ce qui arrive quand la communauté Arch crée un vrai installateur. Un système Arch authentique — AUR, rolling, votre DE — sans 4h d\'installation.',
+    defaultDE:'other', deLabel:'Your choice at install',
+    p:{ease:1,stable:1,rolling:3,perf:2,priv:1,custom:3,cli:2,gaming:2,light:1,beauty:1}
+  },
+  garuda: {
+    name:'Garuda Linux', line:'Performance beyond expectations',
+    name_fr:'Garuda Linux', line_fr:'Performance au-delà des attentes',
     logo:'https://cdn.simpleicons.org/garudalinux/E64747', url:'https://garudalinux.org',
     tags:['🦅 Stunning riced KDE','🎮 Gaming kernels','📸 BTRFS auto-snapshot'],
-    desc:'Arch configured by enthusiasts, for enthusiasts. Ships gaming-optimised kernels, BTRFS with automatic snapshots, and breathtaking pre-configured KDE themes. Fast and beautiful out of the box.',
-    defaultDE:'kde', deLabel:'KDE Plasma (Dr460nized)', p:{ease:1,stable:1,rolling:3,perf:3,priv:1,custom:3,cli:2,gaming:3,light:0,beauty:3}},
-  arch:      {name:'Arch Linux',    line:'Keep It Simple, Stupid',
+    tags_fr:['🦅 KDE ricé sublime','🎮 Noyaux gaming','📸 Auto-snapshot BTRFS'],
+    desc:'Arch configured by enthusiasts, for enthusiasts. Ships gaming-optimised kernels, BTRFS with automatic snapshots, and breathtaking pre-configured KDE themes.',
+    desc_fr:'Arch configuré par des passionnés. Livre des noyaux optimisés gaming, BTRFS avec snapshots auto, et des thèmes KDE époustouflants pré-configurés.',
+    defaultDE:'kde', deLabel:'KDE Plasma (Dr460nized)',
+    p:{ease:1,stable:1,rolling:3,perf:3,priv:1,custom:3,cli:2,gaming:3,light:0,beauty:3}
+  },
+  arch: {
+    name:'Arch Linux', line:'Keep It Simple, Stupid',
+    name_fr:'Arch Linux', line_fr:'Rester simple, idiot',
     logo:'https://cdn.simpleicons.org/archlinux/1793D1', url:'https://archlinux.org',
     tags:['🔨 Build it yourself','📖 The Arch Wiki','🩸 True rolling release'],
-    desc:'A blank slate and the world\'s best documentation. The AUR is the most comprehensive software source on Linux. Not for beginners — but deeply rewarding once you understand it.',
-    defaultDE:'tiling', deLabel:'Your choice (none by default)', p:{ease:0,stable:1,rolling:3,perf:2,priv:2,custom:3,cli:3,gaming:1,light:2,beauty:1}},
-  nixos:     {name:'NixOS',         line:'Reproducible. Declarative. Reliable.',
+    tags_fr:['🔨 Construisez-le','📖 Le Arch Wiki','🩸 Vrai rolling'],
+    desc:'A blank slate and the world\'s best documentation. The AUR is the most comprehensive software source on Linux. Not for beginners — but deeply rewarding.',
+    desc_fr:'Une page blanche et la meilleure documentation au monde. L\'AUR est la source logicielle la plus complète. Pas pour débutants — mais profondément gratifiant.',
+    defaultDE:'tiling', deLabel:'Your choice (none by default)',
+    p:{ease:0,stable:1,rolling:3,perf:2,priv:2,custom:3,cli:3,gaming:1,light:2,beauty:1}
+  },
+  nixos: {
+    name:'NixOS', line:'Reproducible. Declarative. Reliable.',
+    name_fr:'NixOS', line_fr:'Reproductible. Déclaratif. Fiable.',
     logo:'https://cdn.simpleicons.org/nixos/5277C3', url:'https://nixos.org',
     tags:['❄️ Declarative config','⏪ Instant rollbacks','🔁 100% reproducible'],
-    desc:'A fundamentally different approach. Your entire OS is defined in one Nix file. Broke something? Roll back instantly. Same config = identical systems. A revelation once it clicks.',
-    defaultDE:'gnome', deLabel:'GNOME (default ISO)', p:{ease:0,stable:2,rolling:2,perf:2,priv:2,custom:3,cli:3,gaming:0,light:1,beauty:1}},
-  void:      {name:'Void Linux',    line:'Independent. Runit. XBPS.',
+    tags_fr:['❄️ Config déclarative','⏪ Rollbacks instantanés','🔁 100% reproductible'],
+    desc:'A fundamentally different approach. Your entire OS is defined in one Nix file. Broke something? Roll back instantly. Same config = identical systems.',
+    desc_fr:'Une approche radicalement différente. Votre OS entier défini dans un fichier Nix. Quelque chose casse ? Rollback instantané. Même config = systèmes identiques.',
+    defaultDE:'gnome', deLabel:'GNOME (default ISO)',
+    p:{ease:0,stable:2,rolling:2,perf:2,priv:2,custom:3,cli:3,gaming:0,light:1,beauty:1}
+  },
+  void: {
+    name:'Void Linux', line:'Independent. Runit. XBPS.',
+    name_fr:'Void Linux', line_fr:'Indépendant. Runit. XBPS.',
     logo:'https://cdn.simpleicons.org/voidlinux/478061', url:'https://voidlinux.org',
     tags:['⚙️ No systemd','🔄 Rolling release','🧩 Fully independent'],
-    desc:'Completely independent — not based on Debian, Arch, or anything else. Uses runit instead of systemd and the fast xbps package manager. Beloved by experienced users who want truly different.',
-    defaultDE:'xfce', deLabel:'XFCE (default ISO)', p:{ease:0,stable:1,rolling:3,perf:3,priv:2,custom:3,cli:3,gaming:0,light:2,beauty:1}},
-  gentoo:    {name:'Gentoo',        line:'Meta-distribution for purists',
+    tags_fr:['⚙️ Sans systemd','🔄 Rolling release','🧩 Totalement indépendant'],
+    desc:'Completely independent — not based on Debian, Arch, or anything else. Uses runit instead of systemd and the fast xbps package manager.',
+    desc_fr:'Totalement indépendant — pas basé sur Debian, Arch ou autre. Utilise runit au lieu de systemd et le gestionnaire de paquets rapide xbps.',
+    defaultDE:'xfce', deLabel:'XFCE (default ISO)',
+    p:{ease:0,stable:1,rolling:3,perf:3,priv:2,custom:3,cli:3,gaming:0,light:2,beauty:1}
+  },
+  gentoo: {
+    name:'Gentoo', line:'Meta-distribution for purists',
+    name_fr:'Gentoo', line_fr:'Méta-distribution pour puristes',
     logo:'https://cdn.simpleicons.org/gentoo/54487A', url:'https://gentoo.org',
     tags:['🔨 Compile from source','⚡ CPU-optimised','📚 Learn everything'],
-    desc:'Every package compiled from source with your flags. Portage is supremely powerful. Configuring Gentoo teaches you more about Linux than almost anything else — if you have the patience.',
-    defaultDE:'tiling', deLabel:'Your choice (manual install)', p:{ease:0,stable:1,rolling:2,perf:3,priv:2,custom:3,cli:3,gaming:0,light:1,beauty:1}},
-  slackware: {name:'Slackware',     line:'The oldest surviving Linux distro',
+    tags_fr:['🔨 Compiler depuis la source','⚡ Optimisé CPU','📚 Tout apprendre'],
+    desc:'Every package compiled from source with your flags. Portage is supremely powerful. Configuring Gentoo teaches you more about Linux than almost anything else.',
+    desc_fr:'Chaque paquet compilé depuis la source avec vos flags. Portage est suprêmement puissant. Configurer Gentoo vous apprend Linux mieux que tout.',
+    defaultDE:'tiling', deLabel:'Your choice (manual install)',
+    p:{ease:0,stable:1,rolling:2,perf:3,priv:2,custom:3,cli:3,gaming:0,light:1,beauty:1}
+  },
+  slackware: {
+    name:'Slackware', line:'The oldest surviving Linux distro',
+    name_fr:'Slackware', line_fr:'La plus vieille distro encore vivante',
     logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Slackware_logo.svg/330px-Slackware_logo.svg.png',
     url:'http://www.slackware.com',
     tags:['👴 Est. 1993','🐧 UNIX purism','🔩 Total manual control'],
-    desc:'Running continuously since 1993 with the same UNIX-first philosophy. No dependency resolution. No hand-holding. Master Slackware and you understand Linux at its deepest level.',
-    defaultDE:'other', deLabel:'KDE (legacy) or your choice', p:{ease:0,stable:2,rolling:0,perf:2,priv:2,custom:3,cli:3,gaming:0,light:2,beauty:0}},
-  alpine:    {name:'Alpine Linux',  line:'Small. Simple. Secure.',
+    tags_fr:['👴 Créée en 1993','🐧 Purisme UNIX','🔩 Contrôle manuel total'],
+    desc:'Running continuously since 1993 with the same UNIX-first philosophy. No dependency resolution. No hand-holding. Master Slackware and you understand Linux.',
+    desc_fr:'En continu depuis 1993 avec la même philosophie UNIX. Pas de résolution de dépendances. Pas de main tenue. Maîtrisez Slackware et vous comprenez Linux.',
+    defaultDE:'other', deLabel:'KDE (legacy) or your choice',
+    p:{ease:0,stable:2,rolling:0,perf:2,priv:2,custom:3,cli:3,gaming:0,light:2,beauty:0}
+  },
+  alpine: {
+    name:'Alpine Linux', line:'Small. Simple. Secure.',
+    name_fr:'Alpine Linux', line_fr:'Petit. Simple. Sécurisé.',
     logo:'https://cdn.simpleicons.org/alpinelinux/0D597F', url:'https://alpinelinux.org',
     tags:['🐋 Docker\'s default base','🔬 5 MB footprint','🔐 Security-hardened'],
-    desc:'The Docker default base image: ~5 MB, security-hardened with musl libc and busybox. On the desktop it\'s expert territory; on servers and containers it\'s the smartest choice.',
-    defaultDE:'tiling', deLabel:'None by default', p:{ease:0,stable:2,rolling:1,perf:2,priv:3,custom:2,cli:3,gaming:0,light:3,beauty:0}},
-  kali:      {name:'Kali Linux',    line:'The penetration testing platform',
+    tags_fr:['🐋 Base Docker par défaut','🔬 5 Mo d\'empreinte','🔐 Sécurisé'],
+    desc:'The Docker default base image: ~5 MB, security-hardened with musl libc and busybox. On the desktop it\'s expert territory; on servers it\'s the smartest choice.',
+    desc_fr:'L\'image de base Docker par défaut : ~5 Mo, sécurisée avec musl libc et busybox. Sur le bureau, c\'est territoire expert ; sur les serveurs, le choix le plus malin.',
+    defaultDE:'tiling', deLabel:'None by default',
+    p:{ease:0,stable:2,rolling:1,perf:2,priv:3,custom:2,cli:3,gaming:0,light:3,beauty:0}
+  },
+  kali: {
+    name:'Kali Linux', line:'The penetration testing platform',
+    name_fr:'Kali Linux', line_fr:'La plateforme de test d\'intrusion',
     logo:'https://cdn.simpleicons.org/kalilinux/557C94', url:'https://kali.org',
     tags:['🔓 600+ security tools','🕵️ Pentest standard','💀 CTF & red-team'],
-    desc:'The industry standard for ethical hacking and CTF competitions. Ships 600+ security tools pre-installed. Not designed for daily use — a specialised platform for cybersecurity professionals.',
-    defaultDE:'other', deLabel:'Xfce (default)', p:{ease:1,stable:1,rolling:1,perf:1,priv:3,custom:2,cli:3,gaming:0,light:1,beauty:1}},
-  parrot:    {name:'Parrot OS',     line:'Security, privacy, development',
+    tags_fr:['🔓 600+ outils sécu','🕵️ Standard pentest','💀 CTF & red-team'],
+    desc:'The industry standard for ethical hacking and CTF competitions. Ships 600+ security tools pre-installed. Not designed for daily use — a specialised platform.',
+    desc_fr:'Le standard de l\'industrie pour le hacking éthique et les CTF. Livré avec 600+ outils de sécurité pré-installés. Pas conçu pour un usage quotidien.',
+    defaultDE:'other', deLabel:'Xfce (default)',
+    p:{ease:1,stable:1,rolling:1,perf:1,priv:3,custom:2,cli:3,gaming:0,light:1,beauty:1}
+  },
+  parrot: {
+    name:'Parrot OS', line:'Security, privacy, development',
+    name_fr:'Parrot OS', line_fr:'Sécurité, vie privée, développement',
     logo:'https://cdn.simpleicons.org/parrotsecurity/15E0ED', url:'https://parrotsec.org',
     tags:['🦜 Pentest + daily use','🔒 Privacy-first','🪶 Lighter than Kali'],
-    desc:'Does what Kali can\'t: serve as both daily driver and security platform. The Home edition is a privacy-focused general desktop. Built on Debian — lighter and more privacy-aware than Kali.',
-    defaultDE:'other', deLabel:'MATE / KDE', p:{ease:1,stable:2,rolling:0,perf:1,priv:3,custom:2,cli:2,gaming:0,light:2,beauty:2}},
-  tails:     {name:'Tails',         line:'Privacy for anyone, anywhere',
+    tags_fr:['🦜 Pentest + usage quotidien','🔒 Vie privée d\'abord','🪶 Plus léger que Kali'],
+    desc:'Does what Kali can\'t: serve as both daily driver and security platform. The Home edition is a privacy-focused general desktop. Lighter and more privacy-aware than Kali.',
+    desc_fr:'Fait ce que Kali ne peut pas : servir à la fois de daily driver et de plateforme de sécurité. L\'édition Home est un bureau général axé vie privée.',
+    defaultDE:'other', deLabel:'MATE / KDE',
+    p:{ease:1,stable:2,rolling:0,perf:1,priv:3,custom:2,cli:2,gaming:0,light:2,beauty:2}
+  },
+  tails: {
+    name:'Tails', line:'Privacy for anyone, anywhere',
+    name_fr:'Tails', line_fr:'Vie privée pour tous, partout',
     logo:'https://cdn.simpleicons.org/tails/56347C', url:'https://tails.boum.org',
     tags:['👻 Amnesic — no trace','🧅 All traffic via Tor','🚫 Journalists & activists'],
+    tags_fr:['👻 Amnésique — aucune trace','🧅 Tout le trafic via Tor','🚫 Journalistes & activistes'],
     desc:'Runs live from a USB stick, erases all traces on shutdown. Every connection goes through Tor. Endorsed by the EFF. If anonymity is life-or-death, use Tails.',
-    defaultDE:'gnome', deLabel:'GNOME', p:{ease:1,stable:2,rolling:0,perf:0,priv:3,custom:0,cli:1,gaming:0,light:1,beauty:1}},
-  qubes:     {name:'Qubes OS',      line:'A reasonably secure operating system',
+    desc_fr:'Fonctionne en live depuis une clé USB, efface toute trace à l\'arrêt. Chaque connexion passe par Tor. Approuvé par l\'EFF. Si l\'anonymat est vital, utilisez Tails.',
+    defaultDE:'gnome', deLabel:'GNOME',
+    p:{ease:1,stable:2,rolling:0,perf:0,priv:3,custom:0,cli:1,gaming:0,light:1,beauty:1}
+  },
+  qubes: {
+    name:'Qubes OS', line:'A reasonably secure operating system',
+    name_fr:'Qubes OS', line_fr:'Un OS raisonnablement sécurisé',
     logo:'https://cdn.simpleicons.org/qubesos/3874D8', url:'https://qubes-os.org',
     tags:['🏰 Xen VM isolation','🔐 Recommended by Snowden','🧪 Most secure desktop'],
+    tags_fr:['🏰 Isolation VM Xen','🔐 Recommandé par Snowden','🧪 Bureau le plus sécurisé'],
     desc:'Runs every app in its own Xen virtual machine. If your browser is compromised, your banking VM is untouched. The most genuinely secure desktop OS that exists.',
-    defaultDE:'other', deLabel:'Xfce (Xen-managed)', p:{ease:0,stable:2,rolling:0,perf:1,priv:3,custom:2,cli:2,gaming:0,light:0,beauty:1}},
-  clear:     {name:'Clear Linux',   line:'Optimised for Intel performance',
+    desc_fr:'Exécute chaque app dans sa propre VM Xen. Si votre navigateur est compromis, votre VM bancaire est intacte. Le bureau le plus réellement sécurisé qui existe.',
+    defaultDE:'other', deLabel:'Xfce (Xen-managed)',
+    p:{ease:0,stable:2,rolling:0,perf:1,priv:3,custom:2,cli:2,gaming:0,light:0,beauty:1}
+  },
+  clear: {
+    name:'Clear Linux', line:'Optimised for Intel performance',
+    name_fr:'Clear Linux', line_fr:'Optimisé pour la performance Intel',
     logo:'https://raw.githubusercontent.com/docker-library/docs/dbe1941be63c87cc691b59d50f830f9dd7d69df9/clearlinux/logo.png',
     url:'https://clearlinux.org',
     tags:['⚡ Intel compiler-tuned','🚀 Top benchmark scores','🔩 Stateless design'],
-    desc:'Intel\'s own distribution, compiled with aggressive AVX-512 optimisations. Benchmarks consistently show it as the fastest Linux distro on x86 hardware. Stateless design is elegant but unusual.',
-    defaultDE:'gnome', deLabel:'GNOME', p:{ease:1,stable:1,rolling:2,perf:3,priv:1,custom:2,cli:2,gaming:1,light:1,beauty:1}}
+    tags_fr:['⚡ Optimisé compilateur Intel','🚀 Meilleurs benchmarks','🔩 Design sans état'],
+    desc:'Intel\'s own distribution, compiled with aggressive AVX-512 optimisations. Benchmarks consistently show it as the fastest Linux distro on x86 hardware.',
+    desc_fr:'La propre distribution d\'Intel, compilée avec des optimisations AVX-512 agressives. Les benchmarks la montrent constamment comme la distro la plus rapide sur x86.',
+    defaultDE:'gnome', deLabel:'GNOME',
+    p:{ease:1,stable:1,rolling:2,perf:3,priv:1,custom:2,cli:2,gaming:1,light:1,beauty:1}
+  }
 };
 
 const ALIASES = {
@@ -644,6 +977,7 @@ function matchDistro(raw) {
   }
   return null;
 }
+
 function lev(a,b) {
   const m=a.length, n=b.length;
   const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i||j));
@@ -655,189 +989,190 @@ function lev(a,b) {
 const QS = [
   {id:1, text:"What's your experience with Linux?", hasTried:true,
    opts:[
-    {l:'A',i:'🌱',m:'Never used it',          s:'Complete beginner — first time',   v:{ease:3,light:1},    sig:['beginner','noTerminal','wantsEase']},
+    {l:'A',i:'🌱',m:'Never used it', s:'Complete beginner — first time', v:{ease:3,light:1}, sig:['beginner','noTerminal','wantsEase']},
    ]},
   {id:2, text:"What matters most in your ideal OS?",
    opts:[
-    {l:'A',i:'😌',m:'Just works out of the box',s:'Zero config, ready immediately',  v:{ease:3},            sig:['wantsEase','configNone']},
-    {l:'B',i:'🏔️',m:'Absolute stability',      s:'Never breaks, LTS forever',        v:{stable:3},          sig:['wantsStable']},
-    {l:'C',i:'🚀',m:'Raw performance',          s:'Squeeze every CPU cycle',          v:{perf:3},            sig:['wantsPerf']},
-    {l:'D',i:'🎨',m:'Full customisation',       s:'My system, my rules',              v:{custom:3},          sig:['wantsCustom']},
+    {l:'A',i:'😌',m:'Just works out of the box', s:'Zero config, ready immediately', v:{ease:3}, sig:['wantsEase','configNone']},
+    {l:'B',i:'🏔️',m:'Absolute stability', s:'Never breaks, LTS forever', v:{stable:3}, sig:['wantsStable']},
+    {l:'C',i:'🚀',m:'Raw performance', s:'Squeeze every CPU cycle', v:{perf:3}, sig:['wantsPerf']},
+    {l:'D',i:'🎨',m:'Full customisation', s:'My system, my rules', v:{custom:3}, sig:['wantsCustom']},
    ]},
   {id:3, text:"How do you feel about the terminal?",
    opts:[
-    {l:'A',i:'😰',m:'Please, no.',              s:'GUI all the way, always',          v:{ease:2},            sig:['noTerminal']},
-    {l:'B',i:'🤷',m:'I use it when forced',     s:'Only when there\'s no other way',  v:{ease:1,cli:1},      sig:['someTerminal']},
-    {l:'C',i:'😄',m:'I like it',                s:'Comfortable with bash & co.',      v:{cli:2,custom:1},    sig:['likeTerminal']},
-    {l:'D',i:'🖤',m:'I live in it',             s:'tmux, neovim, zsh — home.',        v:{cli:3,custom:2},    sig:['liveTerminal','wantsCustom']},
+    {l:'A',i:'😰',m:'Please, no.', s:'GUI all the way, always', v:{ease:2}, sig:['noTerminal']},
+    {l:'B',i:'🤷',m:'I use it when forced', s:'Only when there\'s no other way', v:{ease:1,cli:1}, sig:['someTerminal']},
+    {l:'C',i:'😄',m:'I like it', s:'Comfortable with bash & co.', v:{cli:2,custom:1}, sig:['likeTerminal']},
+    {l:'D',i:'🖤',m:'I live in it', s:'tmux, neovim, zsh — home.', v:{cli:3,custom:2}, sig:['liveTerminal','wantsCustom']},
    ]},
   {id:4, text:"What's your main use case?",
    opts:[
-    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office',       v:{ease:2,beauty:1},   sig:['dailyUse','wantsEase']},
-    {l:'B',i:'💼',m:'Dev / work productivity',  s:'Code, containers, servers',        v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
-    {l:'C',i:'🎮',m:'Gaming & high FPS',        s:'Steam, Proton, latest GPU',        v:{gaming:3,perf:2},   sig:['gaming','wantsPerf']},
-    {l:'D',i:'🔐',m:'Security & privacy',       s:'Pentest, anonymity, CTF',          v:{priv:3,cli:2},      sig:['security','wantsPrivacy','likeTerminal']},
+    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office', v:{ease:2,beauty:1}, sig:['dailyUse','wantsEase']},
+    {l:'B',i:'💼',m:'Dev / work productivity', s:'Code, containers, servers', v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
+    {l:'C',i:'🎮',m:'Gaming & high FPS', s:'Steam, Proton, latest GPU', v:{gaming:3,perf:2}, sig:['gaming','wantsPerf']},
+    {l:'D',i:'🔐',m:'Security & privacy', s:'Pentest, anonymity, CTF', v:{priv:3,cli:2}, sig:['security','wantsPrivacy','likeTerminal']},
    ]},
   {id:5, text:"How do you want updates delivered?",
    opts:[
-    {l:'A',i:'🐢',m:'Rare & tested',            s:'Update once a year is enough',     v:{stable:3},          sig:['wantsStable','wantsStableRelease']},
-    {l:'B',i:'📅',m:'Regular point releases',   s:'Every 6–12 months is perfect',     v:{stable:2,ease:1},   sig:['wantsStableRelease']},
-    {l:'C',i:'🔄',m:'Rolling release',          s:'Always have the latest packages',  v:{rolling:3,perf:1},  sig:['wantsRolling']},
-    {l:'D',i:'🩸',m:'Bleeding edge',            s:'I want it before it\'s stable',    v:{rolling:3,perf:2,custom:2}, sig:['wantsRolling','wantsPerf','advanced']},
+    {l:'A',i:'🐢',m:'Rare & tested', s:'Update once a year is enough', v:{stable:3}, sig:['wantsStable','wantsStableRelease']},
+    {l:'B',i:'📅',m:'Regular point releases', s:'Every 6–12 months is perfect', v:{stable:2,ease:1}, sig:['wantsStableRelease']},
+    {l:'C',i:'🔄',m:'Rolling release', s:'Always have the latest packages', v:{rolling:3,perf:1}, sig:['wantsRolling']},
+    {l:'D',i:'🩸',m:'Bleeding edge', s:'I want it before it\'s stable', v:{rolling:3,perf:2,custom:2}, sig:['wantsRolling','wantsPerf','advanced']},
    ]},
   {id:6, text:"How powerful is your machine?",
    opts:[
-    {l:'A',i:'💾',m:'Old / low-end',            s:'Under 4 GB RAM, old CPU',          v:{light:3},           sig:['oldHardware']},
-    {l:'B',i:'💻',m:'Average laptop',           s:'4–8 GB RAM, dual core',            v:{light:1,ease:1},    sig:[]},
-    {l:'C',i:'🖥️',m:'Decent desktop',          s:'8–16 GB RAM, recent CPU',          v:{perf:1,custom:1},   sig:['goodHardware']},
-    {l:'D',i:'🚀',m:'High-end enthusiast rig',  s:'32 GB+ RAM, top-tier GPU',         v:{perf:2,gaming:1,beauty:1}, sig:['highEndHardware','gaming']},
+    {l:'A',i:'💾',m:'Old / low-end', s:'Under 4 GB RAM, old CPU', v:{light:3}, sig:['oldHardware']},
+    {l:'B',i:'💻',m:'Average laptop', s:'4–8 GB RAM, dual core', v:{light:1,ease:1}, sig:[]},
+    {l:'C',i:'🖥️',m:'Decent desktop', s:'8–16 GB RAM, recent CPU', v:{perf:1,custom:1}, sig:['goodHardware']},
+    {l:'D',i:'🚀',m:'High-end enthusiast rig', s:'32 GB+ RAM, top-tier GPU', v:{perf:2,gaming:1,beauty:1}, sig:['highEndHardware','gaming']},
    ]},
   {id:7, text:"Which desktop style speaks to you?",
    opts:[
-    {l:'A',isDE:true,deKey:'gnome', ico:'gnome', m:'GNOME',    s:'Clean, modern, touch-friendly',    v:{ease:2,beauty:2},    sig:['wantsGnome']},
-    {l:'B',isDE:true,deKey:'kde',    ico:'kde',   m:'KDE Plasma',s:'Highly customisable, feature-rich',v:{custom:2,beauty:2,perf:1}, sig:['wantsKde','wantsCustom']},
-    {l:'C',isDE:true,deKey:'tiling', ico:'tiling',m:'Tiling WM', s:'i3, Hyprland, Sway — keyboard-first',v:{custom:3,cli:2,perf:1},sig:['wantsTiling','liveTerminal','wantsCustom']},
-    {l:'D',isDE:true,deKey:'xfce',   ico:'xfce',  m:'Lightweight DE',s:'XFCE / LXDE — fast on any HW',v:{light:3,ease:1},    sig:['wantsLight','oldHardware']},
+    {l:'A',isDE:true,deKey:'gnome',ico:'gnome',m:'GNOME',s:'Clean, modern, touch-friendly',v:{ease:2,beauty:2},sig:['wantsGnome']},
+    {l:'B',isDE:true,deKey:'kde',ico:'kde',m:'KDE Plasma',s:'Highly customisable, feature-rich',v:{custom:2,beauty:2,perf:1},sig:['wantsKde','wantsCustom']},
+    {l:'C',isDE:true,deKey:'tiling',ico:'tiling',m:'Tiling WM',s:'i3, Hyprland, Sway — keyboard-first',v:{custom:3,cli:2,perf:1},sig:['wantsTiling','liveTerminal','wantsCustom']},
+    {l:'D',isDE:true,deKey:'xfce',ico:'xfce',m:'Lightweight DE',s:'XFCE / LXDE — fast on any HW',v:{light:3,ease:1},sig:['wantsLight','oldHardware']},
    ]},
   {id:8, text:"How important is privacy to you?",
    opts:[
-    {l:'A',i:'😐',m:'Not really',               s:'I use Google & Windows anyway',    v:{ease:1},            sig:['privacyNone']},
-    {l:'B',i:'🔒',m:'Somewhat',                 s:'I use a VPN sometimes',            v:{priv:1},            sig:['privacyLow']},
-    {l:'C',i:'🛡️',m:'Very important',          s:'FOSS only, no telemetry',          v:{priv:2},            sig:['privacyMed','wantsPrivacy']},
-    {l:'D',i:'👻',m:'Critical — anonymity first',s:'Leave zero trace online',         v:{priv:3,cli:1},      sig:['privacyHigh','wantsPrivacy','security']},
+    {l:'A',i:'😐',m:'Not really', s:'I use Google & Windows anyway', v:{ease:1}, sig:['privacyNone']},
+    {l:'B',i:'🔒',m:'Somewhat', s:'I use a VPN sometimes', v:{priv:1}, sig:['privacyLow']},
+    {l:'C',i:'🛡️',m:'Very important', s:'FOSS only, no telemetry', v:{priv:2}, sig:['privacyMed','wantsPrivacy']},
+    {l:'D',i:'👻',m:'Critical — anonymity first', s:'Leave zero trace online', v:{priv:3,cli:1}, sig:['privacyHigh','wantsPrivacy','security']},
    ]},
   {id:9, text:"How much time will you invest in setup?",
    opts:[
-    {l:'A',i:'⚡',m:'Zero — boot and go',        s:'If I configure, I quit',          v:{ease:3},            sig:['configNone','wantsEase']},
-    {l:'B',i:'☕',m:'A couple of hours',         s:'Basic tweaks and done',           v:{ease:1,custom:1},   sig:['configLittle']},
-    {l:'C',i:'🌙',m:'A whole weekend',           s:'I want it exactly right',         v:{custom:2,cli:1},    sig:['configMore']},
-    {l:'D',i:'∞', m:'As long as it takes',       s:'Configuring IS the hobby',        v:{custom:3,cli:3},    sig:['configLot','wantsCustom','liveTerminal']},
+    {l:'A',i:'⚡',m:'Zero — boot and go', s:'If I configure, I quit', v:{ease:3}, sig:['configNone','wantsEase']},
+    {l:'B',i:'☕',m:'A couple of hours', s:'Basic tweaks and done', v:{ease:1,custom:1}, sig:['configLittle']},
+    {l:'C',i:'🌙',m:'A whole weekend', s:'I want it exactly right', v:{custom:2,cli:1}, sig:['configMore']},
+    {l:'D',i:'∞',m:'As long as it takes', s:'Configuring IS the hobby', v:{custom:3,cli:3}, sig:['configLot','wantsCustom','liveTerminal']},
    ]},
   {id:10,text:"What's your philosophy on software freedom?",
    opts:[
-    {l:'A',i:'🔓',m:'FOSS only — no proprietary code', s:'I want a fully free system', v:{priv:2, custom:1}, sig:['freedomPurist','privacyMed']},
-    {l:'B',i:'🔄',m:'Open source, but pragmatic', s:'Happy to use NVIDIA drivers, Steam, etc.', v:{ease:1, gaming:1}, sig:['intermediate','pragmatic']},
+    {l:'A',i:'🔓',m:'FOSS only — no proprietary code', s:'I want a fully free system', v:{priv:2,custom:1}, sig:['freedomPurist','privacyMed']},
+    {l:'B',i:'🔄',m:'Open source, but pragmatic', s:'Happy to use NVIDIA drivers, Steam, etc.', v:{ease:1,gaming:1}, sig:['intermediate','pragmatic']},
     {l:'C',i:'💼',m:'I don\'t care as long as it works', s:'Proprietary or open — just get it done', v:{ease:2}, sig:['beginner','privacyNone']},
-    {l:'D',i:'🚫',m:'Avoid blobs, prefer community', s:'Debian main, no non-free', v:{priv:2, custom:2}, sig:['privacyMed','advanced']},
+    {l:'D',i:'🚫',m:'Avoid blobs, prefer community', s:'Debian main, no non-free', v:{priv:2,custom:2}, sig:['privacyMed','advanced']},
    ]},
   {id:11,text:"How important is out-of-the-box hardware support?",
    opts:[
     {l:'A',i:'🔌',m:'Essential — everything works immediately', s:'Wi‑Fi, GPU, printers — no tinkering', v:{ease:3}, sig:['wantsEase','beginner']},
-    {l:'B',i:'🔧',m:'I can tweak a few things',                 s:'Happy to run a script or two',      v:{ease:1, custom:1}, sig:['intermediate','configLittle']},
-    {l:'C',i:'📟',m:'I\'m okay with manual driver installs',     s:'Terminal doesn\'t scare me',        v:{cli:1, custom:2}, sig:['advanced','likeTerminal']},
-    {l:'D',i:'⚙️',m:'I\'ll compile my own kernel',              s:'Total control over hardware',        v:{custom:3, cli:3, perf:1}, sig:['poweruser','liveTerminal','wantsCustom']},
+    {l:'B',i:'🔧',m:'I can tweak a few things', s:'Happy to run a script or two', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
+    {l:'C',i:'📟',m:'I\'m okay with manual driver installs', s:'Terminal doesn\'t scare me', v:{cli:1,custom:2}, sig:['advanced','likeTerminal']},
+    {l:'D',i:'⚙️',m:'I\'ll compile my own kernel', s:'Total control over hardware', v:{custom:3,cli:3,perf:1}, sig:['poweruser','liveTerminal','wantsCustom']},
    ]},
   {id:12,text:"How do you install software?",
    opts:[
-    {l:'A',i:'🏪',m:'App store / GUI only',      s:'Click install, done',             v:{ease:3},            sig:['wantsEase','noTerminal','beginner']},
-    {l:'B',i:'📦',m:'Package manager in terminal',s:'apt, dnf, pacman — no problem',  v:{cli:2,custom:1},    sig:['someTerminal','likeTerminal','intermediate']},
-    {l:'C',i:'🔨',m:'Compile from source',       s:'I read Makefiles for fun',        v:{perf:2,custom:3,cli:3},sig:['poweruser','liveTerminal','wantsCustom']},
-    {l:'D',i:'📦',m:'Flatpak / Snap / AppImage', s:'Universal packages please',       v:{ease:2,stable:1},   sig:['beginner','intermediate','wantsEase']},
+    {l:'A',i:'🏪',m:'App store / GUI only', s:'Click install, done', v:{ease:3}, sig:['wantsEase','noTerminal','beginner']},
+    {l:'B',i:'📦',m:'Package manager in terminal', s:'apt, dnf, pacman — no problem', v:{cli:2,custom:1}, sig:['someTerminal','likeTerminal','intermediate']},
+    {l:'C',i:'🔨',m:'Compile from source', s:'I read Makefiles for fun', v:{perf:2,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
+    {l:'D',i:'📦',m:'Flatpak / Snap / AppImage', s:'Universal packages please', v:{ease:2,stable:1}, sig:['beginner','intermediate','wantsEase']},
    ]},
   {id:13,text:"What's your relationship with system crashes?",
    opts:[
-    {l:'A',i:'😱',m:'One crash and I\'m switching back',s:'Stability is non-negotiable',v:{stable:3,ease:1},sig:['fearBreaking','wantsStable','beginner']},
-    {l:'B',i:'😤',m:'Annoying but I fix it',     s:'I can handle occasional issues',  v:{stable:1,cli:1},    sig:['intermediate','someTerminal']},
-    {l:'C',i:'🤓',m:'Opportunity to learn',      s:'Debugging is half the fun',       v:{cli:2,custom:2},    sig:['advanced','likeTerminal','fearBoring']},
-    {l:'D',i:'😈',m:'I caused it on purpose',    s:'Rolling back snapshots is fun',   v:{rolling:1,custom:3,cli:3},sig:['poweruser','liveTerminal','wantsCustom']},
+    {l:'A',i:'😱',m:'One crash and I\'m switching back', s:'Stability is non-negotiable', v:{stable:3,ease:1}, sig:['fearBreaking','wantsStable','beginner']},
+    {l:'B',i:'😤',m:'Annoying but I fix it', s:'I can handle occasional issues', v:{stable:1,cli:1}, sig:['intermediate','someTerminal']},
+    {l:'C',i:'🤓',m:'Opportunity to learn', s:'Debugging is half the fun', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','fearBoring']},
+    {l:'D',i:'😈',m:'I caused it on purpose', s:'Rolling back snapshots is fun', v:{rolling:1,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
    ]},
   {id:14,text:"Pick your ideal weekend Linux activity:",
    opts:[
-    {l:'A',i:'🎬',m:'Watch videos, browse the web',s:'Just use it normally',          v:{ease:2},            sig:['beginner','dailyUse','wantsEase']},
-    {l:'B',i:'🎮',m:'Game on Steam / Proton',      s:'Making games work on Linux',    v:{gaming:3,perf:1},   sig:['gaming','intermediate']},
-    {l:'C',i:'🎨',m:'Rice my desktop for hours',   s:'Make it look perfect',          v:{custom:3,beauty:2}, sig:['advanced','wantsCustom','fearBoring']},
-    {l:'D',i:'🔬',m:'Read docs and configure',     s:'Deep-dive into config files',   v:{cli:2,custom:2},    sig:['advanced','poweruser','configLot','liveTerminal']},
+    {l:'A',i:'🎬',m:'Watch videos, browse the web', s:'Just use it normally', v:{ease:2}, sig:['beginner','dailyUse','wantsEase']},
+    {l:'B',i:'🎮',m:'Game on Steam / Proton', s:'Making games work on Linux', v:{gaming:3,perf:1}, sig:['gaming','intermediate']},
+    {l:'C',i:'🎨',m:'Rice my desktop for hours', s:'Make it look perfect', v:{custom:3,beauty:2}, sig:['advanced','wantsCustom','fearBoring']},
+    {l:'D',i:'🔬',m:'Read docs and configure', s:'Deep-dive into config files', v:{cli:2,custom:2}, sig:['advanced','poweruser','configLot','liveTerminal']},
    ]},
   {id:15,text:"How do you feel about system customisation via config files?",
    opts:[
-    {l:'A',i:'🚫',m:'I never touch configs',              s:'GUI settings are enough',  v:{ease:2},            sig:['beginner','configNone']},
+    {l:'A',i:'🚫',m:'I never touch configs', s:'GUI settings are enough', v:{ease:2}, sig:['beginner','configNone']},
     {l:'B',i:'🖱️',m:'I edit some settings with GUI tools', s:'A few tweaks in a settings app', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
-    {l:'C',i:'📝',m:'I enjoy tweaking config files',      s:'vim /etc/... is second nature',  v:{cli:2,custom:2}, sig:['advanced','likeTerminal','configMore']},
+    {l:'C',i:'📝',m:'I enjoy tweaking config files', s:'vim /etc/... is second nature', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','configMore']},
     {l:'D',i:'📄',m:'I manage my entire OS declaratively', s:'Nix, Ansible, or dotfiles repos', v:{cli:3,custom:3}, sig:['poweruser','configLot','liveTerminal','wantsCustom']},
    ]},
   {id:16,text:"How do you feel about reading documentation?",
    opts:[
-    {l:'A',i:'😅',m:'YouTube tutorials only',       s:'Videos are easier for me',     v:{ease:2},            sig:['beginner','wantsEase']},
-    {l:'B',i:'🌐',m:'Google it when stuck',         s:'Forums and Reddit are fine',   v:{ease:1,stable:1},   sig:['intermediate']},
-    {l:'C',i:'🤖',m:'I use AI',                     s:'ChatGPT / Claude solves it',   v:{ease:3,cli:-1},     sig:['beginner','noTerminal'], popup:true},
-    {l:'D',i:'📚',m:'I read the whole wiki',        s:'Arch Wiki is my homepage',     v:{cli:2,custom:2},    sig:['poweruser','liveTerminal','configLot']},
+    {l:'A',i:'😅',m:'YouTube tutorials only', s:'Videos are easier for me', v:{ease:2}, sig:['beginner','wantsEase']},
+    {l:'B',i:'🌐',m:'Google it when stuck', s:'Forums and Reddit are fine', v:{ease:1,stable:1}, sig:['intermediate']},
+    {l:'C',i:'🤖',m:'I use AI', s:'ChatGPT / Claude solves it', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
+    {l:'D',i:'📚',m:'I read the whole wiki', s:'Arch Wiki is my homepage', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal','configLot']},
   ]},
   {id:17,text:"What would make you switch distros?",
    opts:[
-    {l:'A',i:'💥',m:'One bad update that breaks things',s:'Stability is everything', v:{stable:3},           sig:['fearBreaking','wantsStable']},
-    {l:'B',i:'🐌',m:'It starts feeling slow',        s:'Performance matters to me',  v:{perf:2,rolling:1},  sig:['wantsPerf','fearOutdated']},
-    {l:'C',i:'🔄',m:'I just wanted something new',    s:'No complaints, just exploring', v:{rolling:2,custom:1}, sig:['fearBoring','wantsRolling']},
-    {l:'D',i:'😒',m:'Lack of customisation',         s:'I need full control',        v:{custom:2,cli:1},    sig:['fearBoring','wantsCustom']},
+    {l:'A',i:'💥',m:'One bad update that breaks things', s:'Stability is everything', v:{stable:3}, sig:['fearBreaking','wantsStable']},
+    {l:'B',i:'🐌',m:'It starts feeling slow', s:'Performance matters to me', v:{perf:2,rolling:1}, sig:['wantsPerf','fearOutdated']},
+    {l:'C',i:'🔄',m:'I just wanted something new', s:'No complaints, just exploring', v:{rolling:2,custom:1}, sig:['fearBoring','wantsRolling']},
+    {l:'D',i:'😒',m:'Lack of customisation', s:'I need full control', v:{custom:2,cli:1}, sig:['fearBoring','wantsCustom']},
    ]},
-     {id:18,text:"What kind of community and support matters most?",
+  {id:18,text:"What kind of community and support matters most?",
    opts:[
-    {l:'A',i:'🤖',m:'I use AI',                           s:'ChatGPT fixes everything',            v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
-    {l:'B',i:'🔍',m:'As long as I find my problem',       s:'Any source that works',               v:{ease:1,cli:1}, sig:['intermediate']},
-    {l:'C',i:'👥',m:'Active but smaller, expert community', s:'IRC, mailing lists — deep knowledge', v:{custom:2, priv:1}, sig:['advanced','wantsCustom']},
-    {l:'D',i:'🔧',m:'I solve my own problems',             s:'Debug without external help',         v:{cli:2, custom:2}, sig:['poweruser','liveTerminal']},
+    {l:'A',i:'🤖',m:'I use AI', s:'ChatGPT fixes everything', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
+    {l:'B',i:'🔍',m:'As long as I find my problem', s:'Any source that works', v:{ease:1,cli:1}, sig:['intermediate']},
+    {l:'C',i:'👥',m:'Active but smaller, expert community', s:'IRC, mailing lists — deep knowledge', v:{custom:2,priv:1}, sig:['advanced','wantsCustom']},
+    {l:'D',i:'🔧',m:'I solve my own problems', s:'Debug without external help', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal']},
    ]},
   {id:19,text:"How do you want your system configured out of the box?",
    opts:[
-    {l:'A',i:'✨',m:'Fully pre-configured',         s:'Everything works immediately',  v:{ease:3,beauty:1},   sig:['beginner','wantsEase','configNone']},
-    {l:'B',i:'🧰',m:'Sensible defaults, tweakable', s:'Some setup, nothing scary',     v:{ease:1,custom:1},   sig:['intermediate','configLittle']},
-    {l:'C',i:'🔧',m:'Minimal base, I build up',     s:'Start bare, add what I want',   v:{custom:2,cli:2},    sig:['advanced','configMore','wantsCustom']},
-    {l:'D',i:'📄',m:'A config file defines it all', s:'Declarative, reproducible',     v:{custom:3,cli:3},    sig:['poweruser','configLot','liveTerminal']},
+    {l:'A',i:'✨',m:'Fully pre-configured', s:'Everything works immediately', v:{ease:3,beauty:1}, sig:['beginner','wantsEase','configNone']},
+    {l:'B',i:'🧰',m:'Sensible defaults, tweakable', s:'Some setup, nothing scary', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
+    {l:'C',i:'🔧',m:'Minimal base, I build up', s:'Start bare, add what I want', v:{custom:2,cli:2}, sig:['advanced','configMore','wantsCustom']},
+    {l:'D',i:'📄',m:'A config file defines it all', s:'Declarative, reproducible', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']},
    ]},
   {id:20,text:"How do you approach system security?",
    opts:[
-    {l:'A',i:'🔓',m:'I trust the OS defaults',                 s:'Whatever comes out of the box',  v:{ease:1},            sig:['privacyNone']},
-    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense',      v:{priv:1, stable:1},   sig:['privacyLow','intermediate']},
-    {l:'C',i:'🔒',m:'I harden my system and disable services',  s:'Kernel hardening, apparmor/selinux', v:{priv:2, custom:2, cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
-    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs',    v:{priv:3, custom:3, cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
+    {l:'A',i:'🔓',m:'I trust the OS defaults', s:'Whatever comes out of the box', v:{ease:1}, sig:['privacyNone']},
+    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense', v:{priv:1,stable:1}, sig:['privacyLow','intermediate']},
+    {l:'C',i:'🔒',m:'I harden my system and disable services', s:'Kernel hardening, apparmor/selinux', v:{priv:2,custom:2,cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
+    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs', v:{priv:3,custom:3,cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
    ]},
   {id:21,text:"How important is corporate backing?",
    opts:[
-    {l:'A',i:'🏢',m:'I want a company behind it',   s:'Enterprise support & funding',  v:{stable:2,ease:1},   sig:['wantsStable','intermediate']},
-    {l:'B',i:'🤷',m:'Doesn\'t matter much',         s:'Community or corp, both fine',  v:{custom:1},          sig:[]},
-    {l:'C',i:'🌍',m:'Community-driven only',        s:'No corporate influence',        v:{priv:1,custom:2},   sig:['privacyMed','wantsCustom']},
-    {l:'D',i:'🚫',m:'Actively avoid big tech',      s:'Independence is crucial',       v:{priv:2,custom:2},   sig:['privacyHigh','wantsPrivacy']},
+    {l:'A',i:'🏢',m:'I want a company behind it', s:'Enterprise support & funding', v:{stable:2,ease:1}, sig:['wantsStable','intermediate']},
+    {l:'B',i:'🤷',m:'Doesn\'t matter much', s:'Community or corp, both fine', v:{custom:1}, sig:[]},
+    {l:'C',i:'🌍',m:'Community-driven only', s:'No corporate influence', v:{priv:1,custom:2}, sig:['privacyMed','wantsCustom']},
+    {l:'D',i:'🚫',m:'Actively avoid big tech', s:'Independence is crucial', v:{priv:2,custom:2}, sig:['privacyHigh','wantsPrivacy']},
    ]},
   {id:22,text:"How important is visual polish to you?",
    opts:[
-    {l:'A',i:'🖥️',m:'Function over form',            s:'I don\'t care how it looks',            v:{ease:1},            sig:['pragmatic']},
-    {l:'B',i:'✨',m:'Nice defaults are appreciated',  s:'I like it to look good out of the box', v:{beauty:2,ease:1},   sig:['intermediate','dailyUse']},
-    {l:'C',i:'🎨',m:'I spend hours ricing',           s:'Custom themes, icons, everything',      v:{beauty:3,custom:2,cli:1}, sig:['advanced','wantsCustom','fearBoring']},
-    {l:'D',i:'💎',m:'Visuals are a dealbreaker',      s:'If it\'s ugly, I won\'t use it',        v:{beauty:3,ease:1},   sig:['wantsEase','dailyUse']},
+    {l:'A',i:'🖥️',m:'Function over form', s:'I don\'t care how it looks', v:{ease:1}, sig:['pragmatic']},
+    {l:'B',i:'✨',m:'Nice defaults are appreciated', s:'I like it to look good out of the box', v:{beauty:2,ease:1}, sig:['intermediate','dailyUse']},
+    {l:'C',i:'🎨',m:'I spend hours ricing', s:'Custom themes, icons, everything', v:{beauty:3,custom:2,cli:1}, sig:['advanced','wantsCustom','fearBoring']},
+    {l:'D',i:'💎',m:'Visuals are a dealbreaker', s:'If it\'s ugly, I won\'t use it', v:{beauty:3,ease:1}, sig:['wantsEase','dailyUse']},
    ]},
   {id:23,text:"What kind of default apps do you prefer?",
    opts:[
-    {l:'A',i:'📦',m:'Full suite included',          s:'Office, browser, media player out of the box',v:{ease:3},sig:['beginner','wantsEase','configNone']},
-    {l:'B',i:'🎯',m:'Curated essentials',           s:'Only the best, pre-selected',   v:{ease:2,beauty:1},   sig:['intermediate','dailyUse']},
-    {l:'C',i:'🔧',m:'Minimal — I choose my own',    s:'Bare system, install what I need',v:{custom:2,cli:1}, sig:['advanced','configMore','wantsCustom']},
-    {l:'D',i:'☁️',m:'Web apps over native',         s:'Browser-based workflow',        v:{light:2,ease:2},    sig:['beginner','dailyUse']},
+    {l:'A',i:'📦',m:'Full suite included', s:'Office, browser, media player out of the box', v:{ease:3}, sig:['beginner','wantsEase','configNone']},
+    {l:'B',i:'🎯',m:'Curated essentials', s:'Only the best, pre-selected', v:{ease:2,beauty:1}, sig:['intermediate','dailyUse']},
+    {l:'C',i:'🔧',m:'Minimal — I choose my own', s:'Bare system, install what I need', v:{custom:2,cli:1}, sig:['advanced','configMore','wantsCustom']},
+    {l:'D',i:'☁️',m:'Web apps over native', s:'Browser-based workflow', v:{light:2,ease:2}, sig:['beginner','dailyUse']},
    ]},
   {id:24,text:"How do you feel about systemd?",
    opts:[
-    {l:'A',i:'🤷',m:'What\'s systemd?',             s:'I don\'t know or care',         v:{ease:2},            sig:['beginner','wantsEase']},
-    {l:'B',i:'👍',m:'It works fine for me',         s:'Modern init, no complaints',    v:{stable:1,ease:1},   sig:['intermediate']},
-    {l:'C',i:'🤔',m:'I\'ve heard the debates',      s:'Curious about alternatives',    v:{custom:1,cli:1},    sig:['advanced','wantsCustom']},
-    {l:'D',i:'🚫',m:'Actively avoid it',            s:'runit, OpenRC, or s6 please',  v:{custom:3,cli:2,priv:1},sig:['poweruser','liveTerminal','wantsPrivacy']},
+    {l:'A',i:'🤷',m:'What\'s systemd?', s:'I don\'t know or care', v:{ease:2}, sig:['beginner','wantsEase']},
+    {l:'B',i:'👍',m:'It works fine for me', s:'Modern init, no complaints', v:{stable:1,ease:1}, sig:['intermediate']},
+    {l:'C',i:'🤔',m:'I\'ve heard the debates', s:'Curious about alternatives', v:{custom:1,cli:1}, sig:['advanced','wantsCustom']},
+    {l:'D',i:'🚫',m:'Actively avoid it', s:'runit, OpenRC, or s6 please', v:{custom:3,cli:2,priv:1}, sig:['poweruser','liveTerminal','wantsPrivacy']},
    ]},
   {id:25,text:"What's your long-term plan with Linux?",
    opts:[
-    {l:'A',i:'🎯',m:'Find one distro and stay',     s:'Settle down, stop distro-hopping',v:{stable:2,ease:1}, sig:['wantsStable','fearBreaking','intermediate']},
-    {l:'B',i:'🌱',m:'Keep learning and evolving',   s:'Grow into more advanced distros',v:{custom:2,cli:1},  sig:['advanced','configMore','fearBoring']},
-    {l:'C',i:'🔬',m:'Experiment constantly',        s:'Try everything, chase the new', v:{rolling:2,custom:2},sig:['poweruser','wantsRolling','fearOutdated']},
-    {l:'D',i:'🏠',m:'Build my own eventually',      s:'LFS, Gentoo, or custom derivative',v:{custom:3,cli:3},sig:['poweruser','configLot','liveTerminal']},
+    {l:'A',i:'🎯',m:'Find one distro and stay', s:'Settle down, stop distro-hopping', v:{stable:2,ease:1}, sig:['wantsStable','fearBreaking','intermediate']},
+    {l:'B',i:'🌱',m:'Keep learning and evolving', s:'Grow into more advanced distros', v:{custom:2,cli:1}, sig:['advanced','configMore','fearBoring']},
+    {l:'C',i:'🔬',m:'Experiment constantly', s:'Try everything, chase the new', v:{rolling:2,custom:2}, sig:['poweruser','wantsRolling','fearOutdated']},
+    {l:'D',i:'🏠',m:'Build my own eventually', s:'LFS, Gentoo, or custom derivative', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']},
    ]}
 ];
 
 const LIKE_OPTS = [
-  {l:'A',i:'😌',m:'Ease of use & setup',   s:'It just worked without effort',    v:{ease:2},            sig:['wantsEase']},
-  {l:'B',i:'🎨',m:'Visual design / looks', s:'Loved the desktop environment',    v:{beauty:2},          sig:[]},
-  {l:'C',i:'🚀',m:'Speed & performance',   s:'Felt fast and responsive',         v:{perf:2},            sig:['wantsPerf']},
-  {l:'D',i:'📦',m:'Software availability', s:'Could find everything I needed',   v:{ease:1,stable:1},   sig:[]}
+  {l:'A',i:'😌',m:'Ease of use & setup', s:'It just worked without effort', v:{ease:2}, sig:['wantsEase']},
+  {l:'B',i:'🎨',m:'Visual design / looks', s:'Loved the desktop environment', v:{beauty:2}, sig:[]},
+  {l:'C',i:'🚀',m:'Speed & performance', s:'Felt fast and responsive', v:{perf:2}, sig:['wantsPerf']},
+  {l:'D',i:'📦',m:'Software availability', s:'Could find everything I needed', v:{ease:1,stable:1}, sig:[]}
 ];
+
 const DISLIKE_OPTS = [
-  {l:'A',i:'💥',m:'It broke after updates', s:'Updates caused crashes',          v:{stable:3},          sig:['wantsStable','fearBreaking']},
-  {l:'B',i:'🐢',m:'Too slow / outdated',    s:'Software felt old or sluggish',   v:{rolling:2,perf:2},  sig:['wantsRolling','fearOutdated']},
+  {l:'A',i:'💥',m:'It broke after updates', s:'Updates caused crashes', v:{stable:3}, sig:['wantsStable','fearBreaking']},
+  {l:'B',i:'🐢',m:'Too slow / outdated', s:'Software felt old or sluggish', v:{rolling:2,perf:2}, sig:['wantsRolling','fearOutdated']},
   {l:'C',i:'🔄',m:'I just wanted something new', s:'No complaints, just exploring', v:{rolling:1,custom:1}, sig:['fearBoring','wantsRolling']},
-  {l:'D',i:'🔒',m:'Privacy concerns',       s:'Too much telemetry or tracking',  v:{priv:2},            sig:['privacyMed','wantsPrivacy']}
+  {l:'D',i:'🔒',m:'Privacy concerns', s:'Too much telemetry or tracking', v:{priv:2}, sig:['privacyMed','wantsPrivacy']}
 ];
 
 const DISTRO_SIGNALS = {
@@ -986,6 +1321,7 @@ function swap(html) {
 }
 
 function updateProgress() {
+  document.getElementById('progLabel').textContent = t('progress');
   const total = QS.length;
   const done = mainAnswered;
   const pct = Math.round((done / total) * 100);
@@ -996,23 +1332,29 @@ function updateProgress() {
 function showStart() {
   document.getElementById('brand').style.display = '';
   document.getElementById('progWrap').style.display = 'none';
+  document.querySelector('.brand h1').textContent = t('tagline');
+  document.querySelector('.brand p').textContent = t('subtitle');
+  document.getElementById('footerText').textContent = t('footer');
+  document.getElementById('settingsThemeLabel').textContent = t('settingsTheme');
+  document.getElementById('settingsLangLabel').textContent = t('settingsLang');
+  document.getElementById('progLabel').textContent = t('progress');
   const stripHTML = Object.entries(DB).map(([k,d]) =>
-    `<span class="strip-item" onclick="event.stopPropagation();showDistroDetail('${k}')" title="${d.name}">
-      <img src="${d.logo}" alt="${d.name}" width="32" height="32"
+    `<span class="strip-item" onclick="event.stopPropagation();showDistroDetail('${k}')" title="${dname(d)}">
+      <img src="${d.logo}" alt="${dname(d)}" width="32" height="32"
         onerror="this.onerror=null;this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2210%22 fill=%22%23222%22/><text x=%2250%22 y=%2265%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2240%22>🐧</text></svg>';this.style.opacity='0.7'">
-      <span class="strip-name">${d.name}</span>
+      <span class="strip-name">${dname(d)}</span>
     </span>`
   ).join('');
 
   $card().innerHTML = `
     <div class="screen start">
       <div class="hero">🐧</div>
-      <h2>Which Linux Distro<br>is Right for You?</h2>
-      <p>Answer 25 smart questions and we'll match you with one of 25 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.</p>
-      <div class="badge">✦ 25 distros · 25 questions · your perfect match</div>
+      <h2>${t('tagline')}</h2>
+      <p>${t('startDesc')}</p>
+      <div class="badge">${t('badge')}</div>
       <div class="strip">${stripHTML}</div>
-      <button class="btn-next" onclick="beginQuiz()">Start the Quiz <span class="arr">→</span></button>
-      <div style="margin-top:16px"><span class="btn-skip" onclick="showDistroBrowser()" style="cursor:pointer">Browse all distros →</span></div>
+      <button class="btn-next" onclick="beginQuiz()">${t('start')} <span class="arr">→</span></button>
+      <div style="margin-top:16px"><span class="btn-skip" onclick="showDistroBrowser()" style="cursor:pointer">${t('browse')}</span></div>
     </div>`;
 }
 
@@ -1021,27 +1363,27 @@ function showDistroBrowser() {
   document.getElementById('progWrap').style.display = 'none';
   const cardsHTML = Object.entries(DB).map(([k,d]) => `
     <button class="pick-card" onclick="showDistroDetail('${k}')">
-      <img class="pick-logo" src="${d.logo}" alt="${d.name}" onerror="this.style.display='none'">
-      <span class="pick-name">${d.name}</span>
-      <span class="pick-line">${d.line}</span>
+      <img class="pick-logo" src="${d.logo}" alt="${dname(d)}" onerror="this.style.display='none'">
+      <span class="pick-name">${dname(d)}</span>
+      <span class="pick-line">${dline(d)}</span>
     </button>`).join('');
-  $card().innerHTML = `<div class="screen"><div class="pick-title"><h3>All 25 Distros</h3><p class="pick-subtitle">Click any to learn more</p></div><div class="pick-grid">${cardsHTML}</div><div class="pick-back-row"><button class="btn-ghost" onclick="showStart()">← Back to start</button></div></div>`;
+  $card().innerHTML = `<div class="screen"><div class="pick-title"><h3>${t('allDistros')}</h3><p class="pick-subtitle">${t('clickToLearn')}</p></div><div class="pick-grid">${cardsHTML}</div><div class="pick-back-row"><button class="btn-ghost" onclick="showStart()">${t('backToStart')}</button></div></div>`;
 }
 
 function showDistroDetail(key) {
   document.getElementById('brand').style.display = 'none';
   document.getElementById('progWrap').style.display = 'none';
   const d = DB[key];
-  const tagsHTML = d.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+  const tagsHTML = dtags(d).map(t => `<span class="detail-tag">${t}</span>`).join('');
   $card().innerHTML = `
     <div class="screen distro-detail">
-      <span class="back-link" onclick="showStart()">← Back to all distros</span>
-      <img class="detail-logo" src="${d.logo}" alt="${d.name}" onerror="this.style.display='none'">
-      <h2 class="detail-name">${d.name}</h2>
-      <p class="detail-line">${d.line}</p>
-      <p class="detail-desc">${d.desc}</p>
+      <span class="back-link" onclick="showStart()">${t('backToAll')}</span>
+      <img class="detail-logo" src="${d.logo}" alt="${dname(d)}" onerror="this.style.display='none'">
+      <h2 class="detail-name">${dname(d)}</h2>
+      <p class="detail-line">${dline(d)}</p>
+      <p class="detail-desc">${ddesc(d)}</p>
       <div class="detail-tags">${tagsHTML}</div>
-      <a href="${d.url}" target="_blank" rel="noopener" class="detail-btn">🌐 Visit ${d.name}</a>
+      <a href="${d.url}" target="_blank" rel="noopener" class="detail-btn">🌐 ${t('visit')} ${dname(d)}</a>
     </div>`;
 }
 
@@ -1070,10 +1412,13 @@ function showNormalQ() {
   const optsHTML = q.opts.map((o,i) => {
     const ico = o.isDE ? ICONS[o.ico] : `<span style="font-size:1.3rem;line-height:1">${o.i}</span>`;
     const sel = selectedOpts.includes(i);
+    const optKey = 'q' + q.id + '_opt' + o.l;
+    const mainText = t(optKey + 'm') || o.m;
+    const subText = t(optKey + 's') || o.s;
     return `<button class="opt${sel ? ' on' : ''}" style="animation-delay:${i*60}ms" onclick="pickOpt(${i})">
       <span class="opt-ltr">${o.l}</span>${ico}
-      <span class="opt-main">${o.m}</span>
-      <span class="opt-sub2">${o.s}</span>
+      <span class="opt-main">${mainText}</span>
+      <span class="opt-sub2">${subText}</span>
     </button>`;
   }).join('');
 
@@ -1081,29 +1426,29 @@ function showNormalQ() {
   if (q.hasTried && qIdx === 0) {
     const tagsHTML = triedDistros.map(k => {
       const d = DB[k];
-      return `<span class="distro-tag" onclick="removeDistroTag('${k}')" title="Click to remove">${d.name} <span class="distro-tag-remove">✕</span></span>`;
+      return `<span class="distro-tag" onclick="removeDistroTag('${k}')" title="Click to remove">${dname(d)} <span class="distro-tag-remove">✕</span></span>`;
     }).join('');
     triedHTML = `
       <div class="tried-wrap">
-        <span class="tried-label">Already tried any Linux distros? Type a name and press Enter:</span>
+        <span class="tried-label">${t('triedLabel')}</span>
         <div class="distro-tags" id="distroTags">${tagsHTML}</div>
-        <input class="tried-input" id="triedInput" type="text" placeholder="e.g. Ubuntu, Arch, Fedora…" onkeydown="handleDistroInput(event)">
+        <input class="tried-input" id="triedInput" type="text" placeholder="${t('triedPlaceholder')}" onkeydown="handleDistroInput(event)">
         <div class="tried-hint" id="triedHint"></div>
       </div>`;
   }
 
-  const backBtn = history.length > 0 ? `<button class="btn-back" onclick="goBack()">← Previous</button>` : '';
+  const backBtn = history.length > 0 ? `<button class="btn-back" onclick="goBack()">← ${t('previous')}</button>` : '';
 
   swap(`<div class="screen">
-    <div class="q-label">Question ${q.id} of ${QS.length}</div>
-    <div class="q-text">${q.text}</div>
-    <div class="opts">${optsHTML}</div>
+    <div class="q-label">${t('question')} ${q.id} ${t('of')} ${QS.length}</div>
+    <div class="q-text">${t('q'+q.id) || q.text}</div>
+    <div class="opts${q.opts.length <= 1 ? ' single-col' : ''}">${optsHTML}</div>
     ${triedHTML}
     <div class="btn-row">
       ${backBtn}
-      <button class="btn-skip" onclick="skipQuestion()">Skip</button>
+      <button class="btn-skip" onclick="skipQuestion()">${t('skip')}</button>
       <button class="btn-next" id="nxt" disabled onclick="commitAndAdvance(${isLast})">
-        ${isLast ? 'See My Result' : 'Next Question'} <span class="arr">${isLast ? '🎯' : '→'}</span>
+        ${isLast ? t('seeResult') : t('next')} <span class="arr">${isLast ? '🎯' : '→'}</span>
       </button>
     </div>
   </div>`);
@@ -1115,7 +1460,7 @@ function showFollowUp(type) {
   const distKey = triedDistros[0];
   const d = DB[distKey];
   const isLike = type === 'like';
-  const title = isLike ? `What did you like about ${d.name}?` : `What bothered you most about ${d.name}?`;
+  const title = isLike ? `${t('whatLiked')} ${dname(d)}?` : `${t('whatBothered')} ${dname(d)}?`;
   const opts = isLike ? LIKE_OPTS : DISLIKE_OPTS;
   const fn = isLike ? 'pickLike' : 'pickDislike';
   const skip = isLike ? 'skipLike' : 'skipDislike';
@@ -1129,13 +1474,13 @@ function showFollowUp(type) {
 
   swap(`<div class="screen">
     <div class="q-label" style="color:var(--violet)">
-      <span style="background:rgba(123,97,255,.15);border:1px solid rgba(123,97,255,.3);color:var(--violet);font-size:10px;letter-spacing:.15em;padding:3px 10px;border-radius:99px">✦ About ${d.name}</span>
+      <span style="background:rgba(123,97,255,.15);border:1px solid rgba(123,97,255,.3);color:var(--violet);font-size:10px;letter-spacing:.15em;padding:3px 10px;border-radius:99px">✦ ${t('aboutLabel')} ${dname(d)}</span>
     </div>
-    <div class="q-text">${title} <span style="font-size:.7rem;color:var(--muted)">(select all that apply)</span></div>
+    <div class="q-text">${title} <span style="font-size:.7rem;color:var(--muted)">${t('selectAll')}</span></div>
     <div class="opts">${optsHTML}</div>
     <div class="btn-row">
-      <button class="btn-skip" onclick="${skip}()">Skip →</button>
-      <button class="btn-next" id="nxt" onclick="${next}()">Next Question <span class="arr">→</span></button>
+      <button class="btn-skip" onclick="${skip}()">${t('skip')} →</button>
+      <button class="btn-next" id="nxt" onclick="${next}()">${t('next')} <span class="arr">→</span></button>
     </div>
   </div>`);
 }
@@ -1155,15 +1500,16 @@ function showUbuntuVariants() {
       <span class="pick-line" style="font-size:.65rem">${v.desc}</span>
     </button>`).join('');
   swap(`<div class="screen">
-    <div class="res-badge">✦ Ubuntu variants</div>
-    <div class="pick-title"><h3>Choose your Ubuntu flavour</h3><p class="pick-subtitle">Ubuntu comes in many desktop flavours</p></div>
+    <div class="res-badge">${t('ubuntuVariants')}</div>
+    <div class="pick-title"><h3>${t('chooseFlavour')}</h3><p class="pick-subtitle">${t('flavourSubtitle')}</p></div>
     <div class="pick-grid">${cardsHTML}</div>
     <div class="cta">
-      <button class="btn-ghost" onclick="window._ubuntuVariantChosen=true;showDistroDetailResult('ubuntu')">Skip, show standard Ubuntu</button>
-      <button class="btn-ghost" onclick="showPickScreen()">← Back to choices</button>
+      <button class="btn-ghost" onclick="window._ubuntuVariantChosen=true;showDistroDetailResult('ubuntu')">${t('skipShowStandard')}</button>
+      <button class="btn-ghost" onclick="showPickScreen()">${t('backToChoices')}</button>
     </div>
   </div>`);
 }
+
 function openUbuntuVariant(url) {
   window.open(url, '_blank');
   showPickScreen();
@@ -1175,25 +1521,25 @@ function showPickScreen() {
 
   const cardsHTML = currentTopThree.map((key, i) => {
     const d = DB[key];
-    const badge = i === 0 ? '🥇 Best match' : i === 1 ? '🥈 Runner-up' : '🥉 Also great';
+    const badge = i === 0 ? t('bestMatch') : i === 1 ? t('runnerUp') : t('alsoGreat');
     return `
       <button class="pick-card" onclick="showDistroDetailResult('${key}')">
         <span class="pick-badge">${badge}</span>
-        <img class="pick-logo" src="${d.logo}" alt="${d.name}" onerror="this.style.display='none'">
-        <span class="pick-name">${d.name}</span>
-        <span class="pick-line">${d.line}</span>
+        <img class="pick-logo" src="${d.logo}" alt="${dname(d)}" onerror="this.style.display='none'">
+        <span class="pick-name">${dname(d)}</span>
+        <span class="pick-line">${dline(d)}</span>
       </button>`;
   }).join('');
 
   swap(`<div class="screen">
-    <div class="res-badge">✦ Your top matches</div>
+    <div class="res-badge">${t('topMatches')}</div>
     <div class="pick-title">
-      <h3>Choose your distro</h3>
-      <p class="pick-subtitle">Click any card to learn more</p>
+      <h3>${t('chooseDistro')}</h3>
+      <p class="pick-subtitle">${t('clickToLearn')}</p>
     </div>
     <div class="pick-grid">${cardsHTML}</div>
     <div class="cta">
-      <button class="btn-ghost" onclick="beginQuiz()">🔄 Retake Quiz</button>
+      <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
     </div>
   </div>`);
 }
@@ -1210,13 +1556,13 @@ function showDistroDetailResult(key) {
 
   let modeNote = '';
   let showLightweightOverride = false;
-  if (activeMode === 'security') modeNote = 'We focused on privacy‑first distros because you value security above all.';
-  if (activeMode === 'gaming')   modeNote = 'Your gaming needs shaped this recommendation — these distros are built for performance.';
+  if (activeMode === 'security') modeNote = t('securityNote');
+  if (activeMode === 'gaming')   modeNote = t('gamingNote');
   if (activeMode === 'lightweight') {
-    modeNote = 'We kept an eye on older hardware, so these options stay light and fast.';
+    modeNote = t('lightweightNote');
     showLightweightOverride = true;
     if (ignoreLightweightMode) {
-      modeNote = 'Showing all options without the lightweight filter.';
+      modeNote = t('showingAll');
       showLightweightOverride = false;
     }
   }
@@ -1226,22 +1572,22 @@ function showDistroDetailResult(key) {
     const cmds = mismatch.installCmd ? `<br><br><code style="white-space:pre;display:block;margin-top:6px;line-height:1.8">${mismatch.installCmd}</code>` : '';
     mismatchHTML = `
       <div class="mismatch-box">
-        <div class="mismatch-title">⚠ One thing to note</div>
+        <div class="mismatch-title">${t('deMismatchTitle')}</div>
         <div class="mismatch-body">
-          ${winner.name} ships with <code>${winner.deLabel}</code> by default, but you chose <code>${mismatch.deName}</code>.
-          You can install it manually — it works perfectly.${cmds}
+          ${dname(winner)} ${t('deMismatchBody1')} <code>${winner.deLabel}</code> ${t('deMismatchBody2')} <code>${mismatch.deName}</code>.
+          ${t('deMismatchBody3')}${cmds}
         </div>
       </div>`;
   }
 
   const triedBoxesHTML = triedDistros.map(k => {
     const td = DB[k];
-    const reason = (k === key) ? 'You already tried it, and your answers still match it!' : `We think ${winner.name} fits your preferences more closely.`;
+    const reason = (k === key) ? t('triedMatchReason') : `${dname(winner)} ${t('triedOtherReason')}`;
     return `<div class="tried-box">
-      <img class="tried-logo" src="${td.logo}" alt="${td.name}" onerror="this.style.display='none'">
+      <img class="tried-logo" src="${td.logo}" alt="${dname(td)}" onerror="this.style.display='none'">
       <div class="tried-info">
-        <div class="tried-title">✦ You tried ${td.name}</div>
-        <div class="tried-name-row">${td.name}</div>
+        <div class="tried-title">${t('youTried')} ${dname(td)}</div>
+        <div class="tried-name-row">${dname(td)}</div>
         <div class="tried-reason">${reason}</div>
       </div>
     </div>`;
@@ -1249,30 +1595,30 @@ function showDistroDetailResult(key) {
 
   const runnersHTML = runnerKeys.map(k => {
     const d = DB[k];
-    return `<div class="runner"><img src="${d.logo}" alt="${d.name}" onerror="this.style.display='none'">${d.name}</div>`;
+    return `<div class="runner"><img src="${d.logo}" alt="${dname(d)}" onerror="this.style.display='none'">${dname(d)}</div>`;
   }).join('');
 
-  const tagsHTML = winner.tags.map(t => `<div class="tag">${t}</div>`).join('');
+  const tagsHTML = dtags(winner).map(t => `<div class="tag">${t}</div>`).join('');
 
   swap(`
     <div class="result">
-      <div class="res-badge">✦ Your perfect match</div>
+      <div class="res-badge">${t('perfectMatch')}</div>
       <div class="logo-ring">
-        <img src="${winner.logo}" alt="${winner.name}" onerror="this.style.display='none'">
+        <img src="${winner.logo}" alt="${dname(winner)}" onerror="this.style.display='none'">
       </div>
-      <div class="res-name">${winner.name}</div>
-      <div class="res-line">${winner.line}</div>
-      <div class="res-desc">${winner.desc}</div>
+      <div class="res-name">${dname(winner)}</div>
+      <div class="res-line">${dline(winner)}</div>
+      <div class="res-desc">${ddesc(winner)}</div>
       <div class="tags">${tagsHTML}</div>
-      ${modeNote ? `<div class="filter-note">${modeNote}${showLightweightOverride ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">What if I don\'t care about speed?</button>' : ''}</div>` : ''}
+      ${modeNote ? `<div class="filter-note">${modeNote}${showLightweightOverride ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : ''}</div>` : ''}
       ${mismatchHTML}
       ${triedBoxesHTML}
-      ${runnerKeys.length > 0 ? `<div class="runners-label">Other top picks</div><div class="runners">${runnersHTML}</div>` : ''}
+      ${runnerKeys.length > 0 ? `<div class="runners-label">${t('otherPicks')}</div><div class="runners">${runnersHTML}</div>` : ''}
       <div class="cta" style="flex-direction:column;align-items:center;gap:12px">
-        <a href="${winner.url}" target="_blank" rel="noopener" class="btn-site">🌐 Visit ${winner.name}</a>
+        <a href="${winner.url}" target="_blank" rel="noopener" class="btn-site">🌐 ${t('visit')} ${dname(winner)}</a>
         <div style="display:flex;gap:11px">
-          <button class="btn-ghost" onclick="showPickScreen()">← Back to choices</button>
-          <button class="btn-ghost" onclick="beginQuiz()">🔄 Retake Quiz</button>
+          <button class="btn-ghost" onclick="showPickScreen()">${t('backToChoices')}</button>
+          <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
         </div>
       </div>
     </div>`);
@@ -1283,14 +1629,34 @@ function showDistroDetailResult(key) {
 // ═══════════════════════════════════════════════════════════════
 
 let jumpscareActive = false;
+
+function triggerGoodJumpscare() {
+  if (jumpscareActive) return;
+  jumpscareActive = true;
+  const msg = currentLang==='fr' ? 'bcp mieux 😇' : "better isn't it? 😇";
+  const overlay = document.createElement('div');
+  overlay.id = 'jumpscare-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:jumpscareFlash .15s ease-out';
+  overlay.innerHTML = '<div style="font-size:clamp(3rem,12vw,8rem);animation:jumpscareShake .3s ease-out">😇</div><div style="font-family:var(--mono);color:var(--mint);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">'+msg+'</div>';
+  document.body.appendChild(overlay);
+  const style = document.createElement('style');
+  style.textContent = '@keyframes jumpscareFlash{0%{background:#0a2a0a}50%{background:#0a2a0a}100%{background:#000}}@keyframes jumpscareShake{0%{transform:scale(0.3)}40%{transform:scale(1.4)}70%{transform:scale(0.9)}100%{transform:scale(1)}}';
+  document.head.appendChild(style);
+  setTimeout(() => {
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity .4s';
+    setTimeout(() => { overlay.remove(); style.remove(); jumpscareActive = false; }, 400);
+  }, 1800);
+}
+
 function triggerJumpscare() {
   if (jumpscareActive) return;
   jumpscareActive = true;
   const overlay = document.createElement('div');
   overlay.id = 'jumpscare-overlay';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:jumpscareFlash .15s ease-out';
-  overlay.innerHTML = '<div style="font-size:clamp(4rem,15vw,10rem);animation:jumpscareShake .3s ease-out">😡</div><div style="font-family:var(--mono);color:var(--coral);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">bad linux user</div>';
-  document.body.appendChild(overlay);
+  const jumpscareText = currentLang==='fr' ? 'mauvais utilisateur linux' : 'bad linux user';
+  overlay.innerHTML = '<div style="font-size:clamp(4rem,15vw,10rem);animation:jumpscareShake .3s ease-out">😡</div><div style="font-family:var(--mono);color:var(--coral);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">'+jumpscareText+'</div>';  document.body.appendChild(overlay);
   const style = document.createElement('style');
   style.textContent = '@keyframes jumpscareFlash{0%{background:#ff0000}50%{background:#ff0000}100%{background:#000}}@keyframes jumpscareShake{0%{transform:scale(0.3)}40%{transform:scale(1.4)}70%{transform:scale(0.9)}100%{transform:scale(1)}}';
   document.head.appendChild(style);
@@ -1301,17 +1667,31 @@ function triggerJumpscare() {
   }, 1800);
 }
 
+let goodLinuxTimeout = null;
+function showGoodLinuxUser() {
+  const msg = currentLang==='fr' ? ' bcp mieux 😇' : 'better isnt it? 😇';
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(79,255,176,.15);border:1px solid rgba(79,255,176,.35);color:var(--mint);font-family:var(--mono);font-size:.85rem;padding:10px 24px;border-radius:99px;animation:panelIn .3s ease-out;pointer-events:none';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity .4s'; setTimeout(()=>toast.remove(),400); }, 2000);
+}
+
 function pickOpt(i) {
   const q = QS[qIdx];
   const o = q.opts[i];
-  if (o.popup) { triggerJumpscare(); }
   if (selectedOpts.includes(i)) {
+    // Deselecting
     selectedOpts = selectedOpts.filter(x => x !== i);
     Object.entries(o.v).forEach(([dim,val]) => userDimensions[dim] -= val);
     if (o.sig) o.sig.forEach(s => { const idx = userSignals.lastIndexOf(s); if(idx>=0) userSignals.splice(idx,1); });
     if (q.id===7 && o.isDE) userDEKey = null;
     document.querySelectorAll('#card .opt')[i].classList.remove('on');
+    // Good jumpscare when unchecking AI option
+    if (o.popup) { triggerGoodJumpscare(); }
   } else {
+    // Selecting
+    if (o.popup) { triggerJumpscare(); }
     selectedOpts.push(i);
     Object.entries(o.v).forEach(([dim,val]) => userDimensions[dim] += val);
     if (o.sig) userSignals.push(...o.sig);
@@ -1359,9 +1739,9 @@ function goBack() {
 
 function finish() {
   ignoreLightweightMode = false;
-  swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">Analysing your profile…<br>Matching against <b>25 distros</b></div></div>`);
+  swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">${t('analyzing')}<br>${t('matching')} <b>25 ${t('distros')}</b></div></div>`);
   setTimeout(() => {
-    swap(`<div class="spin-wrap screen"><div class="spinner" style="border-top-color:var(--violet)"></div><div class="spin-txt">Narrowing down the best options…<br><b>Almost there</b></div></div>`);
+    swap(`<div class="spin-wrap screen"><div class="spinner" style="border-top-color:var(--violet)"></div><div class="spin-txt">${t('narrowing')}<br><b>${t('almostThere')}</b></div></div>`);
     setTimeout(() => {
       currentTopThree = computeTopThree(false);
       showPickScreen();
@@ -1393,11 +1773,11 @@ function handleDistroInput(e) {
       renderPills();
       hint.textContent = '';
     } else {
-      hint.textContent = '⚠ Already added!';
+      hint.textContent = t('alreadyAdded');
     }
     input.value = '';
   } else {
-    hint.textContent = val.length > 2 ? '? Not recognised — try another spelling' : '';
+    hint.textContent = val.length > 2 ? t('notRecognised') : '';
   }
 }
 
@@ -1411,11 +1791,11 @@ function renderPills() {
   if (!container) return;
   container.innerHTML = triedDistros.map(k => {
     const d = DB[k];
-    return `<span class="distro-tag" onclick="removeDistroTag('${k}')" title="Click to remove">${d.name} <span class="distro-tag-remove">✕</span></span>`;
+    return `<span class="distro-tag" onclick="removeDistroTag('${k}')" title="Click to remove">${dname(d)} <span class="distro-tag-remove">✕</span></span>`;
   }).join('');
 }
 
-function pickLike(i){
+function pickLike(i) {
   const o = LIKE_OPTS[i];
   if (followUpSelected.includes(i)) {
     followUpSelected = followUpSelected.filter(x => x !== i);
@@ -1431,7 +1811,8 @@ function pickLike(i){
   const n = document.getElementById('nxt');
   if (n) n.disabled = (followUpSelected.length === 0);
 }
-function pickDislike(i){
+
+function pickDislike(i) {
   const o = DISLIKE_OPTS[i];
   if (followUpSelected.includes(i)) {
     followUpSelected = followUpSelected.filter(x => x !== i);
@@ -1447,6 +1828,7 @@ function pickDislike(i){
   const n = document.getElementById('nxt');
   if (n) n.disabled = (followUpSelected.length === 0);
 }
+
 function afterLike() { followUpSelected = []; likeDone = true; tick(); }
 function afterDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 function skipLike() { followUpSelected = []; likeDone = true; tick(); }
@@ -1509,11 +1891,7 @@ function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 })();
 
 // ═══════════════════════════════════════════════════════════════
-//  SECTION 7: Initialisation
-// ═══════════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════════
-//  SECTION 8: Settings (Theme + Language)
+//  SECTION 7: Settings (Theme + Language)
 // ═══════════════════════════════════════════════════════════════
 
 function toggleSettings() {
@@ -1533,17 +1911,9 @@ const THEMES = {
     '--bg':'#070b14', '--mint':'#4fffb0', '--violet':'#7b61ff', '--coral':'#ff6b6b',
     '--txt':'#e8edf5', '--muted':'#9ba8bc', particle:'#4fffb0'
   },
-  green: {
-    '--bg':'#0a1a0a', '--mint':'#00ff88', '--violet':'#00cc66', '--coral':'#ff4444',
-    '--txt':'#e0ffe0', '--muted':'#88aa88', particle:'#00ff88'
-  },
   light: {
-    '--bg':'#f5f5f5', '--mint':'#007acc', '--violet':'#6c5ce7', '--coral':'#d63031',
-    '--txt':'#1a1a1a', '--muted':'#666', particle:'#007acc'
-  },
-  dark: {
-    '--bg':'#0d0d0d', '--mint':'#ffffff', '--violet':'#888888', '--coral':'#ff4444',
-    '--txt':'#cccccc', '--muted':'#666', particle:'#ffffff'
+    '--bg':'#C9CACD', '--mint':'#5A7590', '--violet':'#6B7D8E', '--coral':'#9B4A3F',
+    '--txt':'#3A3D42', '--muted':'#6A6D72', particle:'#8A9BAA'
   }
 };
 
@@ -1552,15 +1922,18 @@ function setTheme(name) {
   currentTheme = name;
   const t = THEMES[name];
   const root = document.documentElement;
+  document.body.classList.remove('light-mode');
   for (const [key, val] of Object.entries(t)) {
     if (key === 'particle') continue;
     root.style.setProperty(key, val);
   }
+  if (name === 'light') document.body.classList.add('light-mode');
   document.querySelectorAll('.particle').forEach(p => {
     p.style.background = t.particle;
   });
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.theme-btn.${name}`).classList.add('active');
+  const btn = document.querySelector(`.theme-btn.${name}`);
+  if (btn) btn.classList.add('active');
   localStorage.setItem('distromatch-theme', name);
 }
 
@@ -1568,26 +1941,416 @@ const savedTheme = localStorage.getItem('distromatch-theme');
 if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
 const TRANSLATIONS = {
-  en: { tagline: 'Find Your Linux', subtitle: '25 questions · 25 distros · your perfect match', start: 'Start the Quiz' },
-  fr: { tagline: 'Trouve ton Linux', subtitle: '25 questions · 25 distros · ton match parfait', start: 'Commencer le Quiz' },
-  de: { tagline: 'Finde dein Linux', subtitle: '25 Fragen · 25 Distros · dein perfektes Match', start: 'Quiz starten' },
-  es: { tagline: 'Encuentra tu Linux', subtitle: '25 preguntas · 25 distros · tu match perfecto', start: 'Iniciar Quiz' },
-  jp: { tagline: 'Linuxを見つけよう', subtitle: '25の質問 · 25のディストロ · 完璧なマッチ', start: 'クイズを始める' },
-  ru: { tagline: 'Найди свой Linux', subtitle: '25 вопросов · 25 дистрибутивов · идеальное совпадение', start: 'Начать тест' },
+  en: {
+    tagline: 'Find Your Linux',
+    subtitle: '25 questions . 25 distros . your perfect match',
+    start: 'Start the Quiz',
+    browse: 'Browse all distros →',
+    progress: 'Progress',
+    skip: 'Skip',
+    next: 'Next Question',
+    seeResult: 'See My Result',
+    previous: 'Previous',
+    backToStart: '← Back to start',
+    backToChoices: '← Back to choices',
+    backToAll: '← Back to all distros',
+    retake: '🔄 Retake Quiz',
+    chooseDistro: 'Choose your distro',
+    clickToLearn: 'Click any card to learn more',
+    topMatches: '✦ Your top matches',
+    perfectMatch: '✦ Your perfect match',
+    bestMatch: '🥇 Best match',
+    runnerUp: '🥈 Runner-up',
+    alsoGreat: '🥉 Also great',
+    otherPicks: 'Other top picks',
+    visit: 'Visit',
+    analyzing: 'Analysing your profile…',
+    matching: 'Matching against',
+    distros: 'distros',
+    narrowing: 'Narrowing down the best options…',
+    almostThere: 'Almost there',
+    allDistros: 'All 25 Distros',
+    triedLabel: 'Already tried any Linux distros? Type a name and press Enter:',
+    triedPlaceholder: 'e.g. Ubuntu, Arch, Fedora…',
+    notRecognised: '? Not recognised — try another spelling',
+    alreadyAdded: '⚠ Already added!',
+    aboutLabel: 'About',
+    whatLiked: 'What did you like about',
+    whatBothered: 'What bothered you most about',
+    selectAll: '(select all that apply)',
+    skipArrow: 'Skip →',
+    nextArrow: '→',
+    targetEmoji: '🎯',
+    securityNote: 'We focused on privacy‑first distros because you value security above all.',
+    gamingNote: 'Your gaming needs shaped this recommendation — these distros are built for performance.',
+    lightweightNote: 'We kept an eye on older hardware, so these options stay light and fast.',
+    showingAll: 'Showing all options without the lightweight filter.',
+    whatIfNoSpeed: "What if I don't care about speed?",
+    deMismatchTitle: '⚠ One thing to note',
+    deMismatchBody1: 'ships with',
+    deMismatchBody2: 'by default, but you chose',
+    deMismatchBody3: 'You can install it manually — it works perfectly.',
+    youTried: '✦ You tried',
+    triedMatchReason: 'You already tried it, and your answers still match it!',
+    triedOtherReason: 'fits your preferences more closely.',
+    ubuntuVariants: '✦ Ubuntu variants',
+    chooseFlavour: 'Choose your Ubuntu flavour',
+    flavourSubtitle: 'Ubuntu comes in many desktop flavours',
+    skipShowStandard: 'Skip, show standard Ubuntu',
+    footer: 'made with 💚 for the linux community',
+    badge: '✦ 25 distros . 25 questions . your perfect match',
+    startDesc: "Answer 25 smart questions and we'll match you with one of 25 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
+    settingsTheme: 'Theme',
+    settingsLang: 'Language',
+    question: 'Question',
+    of: 'of',
+    q1: "What's your experience with Linux?",
+    q2: "What matters most in your ideal OS?",
+    q3: "How do you feel about the terminal?",
+    q4: "What's your main use case?",
+    q5: "How do you want updates delivered?",
+    q6: "How powerful is your machine?",
+    q7: "Which desktop style speaks to you?",
+    q8: "How important is privacy to you?",
+    q9: "How much time will you invest in setup?",
+    q10: "What's your philosophy on software freedom?",
+    q11: "How important is out-of-the-box hardware support?",
+    q12: "How do you install software?",
+    q13: "What's your relationship with system crashes?",
+    q14: "Pick your ideal weekend Linux activity:",
+    q15: "How do you feel about system customisation via config files?",
+    q16: "How do you feel about reading documentation?",
+    q17: "What would make you switch distros?",
+    q18: "What kind of community and support matters most?",
+    q19: "How do you want your system configured out of the box?",
+    q20: "How do you approach system security?",
+    q21: "How important is corporate backing?",
+    q22: "How important is visual polish to you?",
+    q23: "What kind of default apps do you prefer?",
+    q24: "How do you feel about systemd?",
+    q25: "What's your long-term plan with Linux?"
+  },
+  fr: {
+    tagline: 'Trouve ton Linux',
+    subtitle: '25 questions . 25 distros . ton match parfait',
+    start: 'Commencer le Quiz',
+    browse: 'Voir toutes les distros →',
+    progress: 'Progrès',
+    skip: 'Passer',
+    next: 'Question suivante',
+    seeResult: 'Voir mon résultat',
+    previous: 'Précédent',
+    backToStart: '← Retour',
+    backToChoices: '← Retour aux choix',
+    backToAll: '← Voir toutes les distros',
+    retake: '🔄 Refaire le quiz',
+    chooseDistro: 'Choisis ta distro',
+    clickToLearn: 'Clique pour en savoir plus',
+    topMatches: '✦ Tes meilleurs matchs',
+    perfectMatch: '✦ Ton match parfait',
+    bestMatch: '🥇 Meilleur match',
+    runnerUp: '🥈 Second',
+    alsoGreat: '🥉 Aussi bien',
+    otherPicks: 'Autres suggestions',
+    visit: 'Visiter',
+    analyzing: 'Analyse de ton profil…',
+    matching: 'Comparaison avec',
+    distros: 'distros',
+    narrowing: 'Affinage des meilleurs choix…',
+    almostThere: 'Presque terminé',
+    allDistros: 'Les 25 distros',
+    triedLabel: 'Tu as déjà essayé une distro ? Tape un nom et appuie sur Entrée :',
+    triedPlaceholder: 'ex: Ubuntu, Arch, Fedora…',
+    notRecognised: '? Non reconnu — essaye une autre orthographe',
+    alreadyAdded: '⚠ Déjà ajouté !',
+    aboutLabel: 'À propos de',
+    whatLiked: "Qu'est-ce que tu as aimé chez",
+    whatBothered: "Qu'est-ce qui t'a dérangé chez",
+    selectAll: '(sélectionne tout ce qui sapplique)',
+    skipArrow: 'Passer →',
+    nextArrow: '→',
+    targetEmoji: '🎯',
+    securityNote: 'Nous avons privilégié les distros axées sur la confidentialité car tu accordes une grande importance à la sécurité.',
+    gamingNote: 'Tes besoins en gaming ont façonné cette recommandation — ces distros sont optimisées pour la performance.',
+    lightweightNote: 'Nous avons gardé un œil sur le matériel ancien, ces options restent légères et rapides.',
+    showingAll: 'Affichage de toutes les options sans le filtre de légèreté.',
+    whatIfNoSpeed: "Et si la vitesse m'est égale ?",
+    deMismatchTitle: '⚠ Une chose à noter',
+    deMismatchBody1: 'est livré avec',
+    deMismatchBody2: 'par défaut, mais tu as choisi',
+    deMismatchBody3: "Tu peux l'installer manuellement — ça fonctionne parfaitement.",
+    youTried: '✦ Tu as essayé',
+    triedMatchReason: 'Tu las déjà essayée, et tes réponses correspondent toujours !',
+    triedOtherReason: 'correspond mieux à tes préférences.',
+    ubuntuVariants: '✦ Variantes Ubuntu',
+    chooseFlavour: 'Choisis ta saveur Ubuntu',
+    flavourSubtitle: 'Ubuntu existe en plusieurs saveurs',
+    skipShowStandard: 'Passer, montrer Ubuntu standard',
+    footer: 'fait avec 💚 pour la communauté Linux',
+    badge: '✦ 25 distros . 25 questions . ton match parfait',
+    startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
+    settingsTheme: 'Thème',
+    settingsLang: 'Langue',
+    question: 'Question',
+    of: 'sur',
+    q1: "Quelle est ton expérience avec Linux ?",
+    q2: "Qu'est-ce qui compte le plus dans ton OS idéal ?",
+    q3: "Que penses-tu du terminal ?",
+    q4: "Quel est ton cas d'usage principal ?",
+    q5: "Comment veux-tu recevoir les mises à jour ?",
+    q6: "Quelle est la puissance de ta machine ?",
+    q7: "Quel style de bureau te parle ?",
+    q8: "Quelle importance accordes-tu à la vie privée ?",
+    q9: "Combien de temps investiras-tu dans la configuration ?",
+    q10: "Quelle est ta philosophie sur la liberté logicielle ?",
+    q11: "Quelle importance pour le support matériel immédiat ?",
+    q12: "Comment installes-tu tes logiciels ?",
+    q13: "Quelle est ta relation avec les crashs système ?",
+    q14: "Choisis ton activité Linux du week-end idéale :",
+    q15: "Que penses-tu de la personnalisation via les fichiers de config ?",
+    q16: "Que penses-tu de la lecture de documentation ?",
+    q17: "Qu'est-ce qui te ferait changer de distro ?",
+    q18: "Quel type de communauté et de support compte le plus ?",
+    q19: "Comment veux-tu ton système configuré dès le départ ?",
+    q20: "Quelle est ton approche de la sécurité système ?",
+    q21: "Quelle importance pour le soutien d'une entreprise ?",
+    q22: "Quelle importance pour le polish visuel ?",
+    q23: "Quel type d'applications par défaut préfères-tu ?",
+    q24: "Que penses-tu de systemd ?",
+    q25: "Quel est ton plan à long terme avec Linux ?",
+    q1_optAm: 'Jamais utilisé',
+    q1_optAs: 'Débutant complet — première fois',
+    q2_optAm: 'Fonctionne immédiatement',
+    q2_optAs: 'Zéro configuration, prêt tout de suite',
+    q2_optBm: 'Stabilité absolue',
+    q2_optBs: 'Ne casse jamais, LTS pour toujours',
+    q2_optCm: 'Performance brute',
+    q2_optCs: 'Exploite chaque cycle CPU',
+    q2_optDm: 'Personnalisation totale',
+    q2_optDs: 'Mon système, mes règles',
+    q3_optAm: 'Pitié, non.',
+    q3_optAs: 'Du GUI tout le temps',
+    q3_optBm: "Je l'utilise quand je suis forcé",
+    q3_optBs: "Seulement quand il n'y a pas d'autre moyen",
+    q3_optCm: "Je l'aime bien",
+    q3_optCs: 'À laise avec bash & co.',
+    q3_optDm: "J'y vis",
+    q3_optDs: 'tmux, neovim, zsh — chez moi.',
+    q4_optAm: 'Bureau quotidien / navigation',
+    q4_optAs: 'Web, médias, école, bureau',
+    q4_optBm: 'Dév / productivité pro',
+    q4_optBs: 'Code, conteneurs, serveurs',
+    q4_optCm: 'Gaming & FPS élevés',
+    q4_optCs: 'Steam, Proton, dernier GPU',
+    q4_optDm: 'Sécurité & vie privée',
+    q4_optDs: 'Pentest, anonymat, CTF',
+    q5_optAm: 'Rares & testées',
+    q5_optAs: 'Une mise à jour par an suffit',
+    q5_optBm: 'Versions ponctuelles régulières',
+    q5_optBs: 'Tous les 6–12 mois, parfait',
+    q5_optCm: 'Rolling release',
+    q5_optCs: 'Toujours les derniers paquets',
+    q5_optDm: 'À la pointe',
+    q5_optDs: "Je le veux avant que ce soit stable",
+    q6_optAm: 'Vieux / bas de gamme',
+    q6_optAs: 'Moins de 4 Go RAM, vieux CPU',
+    q6_optBm: 'Portable moyen',
+    q6_optBs: '4–8 Go RAM, dual core',
+    q6_optCm: 'PC correct',
+    q6_optCs: '8–16 Go RAM, CPU récent',
+    q6_optDm: 'Machine de passionné haut de gamme',
+    q6_optDs: '32 Go+ RAM, GPU haut de gamme',
+    q7_optAm: 'GNOME',
+    q7_optAs: 'Propre, moderne, tactile',
+    q7_optBm: 'KDE Plasma',
+    q7_optBs: 'Très personnalisable, riche en fonctionnalités',
+    q7_optCm: 'Tiling WM',
+    q7_optCs: 'i3, Hyprland, Sway — clavier avant tout',
+    q7_optDm: 'DE léger',
+    q7_optDs: 'XFCE / LXDE — rapide sur tout matériel',
+    q8_optAm: 'Pas vraiment',
+    q8_optAs: "J'utilise Google & Windows de toute façon",
+    q8_optBm: 'Un peu',
+    q8_optBs: "J'utilise un VPN parfois",
+    q8_optCm: 'Très important',
+    q8_optCs: 'FOSS uniquement, pas de télémétrie',
+    q8_optDm: "Critique — l'anonymat d'abord",
+    q8_optDs: 'Ne laisse aucune trace en ligne',
+    q9_optAm: 'Zéro — démarrer et partir',
+    q9_optAs: 'Si je configure, je quitte',
+    q9_optBm: 'Quelques heures',
+    q9_optBs: 'Quelques réglages et terminé',
+    q9_optCm: 'Un week-end entier',
+    q9_optCs: 'Je le veux exactement comme il faut',
+    q9_optDm: "Autant de temps qu'il faut",
+    q9_optDs: 'Configurer EST le hobby',
+    q10_optAm: 'FOSS uniquement — aucun code propriétaire',
+    q10_optAs: 'Je veux un système entièrement libre',
+    q10_optBm: 'Open source, mais pragmatique',
+    q10_optBs: "Content d'utiliser les drivers NVIDIA, Steam, etc.",
+    q10_optCm: "Je m'en fiche tant que ça marche",
+    q10_optCs: 'Propriétaire ou open — fais le job',
+    q10_optDm: 'Éviter les blobs, préférer la communauté',
+    q10_optDs: 'Debian main, pas de non-free',
+    q11_optAm: 'Essentiel — tout marche immédiatement',
+    q11_optAs: 'Wi‑Fi, GPU, imprimantes — sans bricolage',
+    q11_optBm: 'Je peux modifier quelques trucs',
+    q11_optBs: "Content d'exécuter un script ou deux",
+    q11_optCm: "Ça me va d'installer les drivers manuellement",
+    q11_optCs: 'Le terminal ne me fait pas peur',
+    q11_optDm: 'Je compile mon propre noyau',
+    q11_optDs: 'Contrôle total sur le matériel',
+    q12_optAm: 'Store GUI uniquement',
+    q12_optAs: 'Cliquer installer, terminé',
+    q12_optBm: 'Gestionnaire de paquets en terminal',
+    q12_optBs: 'apt, dnf, pacman — pas de problème',
+    q12_optCm: 'Compiler depuis les sources',
+    q12_optCs: "Je lis les Makefiles pour le plaisir",
+    q12_optDm: 'Flatpak / Snap / AppImage',
+    q12_optDs: 'Des paquets universels svp',
+    q13_optAm: 'Un crash et je repasse à autre chose',
+    q13_optAs: 'La stabilité est non négociable',
+    q13_optBm: 'Énervant mais je répare',
+    q13_optBs: 'Je peux gérer des problèmes occasionnels',
+    q13_optCm: "Une opportunité d'apprendre",
+    q13_optCs: 'Débugger est la moitié du plaisir',
+    q13_optDm: "Je l'ai causé exprès",
+    q13_optDs: "Restaurer des snapshots c'est amusant",
+    q14_optAm: 'Regarder des vidéos, naviguer',
+    q14_optAs: 'Juste utiliser normalement',
+    q14_optBm: 'Jouer sur Steam / Proton',
+    q14_optBs: 'Faire tourner des jeux sur Linux',
+    q14_optCm: 'Ricer mon bureau pendant des heures',
+    q14_optCs: 'Le rendre parfait visuellement',
+    q14_optDm: 'Lire la doc et configurer',
+    q14_optDs: 'Plongée profonde dans les fichiers de config',
+    q15_optAm: 'Je ne touche jamais aux configs',
+    q15_optAs: 'Les réglages GUI suffisent',
+    q15_optBm: "Je modifie quelques réglages avec des outils GUI",
+    q15_optBs: 'Quelques ajustements dans une appli de réglages',
+    q15_optCm: "J'aime modifier les fichiers de config",
+    q15_optCs: 'vim /etc/... est une seconde nature',
+    q15_optDm: 'Je gère tout mon OS de façon déclarative',
+    q15_optDs: 'Nix, Ansible, ou dépôts dotfiles',
+    q16_optAm: 'Tutoriels YouTube uniquement',
+    q16_optAs: 'Les vidéos sont plus faciles pour moi',
+    q16_optBm: 'Google quand je suis bloqué',
+    q16_optBs: 'Les forums et Reddit ça va',
+    q16_optCm: "J'utilise l'IA",
+    q16_optCs: 'ChatGPT / Claude résout tout',
+    q16_optDm: 'Je lis tout le wiki',
+    q16_optDs: "Le Arch Wiki est ma page d'accueil",
+    q17_optAm: 'Une mauvaise mise à jour qui casse tout',
+    q17_optAs: 'La stabilité avant tout',
+    q17_optBm: 'Ça commence à ramer',
+    q17_optBs: 'La performance compte pour moi',
+    q17_optCm: 'Je voulais juste quelque chose de nouveau',
+    q17_optCs: 'Aucune plainte, juste explorer',
+    q17_optDm: 'Manque de personnalisation',
+    q17_optDs: "J'ai besoin d'un contrôle total",
+    q18_optAm: "J'utilise l'IA",
+    q18_optAs: 'ChatGPT règle tout',
+    q18_optBm: "Tant que je trouve mon problème",
+    q18_optBs: "N'importe quelle source qui marche",
+    q18_optCm: 'Communauté active mais plus petite, experte',
+    q18_optCs: 'IRC, listes de diffusion — connaissance profonde',
+    q18_optDm: 'Je résous mes propres problèmes',
+    q18_optDs: 'Débugger sans aide extérieure',
+    q19_optAm: 'Entièrement pré-configuré',
+    q19_optAs: 'Tout fonctionne immédiatement',
+    q19_optBm: 'Défauts raisonnables, ajustables',
+    q19_optBs: 'Un peu de configuration, rien de flippant',
+    q19_optCm: 'Base minimale, je construis dessus',
+    q19_optCs: "Démarrer nu, ajouter ce que je veux",
+    q19_optDm: 'Un fichier de config définit tout',
+    q19_optDs: 'Déclaratif, reproductible',
+    q20_optAm: 'Je fais confiance aux défauts de l\'OS',
+    q20_optAs: 'Ce qui vient par défaut',
+    q20_optBm: "J'installe un firewall et prends des précautions basiques",
+    q20_optBs: 'UFW, bon sens',
+    q20_optCm: 'Je durcis mon système et désactive des services',
+    q20_optCs: 'Durcissement noyau, apparmor/selinux',
+    q20_optDm: "J'utilise la compartimentalisation (VMs, conteneurs)",
+    q20_optDs: 'Style Qubes ou micro‑VMs',
+    q21_optAm: 'Je veux une entreprise derrière',
+    q21_optAs: 'Support entreprise & financement',
+    q21_optBm: "Peu importe",
+    q21_optBs: 'Communauté ou entreprise, les deux vont bien',
+    q21_optCm: 'Uniquement piloté par la communauté',
+    q21_optCs: "Pas d'influence corporate",
+    q21_optDm: 'Éviter activement les big tech',
+    q21_optDs: "L'indépendance est cruciale",
+    q22_optAm: 'La fonction avant la forme',
+    q22_optAs: "Je me fiche de l'apparence",
+    q22_optBm: "De bons défauts sont appréciés",
+    q22_optBs: "J'aime que ce soit joli dès le départ",
+    q22_optCm: 'Je passe des heures à ricer',
+    q22_optCs: 'Thèmes personnalisés, icônes, tout',
+    q22_optDm: 'Le visuel est rédhibitoire',
+    q22_optDs: "Si c'est moche, je ne l'utilise pas",
+    q23_optAm: 'Suite complète incluse',
+    q23_optAs: 'Bureautique, navigateur, lecteur média inclus',
+    q23_optBm: 'Essentiels bien choisis',
+    q23_optBs: 'Seulement le meilleur, pré-sélectionné',
+    q23_optCm: 'Minimal — je choisis les miens',
+    q23_optCs: "Système nu, j'installe ce dont j'ai besoin",
+    q23_optDm: 'Apps web plutôt que natives',
+    q23_optDs: 'Flux de travail basé sur le navigateur',
+    q24_optAm: "C'est quoi systemd ?",
+    q24_optAs: 'Je ne sais pas et je men fiche',
+    q24_optBm: 'Ça marche bien pour moi',
+    q24_optBs: 'Init moderne, pas de plaintes',
+    q24_optCm: "J'ai entendu les débats",
+    q24_optCs: 'Curieux des alternatives',
+    q24_optDm: 'Éviter activement',
+    q24_optDs: 'runit, OpenRC, ou s6 svp',
+    q25_optAm: 'Trouver une distro et y rester',
+    q25_optAs: "S'installer, arrêter le distro-hopping",
+    q25_optBm: "Continuer à apprendre et évoluer",
+    q25_optBs: 'Évoluer vers des distros plus avancées',
+    q25_optCm: 'Expérimenter constamment',
+    q25_optCs: 'Tout essayer, chercher la nouveauté',
+    q25_optDm: 'Construire la mienne un jour',
+    q25_optDs: 'LFS, Gentoo, ou dérivé personnalisé'
+  }
 };
+
 let currentLang = 'en';
+function t(key) {
+  const val = (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]);
+  return (val && val !== key) ? val : null;
+}
+
 function setLanguage(lang) {
   currentLang = lang;
-  const t = TRANSLATIONS[lang] || TRANSLATIONS['en'];
-  document.querySelector('.brand h1').textContent = t.tagline;
-  document.querySelector('.brand p').textContent = t.subtitle;
   localStorage.setItem('distromatch-lang', lang);
-  if (!document.getElementById('progWrap').style.display || document.getElementById('progWrap').style.display === 'none') {
+  document.getElementById('langSelect').value = lang;
+  document.getElementById('settingsThemeLabel').textContent = t('settingsTheme');
+  document.getElementById('settingsLangLabel').textContent = t('settingsLang');
+  document.getElementById('progLabel').textContent = t('progress');
+  document.getElementById('footerText').textContent = t('footer');
+  document.querySelector('.brand h1').textContent = t('tagline');
+  document.querySelector('.brand p').textContent = t('subtitle');
+  const progWrap = document.getElementById('progWrap');
+  if (!progWrap.style.display || progWrap.style.display === 'none') {
     showStart();
+  } else {
+    showNormalQ();
   }
 }
+
 const savedLang = localStorage.getItem('distromatch-lang');
-if (savedLang && TRANSLATIONS[savedLang]) setLanguage(savedLang);
+if (savedLang && TRANSLATIONS[savedLang]) {
+  currentLang = savedLang;
+  document.getElementById('langSelect').value = savedLang;
+} else {
+  currentLang = 'en';
+  document.getElementById('langSelect').value = 'en';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 8: Initialisation
+// ═══════════════════════════════════════════════════════════════
 
 showStart();
 </script>

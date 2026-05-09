@@ -184,6 +184,14 @@ body{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .start p{color:var(--muted);font-family:var(--mono);font-size:.86rem;line-height:1.7;
   max-width:450px;margin:0 auto 24px;font-weight:300}
+.score-breakdown { margin:18px 0; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px 20px; }
+.score-breakdown-title { font-family:var(--mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.score-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.score-bar-label { font-family:var(--mono); font-size:.7rem; color:var(--muted); width:80px; flex-shrink:0; text-align:right; }
+.score-bar-track { flex:1; height:6px; background:rgba(255,255,255,.06); border-radius:99px; overflow:hidden; }
+.score-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--violet),var(--mint)); width:0; transition:width 1s cubic-bezier(.4,0,.2,1); box-shadow:0 0 8px var(--mint); }
+.score-bar-val { font-family:var(--mono); font-size:.65rem; color:var(--mint); width:28px; }
+.timer-badge { display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:.72rem; color:var(--violet); background:rgba(123,97,255,.1); border:1px solid rgba(123,97,255,.25); border-radius:99px; padding:4px 12px; margin-bottom:14px; }
 .badge{display:inline-flex;align-items:center;gap:6px;color:var(--mint);
   font-family:var(--mono);font-size:.8rem;background:rgba(79,255,176,.08);
   border:1px solid rgba(79,255,176,.2);border-radius:99px;padding:5px 14px;margin-bottom:28px}
@@ -391,6 +399,8 @@ body{
 .theme-btn.active { border-color: #fff; box-shadow: 0 0 10px currentColor; }
 .theme-btn.space  { background: linear-gradient(135deg, #4fffb0, #7b61ff); }
 .theme-btn.light  { background: #f0f0f0; border: 2px solid #ccc; }
+.theme-btn.catppuccin { background: linear-gradient(135deg, #a6e3a1, #cba6f7); }
+.theme-btn.dracula { background: linear-gradient(135deg, #50fa7b, #bd93f9); }
 .lang-select {
   width: 100%;
   background: rgba(255,255,255,.05);
@@ -602,11 +612,27 @@ body{
 }
 .light-mode .distro-detail .back-link { color: #6A6D72 !important; }
 .light-mode .distro-detail .back-link:hover { color: #5A7590 !important; }
+.confetti-piece { position:fixed; pointer-events:none; z-index:9999; border-radius:2px; animation:confettiFall linear forwards; }
+@keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+@keyframes revParticle { 0%{opacity:1;transform:scale(1) translate(0,0)} 100%{opacity:0;transform:scale(0) translate(var(--tx),var(--ty))} }
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
   color:rgba(107,122,150,.45);letter-spacing:.05em}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:99px}
+/* ── GLITCH TITLE ── */
+.brand h1 { position:relative; display:inline-block; }
+.brand h1.glitch::before, .brand h1.glitch::after {
+  content: attr(data-text);
+  position:absolute; top:0; left:0; width:100%;
+  background:linear-gradient(135deg,var(--mint) 0%,#fff 50%,var(--violet) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  pointer-events:none;
+}
+.brand h1.glitch::before { left:2px; top:-2px; animation:glitch1 .3s steps(2) both; clip-path:polygon(0 0,100% 0,100% 35%,0 35%); }
+.brand h1.glitch::after  { left:-2px; top:2px; animation:glitch2 .3s steps(2) both; clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%); }
+@keyframes glitch1 { 0%{transform:translate(0)} 20%{transform:translate(-4px,2px)} 40%{transform:translate(4px,-2px)} 60%{transform:translate(-2px,4px)} 80%{transform:translate(2px,-4px)} 100%{transform:translate(0)} }
+@keyframes glitch2 { 0%{transform:translate(0)} 20%{transform:translate(4px,-2px)} 40%{transform:translate(-4px,2px)} 60%{transform:translate(2px,-4px)} 80%{transform:translate(-2px,4px)} 100%{transform:translate(0)} }
 @media(max-width:400px){
   .card{padding:16px 10px}
   .q-text{font-size:1rem}
@@ -619,12 +645,28 @@ body{
 </style>
 </head>
 <body>
+<div id="reveal-overlay" style="position:fixed;inset:0;z-index:99990;display:none;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);">
+  <div style="font-family:var(--mono);font-size:.78rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;" id="revScanText">Analysing your profile…</div>
+  <div style="width:260px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-bottom:40px;">
+    <div id="revBar" style="height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--mint));border-radius:99px;transition:width .08s linear;box-shadow:0 0 12px var(--mint);"></div>
+  </div>
+  <div id="revPodium" style="display:none;text-align:center;width:100%;max-width:700px;">
+    <div id="revPodiumTitle" style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;margin-bottom:28px;
+      background:linear-gradient(135deg,var(--mint),#fff,var(--violet));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+    </div>
+    <div style="display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:0 16px;" id="revPodiumCards"></div>
+    <div id="revBreakdown" style="width:100%;max-width:500px;margin:28px auto 0;opacity:0;transform:translateY(20px);transition:opacity .5s ease .8s,transform .5s ease .8s;"></div>
+  </div>
+</div>
 <button class="settings-gear" onclick="toggleSettings()" title="Settings" aria-label="Settings">⚙️</button>
 <div class="settings-panel" id="settingsPanel" role="dialog" aria-label="Settings panel">
   <h4 id="settingsThemeLabel">Theme</h4>
   <div class="theme-btns">
     <button class="theme-btn space active" onclick="setTheme('space')" title="Space (default)"></button>
     <button class="theme-btn light" onclick="setTheme('light')" title="Light"></button>
+    <button class="theme-btn catppuccin" onclick="setTheme('catppuccin')" title="Catppuccin" style="background:linear-gradient(135deg,#a6e3a1,#cba6f7)"></button>
+    <button class="theme-btn dracula" onclick="setTheme('dracula')" title="Dracula" style="background:linear-gradient(135deg,#50fa7b,#bd93f9)"></button>
   </div>
   <h4 id="settingsLangLabel">Language</h4>
   <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
@@ -1220,6 +1262,15 @@ const DISTRO_SIGNALS = {
   clear:     ['poweruser','advanced','wantsPerf','highEndHardware','goodHardware','devWork','wantsRolling','likeTerminal']
 };
 
+const DISTROSEA_KEYS = {
+  ubuntu:'ubuntu', mint:'linuxmint', zorin:'zorin', elementary:'elementary',
+  deepin:'deepin', popos:'popos', fedora:'fedora', debian:'debian',
+  mx:'mxlinux', peppermint:'peppermint', opensuse:'opensuse', manjaro:'manjaro',
+  endeavour:'endeavouros', garuda:'garuda', arch:'archlinux', nixos:'nixos',
+  void:'void', gentoo:'gentoo', slackware:'slackware', alpine:'alpine',
+  kali:null, parrot:null, tails:'tails', qubes:null, clear:null
+};
+
 const DE_INSTALL = {
   kde:    'sudo apt install kde-plasma-desktop\nsudo dnf install @kde-desktop\nsudo pacman -S plasma',
   gnome:  'sudo apt install gnome-shell\nsudo dnf install @gnome-desktop\nsudo pacman -S gnome',
@@ -1254,6 +1305,7 @@ let activeMode         = null;
 let currentTopThree    = [];
 let ignoreLightweightMode = false;
 let followUpSelected   = [];
+let quizStartTime      = null;
 
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 3: Scoring Engine (3-pass)
@@ -1337,6 +1389,36 @@ function swap(html) {
   setTimeout(() => { c.classList.remove('fade-out'); c.innerHTML = html; }, 230);
 }
 
+function buildScoreBreakdown(){
+  const dims={'Ease':userDimensions.ease,'Stability':userDimensions.stable,'Rolling':userDimensions.rolling,'Performance':userDimensions.perf,'Privacy':userDimensions.priv,'Custom':userDimensions.custom,'CLI':userDimensions.cli,'Gaming':userDimensions.gaming,'Beauty':userDimensions.beauty};
+  const max = Math.max(...Object.values(dims), 1);
+  const bars = Object.entries(dims).map(([label,val])=>`
+    <div class="score-bar-row">
+      <span class="score-bar-label">${label}</span>
+      <div class="score-bar-track"><div class="score-bar-fill" data-target="${Math.round((val/max)*100)}%" style="width:0%"></div></div>
+      <span class="score-bar-val">${val}</span>
+    </div>`).join('');
+  return `<div class="score-breakdown"><div class="score-breakdown-title">📊 Your profile breakdown</div>${bars}</div>`;
+}
+function animateScoreBars(){ setTimeout(()=>{ document.querySelectorAll('.score-bar-fill').forEach(el=>{ el.style.width=el.dataset.target; }); }, 300); }
+
+function launchConfetti(){
+  const colors=['#4fffb0','#7b61ff','#ff6b6b','#fff','#ffd700','#00cfff'];
+  for(let i=0;i<80;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div'); el.className='confetti-piece';
+      const sz=Math.random()*10+5;
+      el.style.cssText=`width:${sz}px;height:${sz*0.6}px;left:${Math.random()*100}vw;top:-20px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*2+1.5}s;animation-delay:${Math.random()*0.5}s;transform:rotate(${Math.random()*360}deg);`;
+      document.body.appendChild(el); setTimeout(()=>el.remove(),3500);
+    }, i*20);
+  }
+}
+
+function formatTime(ms){
+  const s=Math.floor(ms/1000), m=Math.floor(s/60);
+  return m>0 ? `${m}m ${s%60}s` : `${s}s`;
+}
+
 function updateProgress() {
   document.getElementById('progLabel').textContent = t('progress');
   const total = QS.length;
@@ -1401,10 +1483,12 @@ function showDistroDetail(key) {
       <p class="detail-desc">${ddesc(d)}</p>
       <div class="detail-tags">${tagsHTML}</div>
       <a href="${d.url}" target="_blank" rel="noopener" class="detail-btn">🌐 ${t('visit')} ${dname(d)}</a>
+      ${DISTROSEA_KEYS[key] ? `<a href="https://distrosea.com/select/${DISTROSEA_KEYS[key]}/" target="_blank" rel="noopener" class="detail-btn" style="background:rgba(79,255,176,.08);border:1px solid rgba(79,255,176,.35);color:var(--mint);margin-top:8px">🖥️ ${t('tryOnline') || 'Try'} ${dname(d)} ${t('online') || 'Online'}</a>` : ''}
     </div>`;
 }
 
 function beginQuiz() {
+  quizStartTime = Date.now();
   qIdx = 0; triedDistros = []; likeDone = false; dislikeDone = false; q1Ans = -1; mainAnswered = 0; userDEKey = null;
   userDimensions = {ease:0,stable:0,rolling:0,perf:0,priv:0,custom:0,cli:0,gaming:0,light:0,beauty:0};
   userSignals = []; selectedOpts = []; history.length = 0; activeMode = null; currentTopThree = [];
@@ -1424,7 +1508,13 @@ function tick() {
 function showNormalQ() {
   const q = QS[qIdx];
   const isLast = qIdx === QS.length - 1;
-  updateProgress();
+  // Show 25/25 on the last question
+  if (isLast) {
+    document.getElementById('progFill').style.width = '100%';
+    document.getElementById('progNum').textContent = '25 / 25';
+  } else {
+    updateProgress();
+  }
 
   const optsHTML = q.opts.map((o,i) => {
     const ico = o.isDE ? ICONS[o.ico] : `<span style="font-size:1.3rem;line-height:1">${o.i}</span>`;
@@ -1463,13 +1553,13 @@ function showNormalQ() {
     ${triedHTML}
     <div class="btn-row">
       ${backBtn}
-      <button class="btn-skip" onclick="skipQuestion()">${t('skip')}</button>
+      ${!isLast ? `<button class="btn-skip" onclick="skipQuestion()">${t('skip')}</button>` : ''}
       <button class="btn-next" id="nxt" disabled onclick="commitAndAdvance(${isLast})">
         ${isLast ? t('seeResult') : t('next')} <span class="arr">${isLast ? '🎯' : '→'}</span>
       </button>
     </div>
   </div>`);
-  setTimeout(() => { const n = document.getElementById('nxt'); if(n) n.disabled = (selectedOpts.length === 0 && triedDistros.length === 0); }, 50);}
+  setTimeout(() => { updateNextButton(); }, 50);}
 
 function showFollowUp(type) {
   followUpSelected = [];
@@ -1553,17 +1643,22 @@ function showPickScreen() {
       </button>`;
   }).join('');
 
+  const timerHTML = quizStartTime ? `<div class="timer-badge">⏱ ${t('completedIn') || 'Completed in'} ${formatTime(Date.now()-quizStartTime)}</div>` : '';
+  const breakdown = buildScoreBreakdown();
   swap(`<div class="screen">
     <div class="res-badge">${t('topMatches')}</div>
+    ${timerHTML}
     <div class="pick-title">
       <h3>${t('chooseDistro')}</h3>
       <p class="pick-subtitle">${t('clickToLearn')}</p>
     </div>
     <div class="pick-grid">${cardsHTML}</div>
+    ${breakdown}
     <div class="cta">
       <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
     </div>
   </div>`);
+  animateScoreBars();
 }
 
 function showDistroDetailResult(key) {
@@ -1622,6 +1717,7 @@ function showDistroDetailResult(key) {
 
   const tagsHTML = dtags(winner).map(t => `<div class="tag">${t}</div>`).join('');
 
+  launchConfetti();
   swap(`
     <div class="result">
       <div class="res-badge">${t('perfectMatch')}</div>
@@ -1638,8 +1734,9 @@ function showDistroDetailResult(key) {
       ${runnerKeys.length > 0 ? `<div class="runners-label">${t('otherPicks')}</div><div class="runners">${runnersHTML}</div>` : ''}
       <div class="cta" style="flex-direction:column;align-items:center;gap:12px">
         <a href="${winner.url}" target="_blank" rel="noopener" class="btn-site">🌐 ${t('visit')} ${dname(winner)}</a>
+        ${DISTROSEA_KEYS[key] ? `<a href="https://distrosea.com/select/${DISTROSEA_KEYS[key]}/" target="_blank" rel="noopener" class="btn-site" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(79,255,176,.35);color:var(--mint);box-shadow:0 4px 22px rgba(79,255,176,.15)">🖥️ ${t('tryOnline') || 'Try'} ${dname(winner)} ${t('online') || 'Online'}</a>` : ''}
         <div style="display:flex;gap:11px">
-          <button class="btn-ghost" onclick="showPickScreen()">${t('backToChoices')}</button>
+          <button class="btn-ghost" onclick="goBackToPodium()">${t('backToPodium') || '← Back to podium'}</button>
           <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
         </div>
       </div>
@@ -1760,6 +1857,217 @@ function goBack() {
 }
 
 let finishTimer1, finishTimer2;
+let _revealData = null;
+const SCAN_MESSAGES_EN = ['Analysing your profile…','Matching 25 distros…','Weighing your preferences…','Computing compatibility…','Almost there…'];
+const SCAN_MESSAGES_FR = ['Analyse de ton profil…','Comparaison avec 25 distros…','Pesée de tes préférences…','Calcul de compatibilité…','Presque terminé…'];
+
+function startReveal(topThree) {
+  _revealData = topThree;
+  const overlay = document.getElementById('reveal-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('revPodium').style.display = 'none';
+  const bar = document.getElementById('revBar');
+  const scanText = document.getElementById('revScanText');
+  const messages = currentLang === 'fr' ? SCAN_MESSAGES_FR : SCAN_MESSAGES_EN;
+  let progress = 0;
+  let msgIdx = 0;
+  scanText.textContent = messages[0];
+
+  const interval = setInterval(() => {
+    progress += Math.random() * 3.5 + 1.5;
+    if (progress > 100) progress = 100;
+    bar.style.width = progress + '%';
+    const newMsgIdx = Math.min(Math.floor(progress / 22), messages.length - 1);
+    if (newMsgIdx !== msgIdx) {
+      msgIdx = newMsgIdx;
+      scanText.style.opacity = '0';
+      setTimeout(() => { scanText.textContent = messages[msgIdx]; scanText.style.opacity = ''; }, 200);
+    }
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(() => showPodium(topThree), 400);
+    }
+  }, 60);
+}
+
+function spawnRevealParticles(color){
+  const container = document.getElementById('reveal-overlay');
+  for(let i=0;i<30;i++){
+    const p = document.createElement('div');
+    const size = Math.random()*5+2;
+    const angle = Math.random()*Math.PI*2;
+    const dist = Math.random()*150+60;
+    p.style.cssText = `
+      position:absolute;border-radius:50%;pointer-events:none;
+      width:${size}px;height:${size}px;
+      background:${Math.random()>.5?color:'#fff'};
+      left:50%;top:55%;
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist}px;
+      animation:revParticle ${Math.random()*0.7+0.4}s ease-out forwards;
+      animation-delay:${Math.random()*0.2}s;
+      box-shadow:0 0 ${size*2}px ${color};
+    `;
+    container.appendChild(p);
+    setTimeout(()=>p.remove(), 1200);
+  }
+}
+
+function showPodium(topThree) {
+  _podiumTopThree = [...topThree];
+  document.getElementById('revScanText').style.display = 'none';
+  document.getElementById('revBar').parentElement.style.display = 'none';
+  const podium = document.getElementById('revPodium');
+  podium.style.display = 'block';
+  document.getElementById('revPodiumTitle').textContent = '✦ ' + t('topMatches') + ' ✦';
+
+  const mintColor = getComputedStyle(document.documentElement).getPropertyValue('--mint').trim() || '#4fffb0';
+  spawnRevealParticles(mintColor);
+
+  const badges = [t('bestMatch'), t('runnerUp'), t('alsoGreat')];
+  // Pedestal heights in px
+  const pedH = [120, 80, 50]; // 1st=120, 2nd=80, 3rd=50
+  const cardData = [
+    { key: topThree[1], badge: badges[1], logoH: 75, delay: 200, yOff: 50, pedH: pedH[1], tagFont: '.7rem', nameFont: '1rem' },
+    { key: topThree[0], badge: badges[0], logoH: 100, delay: 0, yOff: 20, pedH: pedH[0], tagFont: '.9rem', nameFont: '1.5rem' },
+    { key: topThree[2], badge: badges[2], logoH: 60, delay: 400, yOff: 70, pedH: pedH[2], tagFont: '.6rem', nameFont: '.85rem' },
+  ];
+
+  const cardsHTML = cardData.map(cd => {
+    const d = DB[cd.key];
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;transform:translateY(${cd.yOff}px);transition:opacity .6s ease ${cd.delay}ms,transform .6s cubic-bezier(.34,1.56,.64,1) ${cd.delay}ms;cursor:pointer;" class="podium-card" onclick="revealFromPodium('${cd.key}')">
+      <span style="font-family:var(--mono);font-size:${cd.tagFont};color:var(--mint);background:rgba(79,255,176,.1);border:1px solid rgba(79,255,176,.2);border-radius:99px;padding:3px 12px;margin-bottom:8px;">${cd.badge}</span>
+      <img src="${d.logo}" style="width:${cd.logoH}px;height:${cd.logoH}px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));margin-bottom:10px;" onerror="this.style.display='none'">
+      <span style="font-size:${cd.nameFont};font-weight:700;color:var(--txt);">${dname(d)}</span>
+      <span style="font-family:var(--mono);font-size:.55rem;color:var(--violet);text-transform:uppercase;text-align:center;max-width:150px;">${dline(d)}</span>
+      <div style="width:${cd.pedH===120?'140px':cd.pedH===80?'110px':'90px'};height:${cd.pedH}px;background:linear-gradient(180deg,rgba(79,255,176,.15),rgba(79,255,176,.04));border:1px solid rgba(79,255,176,.2);border-radius:8px 8px 0 0;margin-top:10px;position:relative;">
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:1.2rem;font-weight:800;color:var(--mint);opacity:.5;">${cd.pedH===120?'1':cd.pedH===80?'2':'3'}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('revPodiumCards').innerHTML = cardsHTML;
+
+  const breakdownHTML = buildScoreBreakdown();
+  const breakdownDiv = document.getElementById('revBreakdown');
+  breakdownDiv.innerHTML = breakdownHTML;
+
+  launchConfetti();
+  setTimeout(() => {
+    document.querySelectorAll('.podium-card').forEach(c => { c.style.opacity = '1'; c.style.transform = 'translateY(0)'; });
+    breakdownDiv.style.opacity = '1';
+    breakdownDiv.style.transform = 'translateY(0)';
+  }, 80);
+  setTimeout(() => animateScoreBars(), 400);
+}
+
+let _podiumTopThree = null;
+
+function revealFromPodium(key) {
+  _podiumTopThree = _revealData ? [..._revealData] : _podiumTopThree;
+  // Animate the clicked card scaling up before transition
+  const clickedCard = event && event.target ? event.target.closest('.podium-card') : null;
+  if (clickedCard) {
+    clickedCard.style.transition = 'transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease';
+    clickedCard.style.transform = 'scale(1.15)';
+    clickedCard.style.zIndex = '10';
+  }
+  // Fade out other cards
+  document.querySelectorAll('.podium-card').forEach(c => {
+    if (c !== clickedCard) {
+      c.style.transition = 'opacity .3s ease, transform .3s ease';
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(-20px)';
+    }
+  });
+
+  setTimeout(() => {
+    document.getElementById('reveal-overlay').style.transition = 'opacity .35s ease';
+    document.getElementById('reveal-overlay').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('reveal-overlay').style.display = 'none';
+      document.getElementById('reveal-overlay').style.opacity = '';
+      document.getElementById('reveal-overlay').style.transition = '';
+      document.getElementById('revScanText').style.display = '';
+      document.getElementById('revBar').parentElement.style.display = '';
+      document.getElementById('revPodium').style.display = 'none';
+      currentTopThree = _podiumTopThree;
+      showDistroDetailResult(key);
+      // Keep _revealData for back-to-podium
+    }, 350);
+  }, 400);
+}
+
+function goBackToPodium() {
+  if (!_podiumTopThree || !_podiumTopThree.length) {
+    showPickScreen();
+    return;
+  }
+  // Always rebuild podium to ensure clean state
+  document.getElementById('revPodiumCards').innerHTML = '';
+  showPodium(_podiumTopThree);
+  const overlay = document.getElementById('reveal-overlay');
+  // First make overlay visible but transparent
+  overlay.style.display = 'flex';
+  overlay.style.opacity = '0';
+  overlay.style.transition = 'none';
+  document.getElementById('revScanText').style.display = 'none';
+  document.getElementById('revBar').parentElement.style.display = 'none';
+  document.getElementById('revPodium').style.display = 'block';
+
+  // Force reset all card styles completely
+  document.querySelectorAll('.podium-card').forEach(c => {
+    c.style.cssText = 'opacity:0;transform:translateY(40px);transition:none;';
+  });
+  document.getElementById('revBreakdown').style.cssText = 'opacity:0;transform:translateY(20px);transition:none;';
+
+  // Force reflow then animate in
+  overlay.offsetHeight;
+  overlay.style.transition = 'opacity .4s ease';
+  overlay.style.opacity = '1';
+
+  const mintColor = getComputedStyle(document.documentElement).getPropertyValue('--mint').trim() || '#4fffb0';
+  spawnRevealParticles(mintColor);
+
+  setTimeout(() => {
+    document.querySelectorAll('.podium-card').forEach((c, i) => {
+      c.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .5s ease '+(i*150)+'ms, transform .5s cubic-bezier(.34,1.56,.64,1) '+(i*150)+'ms;';
+    });
+    const bd = document.getElementById('revBreakdown');
+    bd.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .5s ease .6s, transform .5s ease .6s;';
+    setTimeout(() => animateScoreBars(), 200);
+  }, 80);
+}
+
+function goBackToPodium() {
+  document.getElementById('reveal-overlay').style.display = 'flex';
+  document.getElementById('reveal-overlay').style.opacity = '1';
+  document.getElementById('revScanText').style.display = 'none';
+  document.getElementById('revBar').parentElement.style.display = 'none';
+  document.getElementById('revPodium').style.display = 'block';
+  // Cards are still there, just show overlay again
+  launchConfetti();
+}
+
+function finishReveal() {
+  const overlay = document.getElementById('reveal-overlay');
+  overlay.style.transition = 'opacity .5s ease';
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.style.opacity = '';
+    overlay.style.transition = '';
+    document.getElementById('revScanText').style.display = '';
+    document.getElementById('revBar').parentElement.style.display = '';
+    document.getElementById('revPodium').style.display = 'none';
+    document.getElementById('revContinue').style.opacity = '0';
+    if (_revealData) {
+      currentTopThree = _revealData;
+      showPickScreen();
+      _revealData = null;
+    }
+  }, 500);
+}
+
 function finish() {
   ignoreLightweightMode = false;
   clearTimeout(finishTimer1); clearTimeout(finishTimer2);
@@ -1767,8 +2075,8 @@ function finish() {
   finishTimer1 = setTimeout(() => {
     swap(`<div class="spin-wrap screen"><div class="spinner" style="border-top-color:var(--violet)"></div><div class="spin-txt">${t('narrowing')}<br><b>${t('almostThere')}</b></div></div>`);
     finishTimer2 = setTimeout(() => {
-      currentTopThree = computeTopThree(false);
-      showPickScreen();
+      const topThree = computeTopThree(false);
+      startReveal(topThree);
     }, 1400);
   }, 1300);
 }
@@ -1780,11 +2088,17 @@ function recomputeWithoutLightweight() {
   showPickScreen();
 }
 
+function updateNextButton() {
+  const n = document.getElementById('nxt');
+  if (n) n.disabled = (selectedOpts.length === 0 && triedDistros.length === 0);
+}
+
 function handleDistroInput(e) {
   const input = document.getElementById('triedInput');
   const hint = document.getElementById('triedHint');
   if (e.key === 'Backspace' && input.value === '' && triedDistros.length > 0) {
     removeDistroTag(triedDistros[triedDistros.length-1]);
+    updateNextButton();
     return;
   }
   if (e.key !== 'Enter') return;
@@ -1800,6 +2114,7 @@ function handleDistroInput(e) {
       hint.textContent = t('alreadyAdded');
     }
     input.value = '';
+    updateNextButton();
   } else {
     hint.textContent = val.length > 2 ? t('notRecognised') : '';
   }
@@ -1808,6 +2123,7 @@ function handleDistroInput(e) {
 function removeDistroTag(key) {
   triedDistros = triedDistros.filter(k => k !== key);
   renderPills();
+  updateNextButton();
 }
 
 function renderPills() {
@@ -1942,6 +2258,14 @@ const THEMES = {
   light: {
     '--bg':'#C9CACD', '--mint':'#5A7590', '--violet':'#6B7D8E', '--coral':'#9B4A3F',
     '--txt':'#3A3D42', '--muted':'#6A6D72', particle:'#8A9BAA'
+  },
+  catppuccin: {
+    '--bg':'#1e1e2e', '--mint':'#a6e3a1', '--violet':'#cba6f7', '--coral':'#f38ba8',
+    '--txt':'#cdd6f4', '--muted':'#6c7086', particle:'#a6e3a1'
+  },
+  dracula: {
+    '--bg':'#282a36', '--mint':'#50fa7b', '--violet':'#bd93f9', '--coral':'#ff5555',
+    '--txt':'#f8f8f2', '--muted':'#6272a4', particle:'#50fa7b'
   }
 };
 
@@ -1997,6 +2321,9 @@ const TRANSLATIONS = {
     distros: 'distros',
     narrowing: 'Narrowing down the best options…',
     almostThere: 'Almost there',
+    completedIn: 'Completed in',
+    tapToContinue: 'tap to continue ↓',
+    backToPodium: '← Back to podium',
     allDistros: 'All 25 Distros',
     triedLabel: 'Already tried any Linux distros? Type a name and press Enter:',
     triedPlaceholder: 'e.g. Ubuntu, Arch, Fedora…',
@@ -2086,6 +2413,9 @@ const TRANSLATIONS = {
     distros: 'distros',
     narrowing: 'Affinage des meilleurs choix…',
     almostThere: 'Presque terminé',
+    completedIn: 'Terminé en',
+    tapToContinue: 'appuie pour continuer ↓',
+    backToPodium: '← Retour au podium',
     allDistros: 'Les 25 distros',
     triedLabel: 'Tu as déjà essayé une distro ? Tape un nom et appuie sur Entrée :',
     triedPlaceholder: 'ex: Ubuntu, Arch, Fedora…',
@@ -2383,6 +2713,19 @@ if (savedLang && TRANSLATIONS[savedLang]) {
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 8: Initialisation
 // ═══════════════════════════════════════════════════════════════
+
+// ── Glitch Effect ──
+(function(){
+  function triggerGlitch(){
+    const h1 = document.querySelector('.brand h1');
+    if(!h1) return;
+    h1.setAttribute('data-text', h1.textContent);
+    h1.classList.add('glitch');
+    setTimeout(()=>h1.classList.remove('glitch'), 350);
+  }
+  document.addEventListener('mouseover', e => { if(e.target.closest('.brand h1')) triggerGlitch(); });
+  setInterval(()=>{ if(Math.random()<0.15) triggerGlitch(); }, 4000);
+})();
 
 showStart();
 </script>

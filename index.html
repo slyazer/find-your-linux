@@ -2060,7 +2060,9 @@ function pickOpt(i) {
     // Selecting
     if (o.popup) { triggerJumpscare(); }
     selectedOpts.push(i);
-    Object.entries(o.v).forEach(([dim,val]) => userDimensions[dim] += val);
+    Object.entries(o.v).forEach(([dim,val]) => {
+  userDimensions[dim] = Math.max(userDimensions[dim], val);
+});
     if (o.sig) userSignals.push(...o.sig);
     if (qIdx===0 && q1Ans===-1) q1Ans = i;
     if (q.id===7 && o.isDE) userDEKey = o.deKey;
@@ -2093,7 +2095,9 @@ function goBack() {
     const q = QS[prev.qIdx];
     prev.selected.forEach(i => {
       const o = q.opts[i];
-      Object.entries(o.v).forEach(([dim,val]) => userDimensions[dim] -= val);
+      Object.entries(o.v).forEach(([dim,val]) => {
+  userDimensions[dim] = Math.max(0, userDimensions[dim] - val);
+});
       if (o.sig) o.sig.forEach(s => { const idx = userSignals.lastIndexOf(s); if(idx>=0) userSignals.splice(idx,1); });
       if (q.id===7 && o.isDE) userDEKey = null;
     });

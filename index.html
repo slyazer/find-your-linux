@@ -686,11 +686,18 @@ body{
     <button class="theme-btn catppuccin" onclick="setTheme('catppuccin')" title="Catppuccin" style="background:linear-gradient(135deg,#a6e3a1,#cba6f7)"></button>
     <button class="theme-btn dracula" onclick="setTheme('dracula')" title="Dracula" style="background:linear-gradient(135deg,#50fa7b,#bd93f9)"></button>
   </div>
+
   <h4 id="settingsLangLabel">Language</h4>
   <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
     <option value="en">English</option>
     <option value="fr">Français</option>
   </select>
+  <h4 style="margin-top:16px">In beta</h4>
+  <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted);cursor:pointer;margin-bottom:4px">
+    <input type="checkbox" id="lockToggle" checked onchange="toggleLocks(this.checked)">
+    <span id="lockToggleLabel">Profile Locks</span>
+  </label>
+  <p style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin:0 0 14px 26px;line-height:1.5;opacity:.7">When enabled, strong preferences for gaming, privacy or lightweight hardware narrow results to specialised distros only.</p>
 </div>
 <div class="bg"><div class="stars"></div><div class="orb"></div></div>
 <div class="particles" id="particles"></div>
@@ -1390,6 +1397,10 @@ let currentTopThree    = [];
 let ignoreLightweightMode = false;
 let followUpSelected   = [];
 let quizStartTime      = null;
+let lockWasOverridden  = false;
+let locksEnabled       = true;
+
+
 
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 3: Scoring Engine (3-pass)
@@ -1398,10 +1409,10 @@ let quizStartTime      = null;
 const UBUNTU_BASED = ['ubuntu','mint','zorin','elementary','popos'];
 const ADVANCED_DISTROS = ['arch','gentoo','void','nixos','slackware','alpine'];
 
-function computeTopThree(ignoreLightweight) {
-  const secLock = userSignals.includes('security') && userSignals.includes('privacyHigh') && userDimensions.priv >= 4;
-  const gamLock = userSignals.includes('gaming') && userDimensions.gaming >= 3;
-  const liteLock = (!ignoreLightweight) && userSignals.includes('oldHardware') && userDimensions.light >= 4;
+function computeTopThree(ignoreLightweight, ignoreAllLocks = false) {
+  const secLock = locksEnabled && (!ignoreAllLocks) && (userSignals.includes('security') || userSignals.includes('privacyHigh'));
+  const gamLock = locksEnabled && (!ignoreAllLocks) && userSignals.includes('gaming');
+  const liteLock = locksEnabled && (!ignoreLightweight && !ignoreAllLocks) && userSignals.includes('oldHardware');
 
   let candidates = Object.keys(DB);
 
@@ -1586,10 +1597,13 @@ function beginQuiz() {
   userSignals = []; selectedOpts = []; history.length = 0; activeMode = null; currentTopThree = [];
   ignoreLightweightMode = false; followUpSelected = [];
   window._tierDone = false;
+  lockWasOverridden = false;
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   tick();
 }
+
+
 
 function tick() {
   if (qIdx === 1 && triedDistros.length > 0 && q1Ans >= 1) {
@@ -1976,7 +1990,7 @@ function showDistroDetailResult(key) {
       <div class="res-line">${dline(winner)}</div>
       <div class="res-desc">${ddesc(winner)}</div>
       <div class="tags">${tagsHTML}</div>
-      ${modeNote ? `<div class="filter-note">${modeNote}${showLightweightOverride ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : ''}</div>` : ''}
+      ${modeNote ? `<div class="filter-note">${modeNote}${activeMode==='lightweight' ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : (activeMode ? ` <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutCurrentLock()">Show all distros</button>` : '')}</div>` : ''}
       ${mismatchHTML}
       ${triedBoxesHTML}
       ${runnerKeys.length > 0 ? `<div class="runners-label">${t('otherPicks')}</div><div class="runners">${runnersHTML}</div>` : ''}
@@ -1986,6 +2000,7 @@ function showDistroDetailResult(key) {
         <div style="display:flex;gap:11px">
           <button class="btn-ghost" onclick="goBackToPodium()">${t('backToPodium') || '← Back to podium'}</button>
           <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
+          <button class="btn-ghost" onclick="shareResult('${key}')">📋 Share result</button>
         </div>
       </div>
     </div>`);
@@ -2016,22 +2031,44 @@ function triggerGoodJumpscare() {
   }, 1800);
 }
 
-function triggerJumpscare() {
+function triggerJumpscare(name) {
   if (jumpscareActive) return;
   jumpscareActive = true;
-  const overlay = document.createElement('div');
-  overlay.id = 'jumpscare-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:jumpscareFlash .15s ease-out';
-  const jumpscareText = currentLang==='fr' ? 'Mauvais utilisateur Linux' : 'bad Linux user';
-  overlay.innerHTML = '<div style="font-size:clamp(4rem,15vw,10rem);animation:jumpscareShake .3s ease-out">😡</div><div style="font-family:var(--mono);color:var(--coral);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">'+jumpscareText+'</div>';  document.body.appendChild(overlay);
-  const style = document.createElement('style');
-  style.textContent = '@keyframes jumpscareFlash{0%{background:#ff0000}50%{background:#ff0000}100%{background:#000}}@keyframes jumpscareShake{0%{transform:scale(0.3)}40%{transform:scale(1.4)}70%{transform:scale(0.9)}100%{transform:scale(1)}}';
-  document.head.appendChild(style);
-  setTimeout(() => {
-    overlay.style.opacity = '0';
-    overlay.style.transition = 'opacity .4s';
-    setTimeout(() => { overlay.remove(); style.remove(); jumpscareActive = false; }, 400);
-  }, 1800);
+  if (name && DB[name]) {
+    // Distro easter egg: gentle bottom notification
+    const toast = document.createElement('div');
+    const logoUrl = DB[name].logo;
+    const text = name + ' user btw';
+    toast.innerHTML = `<img src="${logoUrl}" style="width:24px;height:24px;object-fit:contain;margin-right:8px;display:inline-block;vertical-align:middle;" onerror="this.style.display='none'"><span>${text}</span>`;
+    toast.style.cssText = `position:fixed;bottom:24px;left:50%;z-index:99999;background:rgba(79,255,176,.12);border:1px solid var(--mint);color:var(--mint);font-family:var(--mono);font-size:.85rem;padding:10px 20px;border-radius:99px;pointer-events:none;display:flex;align-items:center;opacity:0;transform:translateX(-50%) translateY(12px);transition:opacity .25s ease-out, transform .25s ease-out;`;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(-12px)';
+      toast.style.transition = 'opacity .4s, transform .4s';
+      setTimeout(() => { toast.remove(); jumpscareActive = false; }, 400);
+    }, 2000);
+  } else {
+    // AI question: fullscreen red jumpscare
+    const overlay = document.createElement('div');
+    overlay.id = 'jumpscare-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:jumpscareFlash .15s ease-out';
+    const jumpscareText = currentLang==='fr' ? 'Mauvais utilisateur Linux' : 'bad Linux user';
+    overlay.innerHTML = '<div style="font-size:clamp(4rem,15vw,10rem);animation:jumpscareShake .3s ease-out">😡</div><div style="font-family:var(--mono);color:var(--coral);font-size:clamp(1rem,4vw,2rem);margin-top:16px;animation:jumpscareShake .3s ease-out .05s both">'+jumpscareText+'</div>';
+    document.body.appendChild(overlay);
+    const style = document.createElement('style');
+    style.textContent = '@keyframes jumpscareFlash{0%{background:#ff0000}50%{background:#ff0000}100%{background:#000}}@keyframes jumpscareShake{0%{transform:scale(0.3)}40%{transform:scale(1.4)}70%{transform:scale(0.9)}100%{transform:scale(1)}}';
+    document.head.appendChild(style);
+    setTimeout(() => {
+      overlay.style.opacity = '0';
+      overlay.style.transition = 'opacity .4s';
+      setTimeout(() => { overlay.remove(); style.remove(); jumpscareActive = false; }, 400);
+    }, 1800);
+  }
 }
 
 let goodLinuxTimeout = null;
@@ -2251,7 +2288,13 @@ function showPodium(topThree) {
   }).join('');
   document.getElementById('revPodiumCards').innerHTML = cardsHTML;
 
-  const breakdownHTML = buildScoreBreakdown();
+  // Add lock note to podium if active
+  let podiumLockNote = '';
+  if (activeMode === 'security') podiumLockNote = t('securityNote');
+  if (activeMode === 'gaming') podiumLockNote = t('gamingNote');
+  if (activeMode === 'lightweight') podiumLockNote = t('lightweightNote');
+
+  const breakdownHTML = buildScoreBreakdown() + (podiumLockNote || lockWasOverridden ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote || t('gamingNote') || t('securityNote') || t('lightweightNote')} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : '');
   const breakdownDiv = document.getElementById('revBreakdown');
   breakdownDiv.innerHTML = breakdownHTML;
 
@@ -2317,9 +2360,9 @@ function goBackToPodium() {
   document.getElementById('revBar').parentElement.style.display = 'none';
   document.getElementById('revPodium').style.display = 'block';
 
-  // Rebuild cards fresh
+  // Rebuild cards fresh using current (possibly overridden) top three
   document.getElementById('revPodiumCards').innerHTML = '';
-  showPodium(_podiumTopThree);
+  showPodium(currentTopThree);
 
   // Cards are at opacity:0 from showPodium, they'll animate in
   overlay.offsetHeight;
@@ -2366,6 +2409,25 @@ function recomputeWithoutLightweight() {
   ignoreLightweightMode = true;
   currentTopThree = computeTopThree(true);
   activeMode = null;
+  showPickScreen();
+}
+
+function recomputeWithoutCurrentLock() {
+  currentTopThree = computeTopThree(false, true);
+  activeMode = null;
+  lockWasOverridden = true;
+  showPickScreen();
+}
+
+function recomputeFromPodium() {
+  currentTopThree = computeTopThree(false, true);
+  activeMode = null;
+  lockWasOverridden = true;
+  document.getElementById('reveal-overlay').style.display = 'none';
+  document.getElementById('revPodium').style.display = 'none';
+  revealParticlesActive = false;
+  revealParticles.forEach(p => p.el.remove());
+  revealParticles = [];
   showPickScreen();
 }
 
@@ -2456,6 +2518,20 @@ function afterLike() { followUpSelected = []; likeDone = true; tick(); }
 function afterDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 function skipLike() { followUpSelected = []; likeDone = true; tick(); }
 function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
+
+function shareResult(distroKey) {
+  const d = DB[distroKey];
+  const text = `I got matched with ${dname(d)} on DistroMatch! 🐧 Find your Linux at ${window.location.href}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(79,255,176,.15);border:1px solid rgba(79,255,176,.35);color:var(--mint);font-family:var(--mono);font-size:.85rem;padding:10px 24px;border-radius:99px;animation:panelIn .3s ease-out;pointer-events:none';
+      toast.textContent = 'Copied to clipboard!';
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity .4s'; setTimeout(()=>toast.remove(),400); }, 2000);
+    }).catch(() => {});
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 6: Animated Background Particles (rAF)
@@ -2575,14 +2651,24 @@ function setTheme(name) {
 const savedTheme = localStorage.getItem('distromatch-theme');
 if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
+locksEnabled = localStorage.getItem('distromatch-locks') !== 'false';
+document.getElementById('lockToggle').checked = locksEnabled;
+
+function toggleLocks(enabled) {
+  locksEnabled = enabled;
+  localStorage.setItem('distromatch-locks', enabled);
+}
+
+
+
 const TRANSLATIONS = {
   en: {
     tagline: 'Find Your Linux',
-    subtitle: '25 questions . 25 distros . your perfect match',
+    subtitle: '25 questions . 30 distros . your perfect match',
     start: 'Start the Quiz',
     browse: 'Browse all distros →',
     progress: 'Progress',
-    skip: 'Skip',
+    skip: 'Not sure',
     next: 'Next Question',
     seeResult: 'See My Result',
     previous: 'Previous',
@@ -2609,7 +2695,7 @@ const TRANSLATIONS = {
     completedIn: 'Completed in',
     tapToContinue: 'tap to continue ↓',
     backToPodium: '← Back to podium',
-    allDistros: 'All 25 Distros',
+    allDistros: 'All 30 Distros',
     triedLabel: 'Already tried any Linux distros? Type a name and press Enter:',
     triedPlaceholder: 'e.g. Ubuntu, Arch, Fedora…',
     notRecognised: '? Not recognised — try another spelling',
@@ -2634,6 +2720,7 @@ const TRANSLATIONS = {
     lightweightNote: 'We kept an eye on older hardware, so these options stay light and fast.',
     showingAll: 'Showing all options without the lightweight filter.',
     whatIfNoSpeed: "What if I don't care about speed?",
+    showWithAll: 'Show with all distros',
     deMismatchTitle: '⚠ One thing to note',
     deMismatchBody1: 'ships with',
     deMismatchBody2: 'by default, but you chose',
@@ -2646,8 +2733,8 @@ const TRANSLATIONS = {
     flavourSubtitle: 'Ubuntu comes in many desktop flavours',
     skipShowStandard: 'Skip, show standard Ubuntu',
     footer: 'made with 💚 for the linux community',
-    badge: '✦ 25 distros . 25 questions . your perfect match',
-    startDesc: "Answer 25 smart questions and we'll match you with one of 25 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
+    badge: '✦ 30 distros . 25 questions . your perfect match',
+    startDesc: "Answer 25 smart questions and we'll match you with one of 30 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
     settingsTheme: 'Theme',
     settingsLang: 'Language',
     question: 'Question',
@@ -2680,11 +2767,11 @@ const TRANSLATIONS = {
   },
   fr: {
     tagline: 'Trouve ton Linux',
-    subtitle: '25 questions . 25 distros . ton match parfait',
+    subtitle: '25 questions . 30 distros . ton match parfait',
     start: 'Commencer le Quiz',
     browse: 'Voir toutes les distros →',
     progress: 'Progrès',
-    skip: 'Passer',
+    skip: 'Pas sûr',
     next: 'Question suivante',
     seeResult: 'Voir mon résultat',
     previous: 'Précédent',
@@ -2711,7 +2798,7 @@ const TRANSLATIONS = {
     completedIn: 'Terminé en',
     tapToContinue: 'appuie pour continuer ↓',
     backToPodium: '← Retour au podium',
-    allDistros: 'Les 25 distros',
+    allDistros: 'Les 30 distros',
     triedLabel: 'Tu as déjà essayé une distro ? Tape un nom et appuie sur Entrée :',
     triedPlaceholder: 'ex: Ubuntu, Arch, Fedora…',
     notRecognised: '? Non reconnu — essaye une autre orthographe',
@@ -2736,6 +2823,7 @@ const TRANSLATIONS = {
     lightweightNote: 'Nous avons gardé un œil sur le matériel ancien, ces options restent légères et rapides.',
     showingAll: 'Affichage de toutes les options sans le filtre de légèreté.',
     whatIfNoSpeed: "Et si la vitesse m'est égale ?",
+    showWithAll: 'Afficher avec toutes les distros',
     deMismatchTitle: '⚠ Une chose à noter',
     deMismatchBody1: 'est livré avec',
     deMismatchBody2: 'par défaut, mais tu as choisi',
@@ -2748,8 +2836,8 @@ const TRANSLATIONS = {
     flavourSubtitle: 'Ubuntu existe en plusieurs saveurs',
     skipShowStandard: 'Passer, montrer Ubuntu standard',
     footer: 'fait avec 💚 pour la communauté Linux',
-    badge: '✦ 25 distros . 25 questions . ton match parfait',
-    startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
+    badge: '✦ 30 distros . 25 questions . ton match parfait',
+    startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite parmi 30 distributions — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
     settingsTheme: 'Thème',
     settingsLang: 'Langue',
     question: 'Question',
@@ -2990,8 +3078,6 @@ function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('distromatch-lang', lang);
   document.getElementById('langSelect').value = lang;
-  document.getElementById('settingsThemeLabel').textContent = t('settingsTheme');
-  document.getElementById('settingsLangLabel').textContent = t('settingsLang');
   document.getElementById('progLabel').textContent = t('progress');
   document.getElementById('footerText').textContent = t('footer');
   document.querySelector('.brand h1').textContent = t('tagline');
@@ -3028,6 +3114,32 @@ if (savedLang && TRANSLATIONS[savedLang]) {
   }
   document.addEventListener('mouseover', e => { if(e.target.closest('.brand h1')) triggerGlitch(); });
   setInterval(()=>{ if(Math.random()<0.15) triggerGlitch(); }, 4000);
+})();
+
+// Easter egg: jumpscare when typing Linux distro names (disabled while Q1 input is focused)
+(function() {
+  let buffer = '';
+  const triggers = [
+    'ubuntu','debian','arch','fedora','mint','gentoo','kali','nixos','void',
+    'opensuse','manjaro','endeavour','slackware','alpine','tails','qubes',
+    'solus','cachyos','nobara','popos','artix','garuda','peppermint',
+    'zorin','elementary','deepin','parrot','omarchy','mx'
+  ];
+  document.addEventListener('keydown', function(e) {
+    const activeEl = document.activeElement;
+    if (activeEl && activeEl.id === 'triedInput') return;
+    if (e.key.length === 1) {
+      buffer += e.key.toLowerCase();
+      if (buffer.length > 25) buffer = buffer.slice(-25);
+      for (const t of triggers) {
+        if (buffer.endsWith(t)) {
+          triggerJumpscare(t);
+          buffer = '';
+          return;
+        }
+      }
+    }
+  });
 })();
 
 showStart();

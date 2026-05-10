@@ -632,6 +632,23 @@ body{
 .brand h1.glitch::after  { left:-2px; top:2px; animation:glitch2 .3s steps(2) both; clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%); }
 @keyframes glitch1 { 0%{transform:translate(0)} 20%{transform:translate(-4px,2px)} 40%{transform:translate(4px,-2px)} 60%{transform:translate(-2px,4px)} 80%{transform:translate(2px,-4px)} 100%{transform:translate(0)} }
 @keyframes glitch2 { 0%{transform:translate(0)} 20%{transform:translate(4px,-2px)} 40%{transform:translate(-4px,2px)} 60%{transform:translate(2px,-4px)} 80%{transform:translate(-2px,4px)} 100%{transform:translate(0)} }
+/* ── TIER LIST DRAG & DROP ── */
+.tier-container { display:flex; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+.tier-column { flex:1; min-width:180px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; min-height:120px; transition:border-color .25s,background .25s; }
+.tier-column.drag-over { border-color:var(--mint); background:rgba(79,255,176,.06); }
+.tier-column h4 { font-family:var(--mono); font-size:9px; letter-spacing:.15em; text-transform:uppercase; margin-bottom:10px; }
+.tier-column.bangers h4 { color:var(--mint); }
+.tier-column.trash h4 { color:var(--coral); }
+.tier-card { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:8px 12px; margin-bottom:6px; cursor:grab; transition:transform .15s,box-shadow .15s; user-select:none; }
+.tier-card:active { cursor:grabbing; }
+.tier-card.dragging { opacity:.5; transform:scale(.95); }
+.tier-card:hover { border-color:rgba(79,255,176,.3); box-shadow:0 4px 12px rgba(0,0,0,.3); }
+.tier-card img { width:24px;height:24px;object-fit:contain;border-radius:4px; }
+.tier-card .tier-name { font-size:.8rem;font-weight:600;color:var(--txt); }
+.tier-unsorted { margin-top:8px; }
+.tier-unsorted-label { font-family:var(--mono); font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.tier-unsorted-cards { display:flex; gap:8px; flex-wrap:wrap; }
+.tier-continue { margin-top:16px; text-align:center; }
 @media(max-width:400px){
   .card{padding:16px 10px}
   .q-text{font-size:1rem}
@@ -983,6 +1000,61 @@ const DB = {
     defaultDE:'other', deLabel:'Xfce (Xen-managed)',
     p:{ease:0,stable:2,rolling:0,perf:1,priv:3,custom:2,cli:2,gaming:0,light:0,beauty:1}
   },
+  artix: {
+    name:'Artix Linux', line:'Arch without systemd',
+    name_fr:'Artix Linux', line_fr:'Arch sans systemd',
+    logo:'https://cdn.simpleicons.org/artixlinux/10A0CC', url:'https://artixlinux.org',
+    tags:['⚙️ No systemd','🔄 Rolling','🐧 Arch-based'],
+    tags_fr:['⚙️ Sans systemd','🔄 Rolling','🐧 Basé Arch'],
+    desc:'Arch Linux with a choice of init systems — OpenRC, runit, s6, or dinit. Same AUR power, same rolling release, but without systemd. For users who want Arch freedom plus init freedom.',
+    desc_fr:'Arch Linux avec un choix de systèmes d\'init. Même puissance AUR, même rolling release, mais sans systemd. Pour ceux qui veulent la liberté d\'Arch plus celle de l\'init.',
+    defaultDE:'tiling', deLabel:'Your choice',
+    p:{ease:0,stable:1,rolling:3,perf:3,priv:2,custom:3,cli:3,gaming:1,light:2,beauty:1}
+  },
+  solus: {
+    name:'Solus', line:'Built from scratch for the desktop',
+    name_fr:'Solus', line_fr:'Construit de zéro pour le bureau',
+    logo:'https://cdn.simpleicons.org/solus/5294E2', url:'https://getsol.us',
+    tags:['🏠 Independent','🔄 Curated rolling','🖥️ Budgie DE'],
+    tags_fr:['🏠 Indépendant','🔄 Rolling soigné','🖥️ Bureau Budgie'],
+    desc:'An independent distro built entirely from scratch — not based on Debian, Arch, or anything else. Features the beautiful Budgie desktop and a curated rolling release model that stays stable.',
+    desc_fr:'Une distro indépendante construite de zéro. Propose le magnifique bureau Budgie et un modèle rolling soigné qui reste stable.',
+    defaultDE:'other', deLabel:'Budgie',
+    p:{ease:2,stable:2,rolling:2,perf:2,priv:2,custom:2,cli:1,gaming:2,light:1,beauty:3}
+  },
+  cachyos: {
+    name:'CachyOS', line:'Blazingly fast Arch-based distro',
+    name_fr:'CachyOS', line_fr:'Distro Arch ultra rapide',
+    logo:'https://cdn.simpleicons.org/archlinux/1793D1', url:'https://cachyos.org',
+    tags:['⚡ Optimized kernels','🎮 Gaming-ready','🔄 Rolling release'],
+    tags_fr:['⚡ Noyaux optimisés','🎮 Prêt gaming','🔄 Rolling release'],
+    desc:'Arch-based distro with performance-optimized kernels (BORE, EEVDF, CachyOS-sched). Ships with custom repositories, gaming packages, and a GUI installer. One of the fastest Linux distros in benchmarks.',
+    desc_fr:'Distro basée Arch avec noyaux optimisés performance (BORE, EEVDF, CachyOS-sched). Livrée avec dépôts personnalisés, packages gaming, et installateur GUI. Une des distros les plus rapides en benchmarks.',
+    defaultDE:'kde', deLabel:'KDE Plasma',
+    p:{ease:2,stable:2,rolling:3,perf:3,priv:1,custom:3,cli:1,gaming:3,light:1,beauty:2}
+  },
+  omarchy: {
+    name:'Omarchy', line:'Arch, refined',
+    name_fr:'Omarchy', line_fr:'Arch, raffiné',
+    logo:'https://omarchy.org/assets/images/favicon.png', url:'https://omarchy.org',
+    tags:['🔨 Arch-based','🖥️ Multiple DEs','🎯 Curated experience'],
+    tags_fr:['🔨 Basé Arch','🖥️ Multiples DEs','🎯 Expérience soignée'],
+    desc:'A beautiful, modern & opinionated Linux distribution by DHH. Omarchy takes Arch and makes it opinionated — curated defaults, sane choices, and a focus on getting out of your way so you can work.',
+    desc_fr:'Une distribution Linux belle, moderne et opiniâtre par DHH. Omarchy prend Arch et le rend opiniâtre — des défauts soignés, des choix sensés, et une volonté de ne pas vous gêner pour que vous puissiez travailler.',
+    defaultDE:'other', deLabel:'Multiple choices',
+    p:{ease:2,stable:2,rolling:3,perf:2,priv:1,custom:2,cli:1,gaming:1,light:1,beauty:2}
+  },
+  nobara: {
+    name:'Nobara', line:'Fedora, but for gaming',
+    name_fr:'Nobara', line_fr:'Fedora, mais pour le gaming',
+    logo:'https://avatars.githubusercontent.com/u/81268009', url:'https://nobaraproject.org',
+    tags:['🎮 Gaming-focused','🔴 Fedora-based','⚡ Kernel patches'],
+    tags_fr:['🎮 Axé gaming','🔴 Basé Fedora','⚡ Patchs noyau'],
+    desc:'Fedora re-spin by GloriousEggroll (of Proton-GE fame). Ships with gaming kernel patches, NVIDIA drivers pre-installed, Steam + Lutris ready. The easiest Fedora for gamers.',
+    desc_fr:'Re-spin Fedora par GloriousEggroll. Livré avec patchs noyau gaming, drivers NVIDIA pré-installés, Steam + Lutris prêts. Le Fedora le plus facile pour les gamers.',
+    defaultDE:'gnome', deLabel:'GNOME (modified)',
+    p:{ease:2,stable:2,rolling:0,perf:3,priv:1,custom:2,cli:1,gaming:3,light:1,beauty:2}
+  },
   clear: {
     name:'Clear Linux', line:'Optimised for Intel performance',
     name_fr:'Clear Linux', line_fr:'Optimisé pour la performance Intel',
@@ -1022,7 +1094,12 @@ const ALIASES = {
   parrot:     ['parrot','parrotsec'],
   tails:      ['tails'],
   qubes:      ['qubes'],
-  clear:      ['clear','clearlinux']
+  clear:      ['clear','clearlinux'],
+  artix:      ['artix','artix linux'],
+  solus:      ['solus'],
+  cachyos:    ['cachyos','cachy'],
+  omarchy:    ['omarchy'],
+  nobara:     ['nobara']
 };
 
 function matchDistro(raw) {
@@ -1260,7 +1337,12 @@ const DISTRO_SIGNALS = {
   parrot:    ['advanced','security','wantsPrivacy','privacyMed','privacyHigh','likeTerminal','someTerminal','dailyUse'],
   tails:     ['security','privacyHigh','wantsPrivacy','fearPrivacy','privacyMed','noTerminal','someTerminal'],
   qubes:     ['poweruser','advanced','security','privacyHigh','wantsPrivacy','liveTerminal','likeTerminal','wantsStable'],
-  clear:     ['poweruser','advanced','wantsPerf','highEndHardware','goodHardware','devWork','wantsRolling','likeTerminal']
+  clear:     ['poweruser','advanced','wantsPerf','highEndHardware','goodHardware','devWork','wantsRolling','likeTerminal'],
+  artix:     ['poweruser','advanced','liveTerminal','wantsRolling','wantsCustom','configLot','wantsPrivacy'],
+  solus:     ['intermediate','advanced','dailyUse','gaming','wantsCustom','wantsRolling'],
+  cachyos:   ['intermediate','advanced','wantsRolling','wantsPerf','gaming','wantsKde','goodHardware','highEndHardware'],
+  omarchy:   ['intermediate','advanced','wantsRolling','wantsCustom','wantsEase'],
+  nobara:    ['intermediate','gaming','wantsPerf','highEndHardware','goodHardware','wantsGnome']
 };
 
 const DISTROSEA_KEYS = {
@@ -1269,7 +1351,8 @@ const DISTROSEA_KEYS = {
   mx:'mxlinux', peppermint:'peppermint', opensuse:'opensuse', manjaro:'manjaro',
   endeavour:'endeavouros', garuda:'garuda', arch:'archlinux', nixos:'nixos',
   void:'void', gentoo:'gentoo', slackware:'slackware', alpine:'alpine',
-  kali:null, parrot:null, tails:'tails', qubes:null, clear:null
+  kali:null, parrot:null, tails:'tails', qubes:null, clear:null,
+  artix:null, solus:null, cachyos:null, bunsenlabs:null, nobara:null
 };
 
 const DE_INSTALL = {
@@ -1355,13 +1438,21 @@ function computeTopThree(ignoreLightweight) {
     return true;
   });
 
-  const survivors = passed2.length >= 3 ? passed2 : candidates;
+  // Exclude tried distros AND banger/trash distros
+  const excludeList = [...triedDistros, ...(window._excludedDistros || [])];
+  let survivors = (passed2.length >= 3 ? passed2 : candidates).filter(k => !excludeList.includes(k));
+  // If filtering removed too many, only exclude trash
+  if (survivors.length < 3) {
+    survivors = (passed2.length >= 3 ? passed2 : candidates).filter(k => !_tierTrash.includes(k));
+  }
+  // If filtering removed too many, fall back to including them
+  const finalSurvivors = survivors.length >= 3 ? survivors : (passed2.length >= 3 ? passed2 : candidates);
 
   const dimKeys = Object.keys(userDimensions);
   const mag = Math.sqrt(dimKeys.reduce((s,d) => s + userDimensions[d]*userDimensions[d], 0)) || 1;
   const uniqueSigs = [...new Set(userSignals)];
 
-  const scored = survivors.map(key => {
+  const scored = finalSurvivors.map(key => {
     const dist = DB[key];
     const dot = dimKeys.reduce((s,d) => s + userDimensions[d] * dist.p[d], 0);
     const dmag = Math.sqrt(dimKeys.reduce((s,d) => s + dist.p[d]*dist.p[d], 0)) || 1;
@@ -1494,12 +1585,15 @@ function beginQuiz() {
   userDimensions = {ease:0,stable:0,rolling:0,perf:0,priv:0,custom:0,cli:0,gaming:0,light:0,beauty:0};
   userSignals = []; selectedOpts = []; history.length = 0; activeMode = null; currentTopThree = [];
   ignoreLightweightMode = false; followUpSelected = [];
+  window._tierDone = false;
+  _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   tick();
 }
 
 function tick() {
   if (qIdx === 1 && triedDistros.length > 0 && q1Ans >= 1) {
+    if (!window._tierDone) { showTierList(); return; }
     if (!likeDone) { showFollowUp('like'); return; }
     if (!dislikeDone) { showFollowUp('dislike'); return; }
   }
@@ -1561,6 +1655,159 @@ function showNormalQ() {
     </div>
   </div>`);
   setTimeout(() => { updateNextButton(); }, 50);}
+
+let _tierBangers = [];
+let _tierTrash = [];
+let _tierUnsorted = [];
+
+function showTierList() {
+  _tierBangers = [];
+  _tierTrash = [];
+  _tierUnsorted = [...triedDistros];
+  renderTierHTML();
+}
+
+function renderTierHTML() {
+  const makeCard = (key, zone) => `<div class="tier-card" draggable="true" data-key="${key}" data-zone="${zone}" ondragstart="tierDragStart(event)" ondragend="tierDragEnd(event)">
+    <img src="${DB[key].logo}" alt="${dname(DB[key])}" onerror="this.style.display='none'">
+    <span class="tier-name">${dname(DB[key])}</span>
+  </div>`;
+  
+  const dragHere = t('tierDragHere');
+  const bangersHTML = _tierBangers.map(k => makeCard(k, 'bangers')).join('') || `<div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);text-align:center;padding:20px 0;" class="placeholder">${dragHere}</div>`;
+  const trashHTML = _tierTrash.map(k => makeCard(k, 'trash')).join('') || `<div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);text-align:center;padding:20px 0;" class="placeholder">${dragHere}</div>`;
+  const unsortedHTML = _tierUnsorted.map(k => makeCard(k, 'unsorted')).join('');
+  
+  document.getElementById('card').innerHTML = `<div class="screen">
+    <div class="q-label" style="color:var(--violet)">${t('tierTitle')}</div>
+    <div class="q-text">${t('tierSubtitle')}</div>
+    <div class="tier-container">
+      <div class="tier-column bangers" ondragover="tierDragOver(event)" ondragleave="tierDragLeave(event)" ondrop="tierDrop(event,'bangers')">
+        <h4>${t('tierBangers')}</h4>
+        ${bangersHTML}
+      </div>
+      <div class="tier-column trash" ondragover="tierDragOver(event)" ondragleave="tierDragLeave(event)" ondrop="tierDrop(event,'trash')">
+        <h4>${t('tierTrash')}</h4>
+        ${trashHTML}
+      </div>
+    </div>
+    <div class="tier-unsorted">
+      <div class="tier-unsorted-label">${t('tierUnsorted')}</div>
+      <div class="tier-unsorted-cards" ondragover="tierDragOver(event)" ondragleave="tierDragLeave(event)" ondrop="tierDrop(event,'unsorted')">
+        ${unsortedHTML || '<span style="font-family:var(--mono);font-size:.65rem;color:var(--muted);">'+t('tierAllSorted')+'</span>'}
+      </div>
+    </div>
+    <div class="tier-continue">
+      <button class="btn-next" onclick="finishTierList()">${t('tierContinue')} <span class="arr">→</span></button>
+    </div>
+  </div>`;
+}
+
+function tierDragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.closest('.tier-card')?.dataset.key || '');
+  e.target.closest('.tier-card')?.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function tierDragEnd(e) {
+  e.target.closest('.tier-card')?.classList.remove('dragging');
+  document.querySelectorAll('.tier-column').forEach(c => c.classList.remove('drag-over'));
+}
+function tierDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.target.closest('.tier-column')?.classList.add('drag-over');
+  e.target.closest('.tier-unsorted-cards')?.classList.add('drag-over');
+}
+function tierDragLeave(e) {
+  e.target.closest('.tier-column')?.classList.remove('drag-over');
+  e.target.closest('.tier-unsorted-cards')?.classList.remove('drag-over');
+}
+function tierDrop(e, zone) {
+  e.preventDefault();
+  e.target.closest('.tier-column')?.classList.remove('drag-over');
+  e.target.closest('.tier-unsorted-cards')?.classList.remove('drag-over');
+  const dragKey = e.dataTransfer.getData('text/plain');
+  if (!dragKey) return;
+  
+  // Find the card we're dropping near (for ordering)
+  const dropTarget = e.target.closest('.tier-card');
+  let insertIndex = -1;
+  if (dropTarget && dropTarget.dataset.key !== dragKey) {
+    // Get position of the target card in its zone array
+    const targetZone = dropTarget.dataset.zone;
+    const targetKey = dropTarget.dataset.key;
+    let targetArray;
+    if (targetZone === 'bangers') targetArray = _tierBangers;
+    else if (targetZone === 'trash') targetArray = _tierTrash;
+    else targetArray = _tierUnsorted;
+    insertIndex = targetArray.indexOf(targetKey);
+  }
+  
+  // Remove from all arrays
+  _tierBangers = _tierBangers.filter(k => k !== dragKey);
+  _tierTrash = _tierTrash.filter(k => k !== dragKey);
+  _tierUnsorted = _tierUnsorted.filter(k => k !== dragKey);
+  
+  // Add to target zone at the right position
+  if (zone === 'bangers') {
+    if (insertIndex >= 0) _tierBangers.splice(insertIndex, 0, dragKey);
+    else _tierBangers.push(dragKey);
+  } else if (zone === 'trash') {
+    if (insertIndex >= 0) _tierTrash.splice(insertIndex, 0, dragKey);
+    else _tierTrash.push(dragKey);
+  } else {
+    if (insertIndex >= 0) _tierUnsorted.splice(insertIndex, 0, dragKey);
+    else _tierUnsorted.push(dragKey);
+  }
+  renderTierHTML();
+}
+
+function finishTierList() {
+  window._tierDone = true;
+  // Apply scoring based on tier placement and order
+  // Bangers: higher position = stronger boost
+  _tierBangers.forEach((k, index) => {
+    const sigs = DISTRO_SIGNALS[k] || [];
+    // Top distro gets 3x signal push, second gets 2x, rest get 1x
+    const multiplier = index === 0 ? 3 : index === 1 ? 2 : 1;
+    for (let i = 0; i < multiplier; i++) {
+      userSignals.push(...sigs);
+    }
+    // Boost dimension scores based on the distro's profile
+    const dist = DB[k];
+    if (dist && dist.p) {
+      Object.entries(dist.p).forEach(([dim, val]) => {
+        userDimensions[dim] += val * (multiplier * 0.5);
+      });
+    }
+  });
+  
+  // Trash: penalize hard
+  _tierTrash.forEach((k, index) => {
+    triedDistros = triedDistros.filter(t => t !== k);
+    const dist = DB[k];
+    if (dist && dist.p && dist.p.ease >= 3) {
+      // Hated a beginner distro? Push away from beginner distros
+      userDimensions.ease = Math.max(0, userDimensions.ease - 4);
+      userDimensions.custom += 2;
+      userDimensions.cli += 1;
+    }
+    if (UBUNTU_BASED.includes(k)) {
+      userDimensions.ease = Math.max(0, userDimensions.ease - 3);
+    }
+  });
+  
+  // Keep bangers in tried list with -25 penalty but exclude from results
+  _tierBangers.forEach(k => {
+    if (!triedDistros.includes(k)) triedDistros.push(k);
+  });
+  // Store excluded keys for computeTopThree
+  window._excludedDistros = [..._tierBangers, ..._tierTrash];
+  
+  likeDone = true;
+  dislikeDone = true;
+  tick();
+}
 
 function showFollowUp(type) {
   followUpSelected = [];
@@ -2140,6 +2387,8 @@ function handleDistroInput(e) {
       triedDistros.push(key);
       renderPills();
       hint.textContent = '';
+      // Set q1Ans so follow-ups / tier list trigger on Q2
+      if (q1Ans === -1) q1Ans = 1;
     } else {
       hint.textContent = t('alreadyAdded');
     }
@@ -2366,6 +2615,14 @@ const TRANSLATIONS = {
     whatBothered: 'What bothered you most about',
     selectAll: '(select all that apply)',
     skipArrow: 'Skip →',
+    tierTitle: '✦ Sort your distros',
+    tierSubtitle: 'Drag each distro to where it belongs:',
+    tierBangers: '🔥 Banger distros',
+    tierTrash: '🗑️ Never again',
+    tierUnsorted: '📋 Unsorted',
+    tierDragHere: 'Drag distros here',
+    tierAllSorted: 'All sorted!',
+    tierContinue: 'Continue',
     nextArrow: '→',
     targetEmoji: '🎯',
     securityNote: 'We focused on privacy‑first distros because you value security above all.',
@@ -2460,6 +2717,14 @@ const TRANSLATIONS = {
     whatBothered: "Qu'est-ce qui t'a dérangé chez",
     selectAll: '(sélectionne tout ce qui s\'applique)',
     skipArrow: 'Passer →',
+    tierTitle: '✦ Classe tes distros',
+    tierSubtitle: 'Fais glisser chaque distro là où elle mérite :',
+    tierBangers: '🔥 Distros de banger',
+    tierTrash: '🗑️ Plus jamais',
+    tierUnsorted: '📋 Non trié',
+    tierDragHere: 'Dépose les distros ici',
+    tierAllSorted: 'Tout est trié !',
+    tierContinue: 'Continuer',
     nextArrow: '→',
     targetEmoji: '🎯',
     securityNote: 'Nous avons privilégié les distros axées sur la confidentialité car tu accordes une grande importance à la sécurité.',

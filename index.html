@@ -614,7 +614,6 @@ body{
 .light-mode .distro-detail .back-link:hover { color: #5A7590 !important; }
 .confetti-piece { position:fixed; pointer-events:none; z-index:9999; border-radius:2px; animation:confettiFall linear forwards; }
 @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
-@keyframes revParticle { 0%{opacity:1;transform:scale(1) translate(0,0)} 100%{opacity:0;transform:scale(0) translate(var(--tx),var(--ty))} }
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
   color:rgba(107,122,150,.45);letter-spacing:.05em}
 ::-webkit-scrollbar{width:6px}
@@ -650,13 +649,15 @@ body{
   <div style="width:260px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-bottom:40px;">
     <div id="revBar" style="height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--mint));border-radius:99px;transition:width .08s linear;box-shadow:0 0 12px var(--mint);"></div>
   </div>
-  <div id="revPodium" style="display:none;text-align:center;width:100%;max-width:700px;">
-    <div id="revPodiumTitle" style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;margin-bottom:28px;
-      background:linear-gradient(135deg,var(--mint),#fff,var(--violet));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+  <div id="revPodium" style="display:none;text-align:center;width:100%;max-width:780px;">
+    <div style="background:rgba(10,15,30,.85);border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:36px 20px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 4px 48px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);position:relative;z-index:2;">
+      <div id="revPodiumTitle" style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;margin-bottom:28px;
+        background:linear-gradient(135deg,var(--mint),#fff,var(--violet));
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+      </div>
+      <div style="display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:0 16px;" id="revPodiumCards"></div>
+      <div id="revBreakdown" style="width:100%;max-width:500px;margin:28px auto 0;opacity:0;transform:translateY(20px);transition:opacity .5s ease .8s,transform .5s ease .8s;"></div>
     </div>
-    <div style="display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:0 16px;" id="revPodiumCards"></div>
-    <div id="revBreakdown" style="width:100%;max-width:500px;margin:28px auto 0;opacity:0;transform:translateY(20px);transition:opacity .5s ease .8s,transform .5s ease .8s;"></div>
   </div>
 </div>
 <button class="settings-gear" onclick="toggleSettings()" title="Settings" aria-label="Settings">⚙️</button>
@@ -1890,27 +1891,78 @@ function startReveal(topThree) {
   }, 60);
 }
 
-function spawnRevealParticles(color){
+let revealParticles = [];
+let revealParticlesActive = false;
+let revealMouseX = -1000, revealMouseY = -1000;
+
+function initRevealParticles(color){
   const container = document.getElementById('reveal-overlay');
-  for(let i=0;i<30;i++){
+  if(!revealParticlesActive){
+    revealParticlesActive = true;
+    container.addEventListener('mousemove', e => {
+      revealMouseX = e.clientX;
+      revealMouseY = e.clientY;
+    });
+  }
+  revealParticles.forEach(p => p.el.remove());
+  revealParticles = [];
+  
+  for(let i=0;i<50;i++){
     const p = document.createElement('div');
-    const size = Math.random()*5+2;
-    const angle = Math.random()*Math.PI*2;
-    const dist = Math.random()*150+60;
+    const size = Math.random()*4+2;
+    const x = Math.random() * container.offsetWidth;
+    const y = Math.random() * container.offsetHeight;
     p.style.cssText = `
       position:absolute;border-radius:50%;pointer-events:none;
       width:${size}px;height:${size}px;
-      background:${Math.random()>.5?color:'#fff'};
-      left:50%;top:55%;
-      --tx:${Math.cos(angle)*dist}px;
-      --ty:${Math.sin(angle)*dist}px;
-      animation:revParticle ${Math.random()*0.7+0.4}s ease-out forwards;
-      animation-delay:${Math.random()*0.2}s;
-      box-shadow:0 0 ${size*2}px ${color};
+      background:${color};
+      left:${x}px;top:${y}px;
+      box-shadow:0 0 ${size}px ${color};
+      z-index:0;
+      opacity:0;
+      transition:opacity .6s;
     `;
     container.appendChild(p);
-    setTimeout(()=>p.remove(), 1200);
+    setTimeout(() => { p.style.opacity = '0.9'; }, Math.random()*1500);
+    revealParticles.push({
+      el: p, x, y, size,
+      vx: (Math.random()-0.5)*1.5,
+      vy: (Math.random()-0.5)*1.5-0.6
+    });
   }
+}
+
+function updateRevealParticles(){
+  if(!revealParticlesActive || document.getElementById('reveal-overlay').style.display === 'none'){
+    revealParticlesActive = false;
+    return;
+  }
+  const container = document.getElementById('reveal-overlay');
+  const rect = container.getBoundingClientRect();
+  for(const p of revealParticles){
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < -20) p.x = rect.width + 20;
+    if(p.x > rect.width + 20) p.x = -20;
+    if(p.y < -20) p.y = rect.height + 20;
+    if(p.y > rect.height + 20) p.y = -20;
+    
+    const dx = p.x - (revealMouseX - rect.left);
+    const dy = p.y - (revealMouseY - rect.top);
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    const fear = 120;
+    if(dist < fear && dist > 0){
+      const force = (fear - dist) / fear;
+      const angle = Math.atan2(dy, dx);
+      p.x += Math.cos(angle) * force * 6;
+      p.y += Math.sin(angle) * force * 6;
+      p.el.style.opacity = Math.max(0.2, 0.9 - force*0.6);
+    } else {
+      p.el.style.opacity = 0.9;
+    }
+    p.el.style.left = p.x + 'px';
+    p.el.style.top = p.y + 'px';
+  }
+  requestAnimationFrame(updateRevealParticles);
 }
 
 function showPodium(topThree) {
@@ -1922,7 +1974,8 @@ function showPodium(topThree) {
   document.getElementById('revPodiumTitle').textContent = '✦ ' + t('topMatches') + ' ✦';
 
   const mintColor = getComputedStyle(document.documentElement).getPropertyValue('--mint').trim() || '#4fffb0';
-  spawnRevealParticles(mintColor);
+  initRevealParticles(mintColor);
+  updateRevealParticles();
 
   const badges = [t('bestMatch'), t('runnerUp'), t('alsoGreat')];
   // Pedestal heights in px
@@ -1964,14 +2017,12 @@ let _podiumTopThree = null;
 
 function revealFromPodium(key) {
   _podiumTopThree = _revealData ? [..._revealData] : _podiumTopThree;
-  // Animate the clicked card scaling up before transition
   const clickedCard = event && event.target ? event.target.closest('.podium-card') : null;
   if (clickedCard) {
     clickedCard.style.transition = 'transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease';
     clickedCard.style.transform = 'scale(1.15)';
     clickedCard.style.zIndex = '10';
   }
-  // Fade out other cards
   document.querySelectorAll('.podium-card').forEach(c => {
     if (c !== clickedCard) {
       c.style.transition = 'opacity .3s ease, transform .3s ease';
@@ -1980,8 +2031,13 @@ function revealFromPodium(key) {
     }
   });
 
+  // Render detail result UNDER the overlay first
+  currentTopThree = _podiumTopThree;
+  showDistroDetailResult(key);
+
+  // Then fade overlay on top
   setTimeout(() => {
-    document.getElementById('reveal-overlay').style.transition = 'opacity .35s ease';
+    document.getElementById('reveal-overlay').style.transition = 'opacity .3s ease';
     document.getElementById('reveal-overlay').style.opacity = '0';
     setTimeout(() => {
       document.getElementById('reveal-overlay').style.display = 'none';
@@ -1990,11 +2046,11 @@ function revealFromPodium(key) {
       document.getElementById('revScanText').style.display = '';
       document.getElementById('revBar').parentElement.style.display = '';
       document.getElementById('revPodium').style.display = 'none';
-      currentTopThree = _podiumTopThree;
-      showDistroDetailResult(key);
-      // Keep _revealData for back-to-podium
-    }, 350);
-  }, 400);
+      revealParticlesActive = false;
+      revealParticles.forEach(p => p.el.remove());
+      revealParticles = [];
+    }, 300);
+  }, 350);
 }
 
 function goBackToPodium() {
@@ -2002,11 +2058,7 @@ function goBackToPodium() {
     showPickScreen();
     return;
   }
-  // Always rebuild podium to ensure clean state
-  document.getElementById('revPodiumCards').innerHTML = '';
-  showPodium(_podiumTopThree);
   const overlay = document.getElementById('reveal-overlay');
-  // First make overlay visible but transparent
   overlay.style.display = 'flex';
   overlay.style.opacity = '0';
   overlay.style.transition = 'none';
@@ -2014,38 +2066,16 @@ function goBackToPodium() {
   document.getElementById('revBar').parentElement.style.display = 'none';
   document.getElementById('revPodium').style.display = 'block';
 
-  // Force reset all card styles completely
-  document.querySelectorAll('.podium-card').forEach(c => {
-    c.style.cssText = 'opacity:0;transform:translateY(40px);transition:none;';
-  });
-  document.getElementById('revBreakdown').style.cssText = 'opacity:0;transform:translateY(20px);transition:none;';
+  // Rebuild cards fresh
+  document.getElementById('revPodiumCards').innerHTML = '';
+  showPodium(_podiumTopThree);
 
-  // Force reflow then animate in
+  // Cards are at opacity:0 from showPodium, they'll animate in
   overlay.offsetHeight;
   overlay.style.transition = 'opacity .4s ease';
   overlay.style.opacity = '1';
-
-  const mintColor = getComputedStyle(document.documentElement).getPropertyValue('--mint').trim() || '#4fffb0';
-  spawnRevealParticles(mintColor);
-
-  setTimeout(() => {
-    document.querySelectorAll('.podium-card').forEach((c, i) => {
-      c.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .5s ease '+(i*150)+'ms, transform .5s cubic-bezier(.34,1.56,.64,1) '+(i*150)+'ms;';
-    });
-    const bd = document.getElementById('revBreakdown');
-    bd.style.cssText = 'opacity:1;transform:translateY(0);transition:opacity .5s ease .6s, transform .5s ease .6s;';
-    setTimeout(() => animateScoreBars(), 200);
-  }, 80);
-}
-
-function goBackToPodium() {
-  document.getElementById('reveal-overlay').style.display = 'flex';
-  document.getElementById('reveal-overlay').style.opacity = '1';
-  document.getElementById('revScanText').style.display = 'none';
-  document.getElementById('revBar').parentElement.style.display = 'none';
-  document.getElementById('revPodium').style.display = 'block';
-  // Cards are still there, just show overlay again
-  launchConfetti();
+  initRevealParticles(getComputedStyle(document.documentElement).getPropertyValue('--mint').trim() || '#4fffb0');
+  updateRevealParticles();
 }
 
 function finishReveal() {
@@ -2316,6 +2346,8 @@ const TRANSLATIONS = {
     alsoGreat: '🥉 Also great',
     otherPicks: 'Other top picks',
     visit: 'Visit',
+    tryOnline: 'Try',
+    online: 'Online',
     analyzing: 'Analysing your profile…',
     matching: 'Matching against',
     distros: 'distros',
@@ -2408,6 +2440,8 @@ const TRANSLATIONS = {
     alsoGreat: '🥉 Aussi bien',
     otherPicks: 'Autres suggestions',
     visit: 'Visiter',
+    tryOnline: 'Essayer',
+    online: 'en ligne',
     analyzing: 'Analyse de ton profil…',
     matching: 'Comparaison avec',
     distros: 'distros',

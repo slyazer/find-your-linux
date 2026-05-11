@@ -693,12 +693,12 @@ body{
     <option value="en">English</option>
     <option value="fr">Français</option>
   </select>
-  <h4 style="margin-top:16px">New feature</h4>
+  <h4 style="margin-top:16px" id="settingsBetaLabel">In beta</h4>
   <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted);cursor:pointer;margin-bottom:4px">
     <input type="checkbox" id="lockToggle" checked onchange="toggleLocks(this.checked)">
     <span id="lockToggleLabel">Profile Locks</span>
   </label>
-  <p style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin:0 0 14px 26px;line-height:1.5;opacity:.7">When enabled, strong preferences for gaming, privacy or lightweight hardware narrow results to specialised distros only.</p>
+  <p id="settingsLockDesc" style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin:0 0 14px 26px;line-height:1.5;opacity:.7">When enabled, strong preferences for gaming, privacy or lightweight hardware narrow results to specialised distros only.</p>
 </div>
 <div class="bg"><div class="stars"></div><div class="orb"></div></div>
 <div class="particles" id="particles"></div>
@@ -706,7 +706,7 @@ body{
   <div class="brand" id="brand">
     <div class="brand-tag">// distro.match</div>
     <h1>Find Your Linux</h1>
-    <p>25 questions . 25 distros . your perfect match</p>
+    <p>25 questions . 30 distros . your perfect match</p>
   </div>
   <div class="prog-wrap" id="progWrap" style="display:none">
     <div class="prog-meta">
@@ -2442,7 +2442,7 @@ function showPodium(topThree) {
   if (activeMode === 'lightweight') podiumLockNote = t('lightweightNote');
 
   const showPodiumOverride = podiumLockNote && !lockWasOverridden;
-  const breakdownHTML = buildScoreBreakdown() + (showPodiumOverride ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : (lockWasOverridden ? '' : ''));
+  const breakdownHTML = buildScoreBreakdown() + (showPodiumOverride ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : '');
 
   // Comparison table
   const compRows = topThree.map(key => {
@@ -2935,6 +2935,8 @@ const TRANSLATIONS = {
     startDesc: "Answer 25 smart questions and we'll match you with one of 30 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
     settingsTheme: 'Theme',
     settingsLang: 'Language',
+    settingsBeta: 'In beta',
+    settingsLockDesc: 'When enabled, strong preferences for gaming, privacy or lightweight hardware narrow results to specialised distros only.',
     partLabel: 'Part',
     question: 'Question',
     of: 'of',
@@ -3039,6 +3041,8 @@ const TRANSLATIONS = {
     startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite parmi 30 distributions — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
     settingsTheme: 'Thème',
     settingsLang: 'Langue',
+    settingsBeta: 'En bêta',
+    settingsLockDesc: 'Quand activé, les fortes préférences pour le gaming, la vie privée ou le matériel léger limitent les résultats aux distros spécialisées.',
     partLabel: 'Partie',
     question: 'Question',
     of: 'sur',
@@ -3280,11 +3284,17 @@ function setLanguage(lang) {
   document.getElementById('langSelect').value = lang;
   document.getElementById('progLabel').textContent = t('progress');
   document.getElementById('footerText').textContent = t('footer');
+  document.getElementById('settingsBetaLabel').textContent = t('settingsBeta');
+  document.getElementById('lockToggleLabel').textContent = 'Profile Locks';
+  const lockDesc = document.querySelector('#settingsPanel p');
+  if (lockDesc) lockDesc.textContent = t('settingsLockDesc');
   document.querySelector('.brand h1').textContent = t('tagline');
   document.querySelector('.brand p').textContent = t('subtitle');
   const progWrap = document.getElementById('progWrap');
   if (!progWrap.style.display || progWrap.style.display === 'none') {
-    showStart();
+    document.getElementById('settingsBetaLabel').textContent = t('settingsBeta');
+document.getElementById('settingsLockDesc').textContent = t('settingsLockDesc');
+showStart();
   } else {
     showNormalQ();
   }

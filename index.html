@@ -1131,6 +1131,7 @@ function lev(a,b) {
 }
 
 const QS = [
+  // Part 1: Ease & Stability — Q1, Q2, Q5, Q13, Q17 (indices 0-4)
   {id:1, text:"What's your experience with Linux?", hasTried:true,
    opts:[
     {l:'A',i:'🌱',m:'Never used it', s:'Complete beginner — first time', v:{ease:3,light:1}, sig:['beginner','noTerminal','wantsEase']},
@@ -1142,20 +1143,6 @@ const QS = [
     {l:'C',i:'🚀',m:'Raw performance', s:'Squeeze every CPU cycle', v:{perf:3}, sig:['wantsPerf']},
     {l:'D',i:'🎨',m:'Full customisation', s:'My system, my rules', v:{custom:3}, sig:['wantsCustom']},
    ]},
-  {id:3, text:"How do you feel about the terminal?",
-   opts:[
-    {l:'A',i:'😰',m:'Please, no.', s:'GUI all the way, always', v:{ease:2}, sig:['noTerminal']},
-    {l:'B',i:'🤷',m:'I use it when forced', s:'Only when there\'s no other way', v:{ease:1,cli:1}, sig:['someTerminal']},
-    {l:'C',i:'😄',m:'I like it', s:'Comfortable with bash & co.', v:{cli:2,custom:1}, sig:['likeTerminal']},
-    {l:'D',i:'🖤',m:'I live in it', s:'tmux, neovim, zsh — home.', v:{cli:3,custom:2}, sig:['liveTerminal','wantsCustom']},
-   ]},
-  {id:4, text:"What's your main use case?",
-   opts:[
-    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office', v:{ease:2,beauty:1}, sig:['dailyUse','wantsEase']},
-    {l:'B',i:'💼',m:'Dev / work productivity', s:'Code, containers, servers', v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
-    {l:'C',i:'🎮',m:'Gaming & high FPS', s:'Steam, Proton, latest GPU', v:{gaming:3,perf:2}, sig:['gaming','wantsPerf']},
-    {l:'D',i:'🔐',m:'Security & privacy', s:'Pentest, anonymity, CTF', v:{priv:3,cli:2}, sig:['security','wantsPrivacy','likeTerminal']},
-   ]},
   {id:5, text:"How do you want updates delivered?",
    opts:[
     {l:'A',i:'🐢',m:'Rare & tested', s:'Update once a year is enough', v:{stable:3}, sig:['wantsStable','wantsStableRelease']},
@@ -1163,6 +1150,22 @@ const QS = [
     {l:'C',i:'🔄',m:'Rolling release', s:'Always have the latest packages', v:{rolling:3,perf:1}, sig:['wantsRolling']},
     {l:'D',i:'🩸',m:'Bleeding edge', s:'I want it before it\'s stable', v:{rolling:3,perf:2,custom:2}, sig:['wantsRolling','wantsPerf','advanced']},
    ]},
+  {id:13,text:"What's your relationship with system crashes?",
+   opts:[
+    {l:'A',i:'😱',m:'One crash and I\'m switching back', s:'Stability is non-negotiable', v:{stable:3,ease:1}, sig:['fearBreaking','wantsStable','beginner']},
+    {l:'B',i:'😤',m:'Annoying but I fix it', s:'I can handle occasional issues', v:{stable:1,cli:1}, sig:['intermediate','someTerminal']},
+    {l:'C',i:'🤓',m:'Opportunity to learn', s:'Debugging is half the fun', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','fearBoring']},
+    {l:'D',i:'😈',m:'I caused it on purpose', s:'Rolling back snapshots is fun', v:{rolling:1,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
+   ]},
+  {id:17,text:"What would make you switch distros?",
+   opts:[
+    {l:'A',i:'💥',m:'One bad update that breaks things', s:'Stability is everything', v:{stable:3}, sig:['fearBreaking','wantsStable']},
+    {l:'B',i:'🐌',m:'It starts feeling slow', s:'Performance matters to me', v:{perf:2,rolling:1}, sig:['wantsPerf','fearOutdated']},
+    {l:'C',i:'🔄',m:'I just wanted something new', s:'No complaints, just exploring', v:{rolling:2,custom:1}, sig:['fearBoring','wantsRolling']},
+    {l:'D',i:'😒',m:'Lack of customisation', s:'I need full control', v:{custom:2,cli:1}, sig:['fearBoring','wantsCustom']},
+   ]},
+
+  // Part 2: Performance & Lightweight — Q6, Q7, Q14 (indices 5-7)
   {id:6, text:"How powerful is your machine?",
    opts:[
     {l:'A',i:'💾',m:'Old / low-end', s:'Under 4 GB RAM, old CPU', v:{light:3}, sig:['oldHardware']},
@@ -1177,19 +1180,21 @@ const QS = [
     {l:'C',isDE:true,deKey:'tiling',ico:'tiling',m:'Tiling WM',s:'i3, Hyprland, Sway — keyboard-first',v:{custom:3,cli:2,perf:1},sig:['wantsTiling','liveTerminal','wantsCustom']},
     {l:'D',isDE:true,deKey:'xfce',ico:'xfce',m:'Lightweight DE',s:'XFCE / LXDE — fast on any HW',v:{light:3,ease:1},sig:['wantsLight','oldHardware']},
    ]},
+  {id:14,text:"Pick your ideal weekend Linux activity:",
+   opts:[
+    {l:'A',i:'🎬',m:'Watch videos, browse the web', s:'Just use it normally', v:{ease:2}, sig:['beginner','dailyUse','wantsEase']},
+    {l:'B',i:'🎮',m:'Game on Steam / Proton', s:'Making games work on Linux', v:{gaming:3,perf:1}, sig:['gaming','intermediate']},
+    {l:'C',i:'🎨',m:'Rice my desktop for hours', s:'Make it look perfect', v:{custom:3,beauty:2}, sig:['advanced','wantsCustom','fearBoring']},
+    {l:'D',i:'🔬',m:'Read docs and configure', s:'Deep-dive into config files', v:{cli:2,custom:2}, sig:['advanced','poweruser','configLot','liveTerminal']},
+   ]},
+
+  // Part 3: Privacy & Security — Q8, Q10, Q20 (indices 8-10)
   {id:8, text:"How important is privacy to you?",
    opts:[
     {l:'A',i:'😐',m:'Not really', s:'I use Google & Windows anyway', v:{ease:1}, sig:['privacyNone']},
     {l:'B',i:'🔒',m:'Somewhat', s:'I use a VPN sometimes', v:{priv:1}, sig:['privacyLow']},
     {l:'C',i:'🛡️',m:'Very important', s:'FOSS only, no telemetry', v:{priv:2}, sig:['privacyMed','wantsPrivacy']},
     {l:'D',i:'👻',m:'Critical — anonymity first', s:'Leave zero trace online', v:{priv:3,cli:1}, sig:['privacyHigh','wantsPrivacy','security']},
-   ]},
-  {id:9, text:"How much time will you invest in setup?",
-   opts:[
-    {l:'A',i:'⚡',m:'Zero — boot and go', s:'If I configure, I quit', v:{ease:3}, sig:['configNone','wantsEase']},
-    {l:'B',i:'☕',m:'A couple of hours', s:'Basic tweaks and done', v:{ease:1,custom:1}, sig:['configLittle']},
-    {l:'C',i:'🌙',m:'A whole weekend', s:'I want it exactly right', v:{custom:2,cli:1}, sig:['configMore']},
-    {l:'D',i:'∞',m:'As long as it takes', s:'Configuring IS the hobby', v:{custom:3,cli:3}, sig:['configLot','wantsCustom','liveTerminal']},
    ]},
   {id:10,text:"What's your philosophy on software freedom?",
    opts:[
@@ -1198,12 +1203,28 @@ const QS = [
     {l:'C',i:'💼',m:'I don\'t care as long as it works', s:'Proprietary or open — just get it done', v:{ease:2}, sig:['beginner','privacyNone']},
     {l:'D',i:'🚫',m:'Avoid blobs, prefer community', s:'Debian main, no non-free', v:{priv:2,custom:2}, sig:['privacyMed','advanced']},
    ]},
-  {id:11,text:"How important is out-of-the-box hardware support?",
+  {id:20,text:"How do you approach system security?",
    opts:[
-    {l:'A',i:'🔌',m:'Essential — everything works immediately', s:'Wi‑Fi, GPU, printers — no tinkering', v:{ease:3}, sig:['wantsEase','beginner']},
-    {l:'B',i:'🔧',m:'I can tweak a few things', s:'Happy to run a script or two', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
-    {l:'C',i:'📟',m:'I\'m okay with manual driver installs', s:'Terminal doesn\'t scare me', v:{cli:1,custom:2}, sig:['advanced','likeTerminal']},
-    {l:'D',i:'⚙️',m:'I\'ll compile my own kernel', s:'Total control over hardware', v:{custom:3,cli:3,perf:1}, sig:['poweruser','liveTerminal','wantsCustom']},
+    {l:'A',i:'🔓',m:'I trust the OS defaults', s:'Whatever comes out of the box', v:{ease:1}, sig:['privacyNone']},
+    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense', v:{priv:1,stable:1}, sig:['privacyLow','intermediate']},
+    {l:'C',i:'🔒',m:'I harden my system and disable services', s:'Kernel hardening, apparmor/selinux', v:{priv:2,custom:2,cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
+    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs', v:{priv:3,custom:3,cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
+   ]},
+
+  // Part 4: Custom & CLI — Q3, Q9, Q12, Q15, Q19 (indices 11-15)
+  {id:3, text:"How do you feel about the terminal?",
+   opts:[
+    {l:'A',i:'😰',m:'Please, no.', s:'GUI all the way, always', v:{ease:2}, sig:['noTerminal']},
+    {l:'B',i:'🤷',m:'I use it when forced', s:'Only when there\'s no other way', v:{ease:1,cli:1}, sig:['someTerminal']},
+    {l:'C',i:'😄',m:'I like it', s:'Comfortable with bash & co.', v:{cli:2,custom:1}, sig:['likeTerminal']},
+    {l:'D',i:'🖤',m:'I live in it', s:'tmux, neovim, zsh — home.', v:{cli:3,custom:2}, sig:['liveTerminal','wantsCustom']},
+   ]},
+  {id:9, text:"How much time will you invest in setup?",
+   opts:[
+    {l:'A',i:'⚡',m:'Zero — boot and go', s:'If I configure, I quit', v:{ease:3}, sig:['configNone','wantsEase']},
+    {l:'B',i:'☕',m:'A couple of hours', s:'Basic tweaks and done', v:{ease:1,custom:1}, sig:['configLittle']},
+    {l:'C',i:'🌙',m:'A whole weekend', s:'I want it exactly right', v:{custom:2,cli:1}, sig:['configMore']},
+    {l:'D',i:'∞',m:'As long as it takes', s:'Configuring IS the hobby', v:{custom:3,cli:3}, sig:['configLot','wantsCustom','liveTerminal']},
    ]},
   {id:12,text:"How do you install software?",
    opts:[
@@ -1212,47 +1233,12 @@ const QS = [
     {l:'C',i:'🔨',m:'Compile from source', s:'I read Makefiles for fun', v:{perf:2,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
     {l:'D',i:'📦',m:'Flatpak / Snap / AppImage', s:'Universal packages please', v:{ease:2,stable:1}, sig:['beginner','intermediate','wantsEase']},
    ]},
-  {id:13,text:"What's your relationship with system crashes?",
-   opts:[
-    {l:'A',i:'😱',m:'One crash and I\'m switching back', s:'Stability is non-negotiable', v:{stable:3,ease:1}, sig:['fearBreaking','wantsStable','beginner']},
-    {l:'B',i:'😤',m:'Annoying but I fix it', s:'I can handle occasional issues', v:{stable:1,cli:1}, sig:['intermediate','someTerminal']},
-    {l:'C',i:'🤓',m:'Opportunity to learn', s:'Debugging is half the fun', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','fearBoring']},
-    {l:'D',i:'😈',m:'I caused it on purpose', s:'Rolling back snapshots is fun', v:{rolling:1,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
-   ]},
-  {id:14,text:"Pick your ideal weekend Linux activity:",
-   opts:[
-    {l:'A',i:'🎬',m:'Watch videos, browse the web', s:'Just use it normally', v:{ease:2}, sig:['beginner','dailyUse','wantsEase']},
-    {l:'B',i:'🎮',m:'Game on Steam / Proton', s:'Making games work on Linux', v:{gaming:3,perf:1}, sig:['gaming','intermediate']},
-    {l:'C',i:'🎨',m:'Rice my desktop for hours', s:'Make it look perfect', v:{custom:3,beauty:2}, sig:['advanced','wantsCustom','fearBoring']},
-    {l:'D',i:'🔬',m:'Read docs and configure', s:'Deep-dive into config files', v:{cli:2,custom:2}, sig:['advanced','poweruser','configLot','liveTerminal']},
-   ]},
   {id:15,text:"How do you feel about system customisation via config files?",
    opts:[
     {l:'A',i:'🚫',m:'I never touch configs', s:'GUI settings are enough', v:{ease:2}, sig:['beginner','configNone']},
     {l:'B',i:'🖱️',m:'I edit some settings with GUI tools', s:'A few tweaks in a settings app', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
     {l:'C',i:'📝',m:'I enjoy tweaking config files', s:'vim /etc/... is second nature', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','configMore']},
     {l:'D',i:'📄',m:'I manage my entire OS declaratively', s:'Nix, Ansible, or dotfiles repos', v:{cli:3,custom:3}, sig:['poweruser','configLot','liveTerminal','wantsCustom']},
-   ]},
-  {id:16,text:"How do you feel about reading documentation?",
-   opts:[
-    {l:'A',i:'😅',m:'YouTube tutorials only', s:'Videos are easier for me', v:{ease:2}, sig:['beginner','wantsEase']},
-    {l:'B',i:'🌐',m:'Google it when stuck', s:'Forums and Reddit are fine', v:{ease:1,stable:1}, sig:['intermediate']},
-    {l:'C',i:'🤖',m:'I use AI', s:'ChatGPT / Claude solves it', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
-    {l:'D',i:'📚',m:'I read the whole wiki', s:'Arch Wiki is my homepage', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal','configLot']},
-  ]},
-  {id:17,text:"What would make you switch distros?",
-   opts:[
-    {l:'A',i:'💥',m:'One bad update that breaks things', s:'Stability is everything', v:{stable:3}, sig:['fearBreaking','wantsStable']},
-    {l:'B',i:'🐌',m:'It starts feeling slow', s:'Performance matters to me', v:{perf:2,rolling:1}, sig:['wantsPerf','fearOutdated']},
-    {l:'C',i:'🔄',m:'I just wanted something new', s:'No complaints, just exploring', v:{rolling:2,custom:1}, sig:['fearBoring','wantsRolling']},
-    {l:'D',i:'😒',m:'Lack of customisation', s:'I need full control', v:{custom:2,cli:1}, sig:['fearBoring','wantsCustom']},
-   ]},
-  {id:18,text:"What kind of community and support matters most?",
-   opts:[
-    {l:'A',i:'🤖',m:'I use AI', s:'ChatGPT fixes everything', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
-    {l:'B',i:'🔍',m:'As long as I find my problem', s:'Any source that works', v:{ease:1,cli:1}, sig:['intermediate']},
-    {l:'C',i:'👥',m:'Active but smaller, expert community', s:'IRC, mailing lists — deep knowledge', v:{custom:2,priv:1}, sig:['advanced','wantsCustom']},
-    {l:'D',i:'🔧',m:'I solve my own problems', s:'Debug without external help', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal']},
    ]},
   {id:19,text:"How do you want your system configured out of the box?",
    opts:[
@@ -1261,19 +1247,14 @@ const QS = [
     {l:'C',i:'🔧',m:'Minimal base, I build up', s:'Start bare, add what I want', v:{custom:2,cli:2}, sig:['advanced','configMore','wantsCustom']},
     {l:'D',i:'📄',m:'A config file defines it all', s:'Declarative, reproducible', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']},
    ]},
-  {id:20,text:"How do you approach system security?",
+
+  // Part 5: Gaming & Beauty — Q4, Q22, Q23, Q24, Q25 (indices 16-20)
+  {id:4, text:"What's your main use case?",
    opts:[
-    {l:'A',i:'🔓',m:'I trust the OS defaults', s:'Whatever comes out of the box', v:{ease:1}, sig:['privacyNone']},
-    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense', v:{priv:1,stable:1}, sig:['privacyLow','intermediate']},
-    {l:'C',i:'🔒',m:'I harden my system and disable services', s:'Kernel hardening, apparmor/selinux', v:{priv:2,custom:2,cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
-    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs', v:{priv:3,custom:3,cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
-   ]},
-  {id:21,text:"How important is corporate backing?",
-   opts:[
-    {l:'A',i:'🏢',m:'I want a company behind it', s:'Enterprise support & funding', v:{stable:2,ease:1}, sig:['wantsStable','intermediate']},
-    {l:'B',i:'🤷',m:'Doesn\'t matter much', s:'Community or corp, both fine', v:{custom:1}, sig:[]},
-    {l:'C',i:'🌍',m:'Community-driven only', s:'No corporate influence', v:{priv:1,custom:2}, sig:['privacyMed','wantsCustom']},
-    {l:'D',i:'🚫',m:'Actively avoid big tech', s:'Independence is crucial', v:{priv:2,custom:2}, sig:['privacyHigh','wantsPrivacy']},
+    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office', v:{ease:2,beauty:1}, sig:['dailyUse','wantsEase']},
+    {l:'B',i:'💼',m:'Dev / work productivity', s:'Code, containers, servers', v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
+    {l:'C',i:'🎮',m:'Gaming & high FPS', s:'Steam, Proton, latest GPU', v:{gaming:3,perf:2}, sig:['gaming','wantsPerf']},
+    {l:'D',i:'🔐',m:'Security & privacy', s:'Pentest, anonymity, CTF', v:{priv:3,cli:2}, sig:['security','wantsPrivacy','likeTerminal']},
    ]},
   {id:22,text:"How important is visual polish to you?",
    opts:[
@@ -1397,6 +1378,30 @@ let currentTopThree    = [];
 let ignoreLightweightMode = false;
 let followUpSelected   = [];
 let quizStartTime      = null;
+
+const QUIZ_PARTS = [
+  { name: 'Ease & Stability', name_fr: 'Simplicité & Stabilité', questions: [0,1,4,12,16] },
+  { name: 'Performance & Lightweight', name_fr: 'Performance & Légèreté', questions: [5,6,13] },
+  { name: 'Privacy & Security', name_fr: 'Vie privée & Sécurité', questions: [7,9,19] },
+  { name: 'Custom & CLI', name_fr: 'Customisation & CLI', questions: [2,8,11,14,18] },
+  { name: 'Gaming & Beauty', name_fr: 'Gaming & Esthétique', questions: [3,21,22,23,24] },
+];
+
+function getCurrentPart() {
+  let count = 0;
+  for (let i = 0; i < QUIZ_PARTS.length; i++) {
+    count += QUIZ_PARTS[i].questions.length;
+    if (mainAnswered < count) return i;
+  }
+  return QUIZ_PARTS.length - 1;
+}
+
+function getQuestionInPart() {
+  const partIdx = getCurrentPart();
+  let count = 0;
+  for (let i = 0; i < partIdx; i++) count += QUIZ_PARTS[i].questions.length;
+  return mainAnswered - count;
+}
 let lockWasOverridden  = false;
 let locksEnabled       = true;
 
@@ -1621,7 +1626,7 @@ function showNormalQ() {
   // Show 25/25 on the last question
   if (isLast) {
     document.getElementById('progFill').style.width = '100%';
-    document.getElementById('progNum').textContent = '25 / 25';
+    document.getElementById('progNum').textContent = t('partLabel') + ' 5 ' + t('of') + ' 5 — ' + (currentLang==='fr'?'Gaming & Esthétique':'Gaming & Beauty');
   } else {
     updateProgress();
   }
@@ -1656,8 +1661,17 @@ function showNormalQ() {
 
   const backBtn = history.length > 0 ? `<button class="btn-back" onclick="goBack()">← ${t('previous')}</button>` : '';
 
+  const partIdx = getCurrentPart();
+  const part = QUIZ_PARTS[partIdx];
+  const partName = currentLang === 'fr' && part.name_fr ? part.name_fr : part.name;
+  const qInPart = getQuestionInPart() + 1;
+  const totalInPart = part.questions.length;
+  const partNum = partIdx + 1;
+  const totalParts = QUIZ_PARTS.length;
+
   swap(`<div class="screen">
-    <div class="q-label">${t('question')} ${q.id} ${t('of') || 'of'} ${QS.length}</div>
+    <div class="q-label">${t('partLabel')} ${partNum} ${t('of')} ${totalParts} — ${partName}</div>
+    <div class="q-label" style="color:var(--muted);font-size:9px;margin-bottom:6px">${t('question')} ${qInPart} ${t('of')} ${totalInPart}</div>
     <div class="q-text">${t('q'+q.id) || q.text}</div>
     <div class="opts${q.opts.length <= 1 ? ' single-col' : ''}">${optsHTML}</div>
     ${triedHTML}
@@ -2738,6 +2752,7 @@ const TRANSLATIONS = {
     startDesc: "Answer 25 smart questions and we'll match you with one of 30 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
     settingsTheme: 'Theme',
     settingsLang: 'Language',
+    partLabel: 'Part',
     question: 'Question',
     of: 'of',
     q1: "What's your experience with Linux?",
@@ -2841,6 +2856,7 @@ const TRANSLATIONS = {
     startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite parmi 30 distributions — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
     settingsTheme: 'Thème',
     settingsLang: 'Langue',
+    partLabel: 'Partie',
     question: 'Question',
     of: 'sur',
     q1: "Quelle est ton expérience avec Linux ?",

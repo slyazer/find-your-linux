@@ -1406,6 +1406,60 @@ function getQuestionInPart() {
 let lockWasOverridden  = false;
 let locksEnabled       = true;
 
+// ═══ BADGE SYSTEM ═══
+const BADGES = [
+  { id:'speedrunner', icon:'⚡', name:'Speedrunner', desc:'Completed quiz in under 2 minutes', check:()=> quizStartTime && (Date.now()-quizStartTime) < 120000 },
+  { id:'completionist', icon:'🏆', name:'Completionist', desc:'Answered all 25 questions without skipping', check:()=> !history.some(h=>h.skipped) && mainAnswered === 25 },
+  { id:'speed-demon', icon:'💨', name:'Speed Demon', desc:'Finished in under 90 seconds', check:()=> quizStartTime && (Date.now()-quizStartTime) < 90000 },
+  { id:'wanderer', icon:'🚶', name:'The Wanderer', desc:'Skipped 5+ questions', check:()=> history.filter(h=>h.skipped).length >= 5 },
+  { id:'terminal-lover', icon:'🖤', name:'Terminal Lover', desc:'Maxed out CLI dimension', check:()=> userDimensions.cli >= 6 },
+  { id:'gui-only', icon:'🖱️', name:'GUI Only Please', desc:'Scored 0 on CLI', check:()=> userDimensions.cli === 0 },
+  { id:'purist', icon:'🔓', name:'Purist', desc:'Picked FOSS-only options', check:()=> userSignals.includes('freedomPurist') },
+  { id:'distro-hopper', icon:'🐇', name:'Distro Hopper', desc:'Listed 5+ distros in Already Tried', check:()=> triedDistros.length >= 5 },
+  { id:'beginner-mind', icon:'🌱', name:"Beginner's Mind", desc:'Identified as complete beginner', check:()=> userSignals.includes('beginner') },
+  { id:'gamer', icon:'🎮', name:'Gamer', desc:'Maxed out gaming dimension', check:()=> userDimensions.gaming >= 5 },
+  { id:'privacy-paranoid', icon:'👻', name:'Privacy Paranoid', desc:'Maxed privacy + chose security distro', check:()=> userDimensions.priv >= 5 && (userSignals.includes('privacyHigh') || userSignals.includes('security')) },
+  { id:'ricer', icon:'🎨', name:'Ricer', desc:'Maxed both Custom and Beauty', check:()=> userDimensions.custom >= 5 && userDimensions.beauty >= 4 },
+  { id:'old-hardware-hero', icon:'💾', name:'Old Hardware Hero', desc:'Rocking 4GB RAM or less', check:()=> userSignals.includes('oldHardware') },
+  { id:'corporate-hater', icon:'🚫', name:'Corporate Hater', desc:'Actively avoids big tech backing', check:()=> userSignals.includes('privacyHigh') && userSignals.includes('wantsPrivacy') },
+  { id:'arch-btw', icon:'🔨', name:'Arch BTW', desc:'Matched with Arch Linux', check:()=> currentTopThree.includes('arch') },
+  { id:'debian-devotee', icon:'🐧', name:'Debian Devotee', desc:'Matched with a Debian-based distro', check:()=> currentTopThree.some(k=>['ubuntu','debian','mint','mx','popos','zorin','elementary','peppermint','kali','parrot'].includes(k)) },
+  { id:'nix-ninja', icon:'❄️', name:'Nix Ninja', desc:'Matched with NixOS', check:()=> currentTopThree.includes('nixos') },
+  { id:'rolling-rebel', icon:'🔄', name:'Rolling Release Rebel', desc:'Matched with a rolling distro', check:()=> currentTopThree.some(k=> DB[k].p.rolling >= 2) },
+  { id:'stability-soldier', icon:'🏔️', name:'Stability Soldier', desc:'Matched with an LTS distro', check:()=> currentTopThree.some(k=> DB[k].p.stable >= 3) },
+  { id:'security-specialist', icon:'🔐', name:'Security Specialist', desc:'Matched with Kali, Parrot, or Qubes', check:()=> currentTopThree.some(k=>['kali','parrot','qubes'].includes(k)) },
+  { id:'underdog-lover', icon:'🐶', name:'Underdog Lover', desc:'Matched with a lesser-known distro', check:()=> currentTopThree.some(k=>['solus','void','slackware','artix','omarchy'].includes(k)) },
+  { id:'ubuntu-universe', icon:'🟠', name:'Ubuntu Universe', desc:'Matched with any Ubuntu flavor', check:()=> currentTopThree.includes('ubuntu') },
+  { id:'gentoo-grinder', icon:'⚙️', name:'Gentoo Grinder', desc:'Matched with Gentoo', check:()=> currentTopThree.includes('gentoo') },
+  { id:'the-one-percent', icon:'💎', name:'The 1%', desc:'Matched with Alpine, Slackware, or Clear', check:()=> currentTopThree.some(k=>['alpine','slackware','clear'].includes(k)) },
+  { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) >= 3 },
+  { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q16 and Q18', check:()=> userSignals.filter(s=>s==='beginner').length >= 2 && userSignals.includes('noTerminal') },
+  { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) >= 5 },
+  { id:'explorer', icon:'🗺️', name:'Explorer', desc:'Visited 10+ distro detail pages', check:()=> (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) >= 10 },
+];
+
+function checkBadges() {
+  let earned = JSON.parse(localStorage.getItem('distromatch-badges') || '[]');
+  let newBadges = [];
+  BADGES.forEach(b => {
+    if (!earned.includes(b.id) && b.check()) {
+      earned.push(b.id);
+      newBadges.push(b);
+    }
+  });
+  localStorage.setItem('distromatch-badges', JSON.stringify(earned));
+  // Save top 3 for full-circle
+  localStorage.setItem('distromatch-last-top3', JSON.stringify([...currentTopThree].sort()));
+  // Increment quiz count
+  const count = (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) + 1;
+  localStorage.setItem('distromatch-quiz-count', count);
+  return newBadges;
+}
+
+function getEarnedBadges() {
+  return JSON.parse(localStorage.getItem('distromatch-badges') || '[]');
+}
+
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -1565,6 +1619,7 @@ function showStart() {
       <div style="margin-top:16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
         <span class="btn-skip" onclick="showDistroBrowser()" style="cursor:pointer">${t('browse')}</span>
         <span class="btn-skip" onclick="randomDistro()" style="cursor:pointer">🎲 ${t('randomDistro') || 'Random distro'}</span>
+        <span class="btn-skip" onclick="showBadgeWall()" style="cursor:pointer">🏅 Badges (${getEarnedBadges().length}/29)</span>
       </div>
     </div>`;
 }
@@ -1573,6 +1628,28 @@ function randomDistro() {
   const keys = Object.keys(DB);
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
   showDistroDetail(randomKey);
+}
+
+function showBadgeWall() {
+  document.getElementById('brand').style.display = 'none';
+  document.getElementById('progWrap').style.display = 'none';
+  const earned = getEarnedBadges();
+  const secretBadges = ['linux-detective','ai-abuser','loyalist','explorer'];
+  const cardsHTML = BADGES.map(b => {
+    const has = earned.includes(b.id);
+    const isSecret = secretBadges.includes(b.id);
+    const showDesc = has || !isSecret;
+    return `<div style="background:rgba(255,255,255,${has?'.06':'.02'});border:1px solid rgba(255,255,255,${has?'.12':'.05'});border-radius:12px;padding:16px 12px;text-align:center;transition:all .2s;cursor:default;${has?'':'opacity:.4;filter:grayscale(1)'}">
+      <div style="font-size:2rem;margin-bottom:6px">${has?b.icon:'❓'}</div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--txt);margin-bottom:3px">${has?b.name:'???'}</div>
+      <div style="font-family:var(--mono);font-size:.5rem;color:var(--muted);line-height:1.4">${showDesc?b.desc:'???'}</div>
+    </div>`;
+  }).join('');
+  $card().innerHTML = `<div class="screen">
+    <div class="pick-title"><h3>🏅 Badges</h3><p class="pick-subtitle">${earned.length} / 29 earned — complete quizzes to unlock more</p></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:20px">${cardsHTML}</div>
+    <div class="pick-back-row"><button class="btn-ghost" onclick="showStart()">${t('backToStart')}</button></div>
+  </div>`;
 }
 
 function showDistroBrowser() {
@@ -1588,6 +1665,8 @@ function showDistroBrowser() {
 }
 
 function showDistroDetail(key) {
+  const count = (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) + 1;
+  localStorage.setItem('distromatch-explorer-count', count);
   document.getElementById('brand').style.display = 'none';
   document.getElementById('progWrap').style.display = 'none';
   const d = DB[key];
@@ -1950,6 +2029,8 @@ function showPickScreen() {
 }
 
 function showDistroDetailResult(key) {
+  const count = (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) + 1;
+  localStorage.setItem('distromatch-explorer-count', count);
   if (key === 'ubuntu' && !window._ubuntuVariantChosen) {
     showUbuntuVariants();
     return;
@@ -2040,6 +2121,12 @@ function showDistroDetailResult(key) {
   }).join('');
   const whyHTML = whyList ? `<div class="filter-note" style="margin-top:0;margin-bottom:16px">🧠 <span style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">Why ${dname(winner)}?</span><div style="margin-top:8px">${whyList}</div></div>` : '';
 
+  const newBadges = checkBadges();
+  let newBadgeHTML = '';
+  if (newBadges.length > 0) {
+    newBadgeHTML = `<div class="filter-note" style="text-align:center;margin-bottom:16px">🏅 ${newBadges.length} new badge${newBadges.length>1?'s':''} earned! ${newBadges.map(b=>b.icon).join(' ')}</div>`;
+  }
+
   launchConfetti();
   swap(`
     <div class="result">
@@ -2050,6 +2137,7 @@ function showDistroDetailResult(key) {
       <div class="res-name">${dname(winner)}</div>
       <div class="res-line">${dline(winner)}</div>
       <div class="res-desc">${ddesc(winner)}</div>
+      ${newBadgeHTML}
       <div class="tags">${tagsHTML}</div>
       ${modeNote ? `<div class="filter-note">${modeNote}${activeMode==='lightweight' ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : (activeMode ? ` <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutCurrentLock()">Show all distros</button>` : '')}</div>` : ''}
       ${mismatchHTML}
@@ -2062,6 +2150,7 @@ function showDistroDetailResult(key) {
           <button class="btn-ghost" onclick="goBackToPodium()">${t('backToPodium') || '← Back to podium'}</button>
           <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
           <button class="btn-ghost" onclick="shareResult('${key}')">📋 Share result</button>
+          <button class="btn-ghost" onclick="showStart()">🏠 Home</button>
         </div>
       </div>
     </div>`);
@@ -3248,6 +3337,8 @@ if (savedLang && TRANSLATIONS[savedLang]) {
       for (const t of triggers) {
         if (buffer.endsWith(t)) {
           triggerJumpscare(t);
+          const eeCount = (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) + 1;
+          localStorage.setItem('distromatch-easteregg-count', eeCount);
           buffer = '';
           return;
         }

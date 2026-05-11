@@ -94,6 +94,8 @@ body{
   background:linear-gradient(90deg,var(--mint),transparent);opacity:.35}
 .q-text{font-size:clamp(1.05rem,3vw,1.35rem);font-weight:700;line-height:1.4;
   margin-bottom:24px;color:#fff}
+.tooltip-dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:rgba(79,255,176,.15);border:1px solid rgba(79,255,176,.3);color:var(--mint);font-family:var(--mono);font-size:.55rem;line-height:15px;text-align:center;cursor:help;margin-left:4px;vertical-align:middle;position:relative}
+.tooltip-dot:hover::after{content:attr(data-tip);position:absolute;bottom:22px;left:50%;transform:translateX(-50%);background:rgba(10,15,30,.95);border:1px solid rgba(79,255,176,.3);color:var(--txt);font-family:var(--mono);font-size:.6rem;padding:6px 10px;border-radius:6px;white-space:nowrap;z-index:99;pointer-events:none}
 .opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px;margin-bottom:24px}
 .opts.single-col{grid-template-columns:1fr}
 @media(max-width:600px){.opts{grid-template-columns:1fr}}
@@ -304,8 +306,7 @@ body{
   border-bottom:1px solid transparent;
   transition:all var(--ease);
   margin-bottom:20px;
-  display:block;
-  text-align:center;
+  display:inline-block;
 }
 .distro-detail .back-link:hover{color:var(--mint);border-bottom-color:var(--mint)}
 .distro-detail .detail-logo{
@@ -1561,8 +1562,17 @@ function showStart() {
       <div class="badge">${t('badge')}</div>
       <div class="strip">${stripHTML}</div>
       <button class="btn-next" onclick="beginQuiz()">${t('start')} <span class="arr">→</span></button>
-      <div style="margin-top:16px"><span class="btn-skip" onclick="showDistroBrowser()" style="cursor:pointer">${t('browse')}</span></div>
+      <div style="margin-top:16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <span class="btn-skip" onclick="showDistroBrowser()" style="cursor:pointer">${t('browse')}</span>
+        <span class="btn-skip" onclick="randomDistro()" style="cursor:pointer">🎲 ${t('randomDistro') || 'Random distro'}</span>
+      </div>
     </div>`;
+}
+
+function randomDistro() {
+  const keys = Object.keys(DB);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  showDistroDetail(randomKey);
 }
 
 function showDistroBrowser() {
@@ -1592,6 +1602,7 @@ function showDistroDetail(key) {
       <div class="detail-tags">${tagsHTML}</div>
       <a href="${d.url}" target="_blank" rel="noopener" class="detail-btn">🌐 ${t('visit')} ${dname(d)}</a>
       ${DISTROSEA_KEYS[key] ? `<a href="https://distrosea.com/select/${DISTROSEA_KEYS[key]}/" target="_blank" rel="noopener" class="detail-btn" style="background:rgba(79,255,176,.08);border:1px solid rgba(79,255,176,.35);color:var(--mint);margin-top:8px">🖥️ ${t('tryOnline') || 'Try'} ${dname(d)} ${t('online') || 'Online'}</a>` : ''}
+      <button class="btn-ghost" onclick="randomDistro()" style="margin-top:12px">🎲 ${t('anotherRandom') || 'Another random one'}</button>
     </div>`;
 }
 
@@ -1603,7 +1614,6 @@ function beginQuiz() {
   ignoreLightweightMode = false; followUpSelected = [];
   window._tierDone = false;
   lockWasOverridden = false;
-  _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   tick();
@@ -1932,6 +1942,7 @@ function showPickScreen() {
     <div class="pick-grid">${cardsHTML}</div>
     ${breakdown}
     <div class="cta">
+      <button class="btn-ghost" onclick="tweakAnswers()">${t('tweakAnswers') || 'Tweak answers'}</button>
       <button class="btn-ghost" onclick="beginQuiz()">${t('retake')}</button>
     </div>
   </div>`);
@@ -1993,6 +2004,41 @@ function showDistroDetailResult(key) {
   }).join('');
 
   const tagsHTML = dtags(winner).map(t => `<div class="tag">${t}</div>`).join('');
+
+  // Build "Why this distro" explainer
+  const winSigs = DISTRO_SIGNALS[key] || [];
+  const mySigs = [...new Set(userSignals)];
+  const matchedSigs = winSigs.filter(s => mySigs.includes(s));
+  const sigToLabel = {
+    beginner:'You prefer beginner-friendly distros',
+    wantsEase:'You want something that just works',
+    noTerminal:'You prefer GUI over terminal',
+    wantsStable:'Stability matters most to you',
+    wantsPerf:'Performance is your priority',
+    wantsCustom:'You love customising everything',
+    wantsRolling:'You want the latest software',
+    gaming:'Gaming is important to you',
+    privacyHigh:'Privacy is critical for you',
+    security:'Security features matter',
+    liveTerminal:'You live in the terminal',
+    configLot:'You spend hours configuring',
+    oldHardware:'You have older hardware',
+    advanced:'You are an advanced user',
+    intermediate:'You are comfortable with Linux',
+    dailyUse:'Daily desktop use is your focus',
+    wantsGnome:'You prefer the GNOME desktop',
+    wantsKde:'You chose KDE Plasma',
+    fearBreaking:'You hate when things break',
+    fearOutdated:'You dislike outdated software',
+    devWork:'Development is your main workflow',
+    privacyMed:'You value your privacy',
+    wantsPrivacy:'Privacy is a strong concern',
+    beauty:'Visual polish matters to you',
+  };
+  const whyList = matchedSigs.slice(0, 5).map(s => {
+    return `<div style="font-family:var(--mono);font-size:.65rem;color:var(--mint);margin-bottom:4px;padding-left:12px;border-left:2px solid var(--mint)">✦ ${sigToLabel[s] || s}</div>`;
+  }).join('');
+  const whyHTML = whyList ? `<div class="filter-note" style="margin-top:0;margin-bottom:16px">🧠 <span style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">Why ${dname(winner)}?</span><div style="margin-top:8px">${whyList}</div></div>` : '';
 
   launchConfetti();
   swap(`
@@ -2311,8 +2357,39 @@ function showPodium(topThree) {
 
   const showPodiumOverride = podiumLockNote && !lockWasOverridden;
   const breakdownHTML = buildScoreBreakdown() + (showPodiumOverride ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : (lockWasOverridden ? '' : ''));
+
+  // Comparison table
+  const compRows = topThree.map(key => {
+    const d = DB[key];
+    const base = d.logo.includes('archlinux') || key === 'manjaro' || key === 'endeavour' || key === 'garuda' || key === 'artix' || key === 'cachyos' ? 'Arch' : d.logo.includes('debian') || key === 'ubuntu' || key === 'mint' || key === 'zorin' || key === 'elementary' || key === 'popos' || key === 'mx' || key === 'peppermint' || key === 'kali' || key === 'parrot' ? 'Debian' : d.logo.includes('fedora') || key === 'nobara' ? 'Fedora' : 'Independent';
+    const diff = d.p.ease >= 3 ? 'Beginner' : d.p.ease >= 2 ? 'Intermediate' : 'Advanced';
+    const releaseType = d.p.rolling >= 2 ? 'Rolling' : d.p.stable >= 3 ? 'LTS' : d.p.stable >= 2 ? 'Point' : 'Rolling';
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+      <td style="padding:6px 8px;font-family:var(--mono);font-size:.6rem;color:var(--mint)">${dname(d)}</td>
+      <td style="padding:6px 8px;font-family:var(--mono);font-size:.6rem;color:var(--muted)">${d.deLabel}</td>
+      <td style="padding:6px 8px;font-family:var(--mono);font-size:.6rem;color:var(--muted)">${base}</td>
+      <td style="padding:6px 8px;font-family:var(--mono);font-size:.6rem;color:var(--muted)">${releaseType}</td>
+      <td style="padding:6px 8px;font-family:var(--mono);font-size:.6rem;color:var(--muted)">${diff}</td>
+    </tr>`;
+  }).join('');
+  
+  const comparisonHTML = `
+    <div style="margin-top:20px;text-align:left">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">📋 Quick Compare</div>
+      <table style="width:100%;border-collapse:collapse">
+        <tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+          <th style="padding:4px 8px;font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:left">Name</th>
+          <th style="padding:4px 8px;font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:left">Desktop</th>
+          <th style="padding:4px 8px;font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:left">Base</th>
+          <th style="padding:4px 8px;font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:left">Release</th>
+          <th style="padding:4px 8px;font-family:var(--mono);font-size:.55rem;color:var(--muted);text-align:left">Level</th>
+        </tr>
+        ${compRows}
+      </table>
+    </div>`;
+
   const breakdownDiv = document.getElementById('revBreakdown');
-  breakdownDiv.innerHTML = breakdownHTML;
+  breakdownDiv.innerHTML = breakdownHTML + comparisonHTML;
 
   launchConfetti();
   setTimeout(() => {
@@ -2409,6 +2486,14 @@ function finishReveal() {
 }
 
 function finish() {
+  if (tweakingAnswers) {
+    tweakingAnswers = false;
+    ignoreLightweightMode = false;
+    lockWasOverridden = false;
+    currentTopThree = computeTopThree(false);
+    showPickScreen();
+    return;
+  }
   ignoreLightweightMode = false;
   clearTimeout(finishTimer1); clearTimeout(finishTimer2);
   swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">${t('analyzing')}<br>${t('matching')} <b>25 ${t('distros')}</b></div></div>`);
@@ -2433,6 +2518,18 @@ function recomputeWithoutCurrentLock() {
   activeMode = null;
   lockWasOverridden = true;
   showPickScreen();
+}
+
+let tweakingAnswers = false;
+
+function tweakAnswers() {
+  tweakingAnswers = true;
+  qIdx = 0;
+  mainAnswered = 0;
+  selectedOpts = [];
+  history.length = 0;
+  document.getElementById('progWrap').style.display = '';
+  showNormalQ();
 }
 
 function recomputeFromPodium() {

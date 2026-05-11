@@ -1435,7 +1435,8 @@ const BADGES = [
   { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) >= 3 },
   { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q16 and Q18', check:()=> userSignals.filter(s=>s==='beginner').length >= 2 && userSignals.includes('noTerminal') },
   { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) >= 5 },
-  { id:'explorer', icon:'🗺️', name:'Explorer', desc:'Visited 10+ distro detail pages', check:()=> (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) >= 10 },
+  { id:'indecisive', icon:'🤔', name:'Indecisive', desc:'Used Previous button 10+ times in one quiz', check:()=> history.filter(h=>!h.skipped).length >= 10 },
+  { id:'lucky', icon:'🍀', name:'Lucky', desc:'Clicked Random distro and it became your #1 match', check:()=> { const randKey = localStorage.getItem('distromatch-last-random'); return randKey && currentTopThree[0] === randKey; } },
 ];
 
 function checkBadges() {
@@ -1627,6 +1628,7 @@ function showStart() {
 function randomDistro() {
   const keys = Object.keys(DB);
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  localStorage.setItem('distromatch-last-random', randomKey);
   showDistroDetail(randomKey);
 }
 
@@ -1634,7 +1636,7 @@ function showBadgeWall() {
   document.getElementById('brand').style.display = 'none';
   document.getElementById('progWrap').style.display = 'none';
   const earned = getEarnedBadges();
-  const secretBadges = ['linux-detective','ai-abuser','loyalist','explorer'];
+  const secretBadges = ['linux-detective','ai-abuser','loyalist','indecisive','lucky'];
   const cardsHTML = BADGES.map(b => {
     const has = earned.includes(b.id);
     const isSecret = secretBadges.includes(b.id);
@@ -1665,8 +1667,6 @@ function showDistroBrowser() {
 }
 
 function showDistroDetail(key) {
-  const count = (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) + 1;
-  localStorage.setItem('distromatch-explorer-count', count);
   document.getElementById('brand').style.display = 'none';
   document.getElementById('progWrap').style.display = 'none';
   const d = DB[key];
@@ -2029,8 +2029,6 @@ function showPickScreen() {
 }
 
 function showDistroDetailResult(key) {
-  const count = (parseInt(localStorage.getItem('distromatch-explorer-count')||'0')) + 1;
-  localStorage.setItem('distromatch-explorer-count', count);
   if (key === 'ubuntu' && !window._ubuntuVariantChosen) {
     showUbuntuVariants();
     return;

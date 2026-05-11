@@ -1910,8 +1910,8 @@ function showUbuntuVariants() {
 }
 
 function openUbuntuVariant(url) {
-  window.open(url, '_blank');
-  showPickScreen();
+  window._ubuntuVariantChosen = true;
+  showDistroDetailResult('ubuntu');
 }
 
 function showPickScreen() {

@@ -692,7 +692,7 @@ body{
     <option value="en">English</option>
     <option value="fr">Français</option>
   </select>
-  <h4 style="margin-top:16px">In beta</h4>
+  <h4 style="margin-top:16px">New feature</h4>
   <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted);cursor:pointer;margin-bottom:4px">
     <input type="checkbox" id="lockToggle" checked onchange="toggleLocks(this.checked)">
     <span id="lockToggleLabel">Profile Locks</span>
@@ -1599,6 +1599,7 @@ function beginQuiz() {
   window._tierDone = false;
   lockWasOverridden = false;
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
+  _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   tick();
 }
@@ -2294,7 +2295,8 @@ function showPodium(topThree) {
   if (activeMode === 'gaming') podiumLockNote = t('gamingNote');
   if (activeMode === 'lightweight') podiumLockNote = t('lightweightNote');
 
-  const breakdownHTML = buildScoreBreakdown() + (podiumLockNote || lockWasOverridden ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote || t('gamingNote') || t('securityNote') || t('lightweightNote')} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : '');
+  const showPodiumOverride = podiumLockNote && !lockWasOverridden;
+  const breakdownHTML = buildScoreBreakdown() + (showPodiumOverride ? `<div class="filter-note" style="margin-top:16px">${podiumLockNote} <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeFromPodium()">${t('showWithAll')}</button></div>` : (lockWasOverridden ? '' : ''));
   const breakdownDiv = document.getElementById('revBreakdown');
   breakdownDiv.innerHTML = breakdownHTML;
 
@@ -2423,12 +2425,7 @@ function recomputeFromPodium() {
   currentTopThree = computeTopThree(false, true);
   activeMode = null;
   lockWasOverridden = true;
-  document.getElementById('reveal-overlay').style.display = 'none';
-  document.getElementById('revPodium').style.display = 'none';
-  revealParticlesActive = false;
-  revealParticles.forEach(p => p.el.remove());
-  revealParticles = [];
-  showPickScreen();
+  showPodium(currentTopThree);
 }
 
 function updateNextButton() {
@@ -2656,6 +2653,10 @@ document.getElementById('lockToggle').checked = locksEnabled;
 
 function toggleLocks(enabled) {
   locksEnabled = enabled;
+  if (!enabled) {
+    activeMode = null;
+    lockWasOverridden = false;
+  }
   localStorage.setItem('distromatch-locks', enabled);
 }
 
@@ -3123,7 +3124,7 @@ if (savedLang && TRANSLATIONS[savedLang]) {
     'ubuntu','debian','arch','fedora','mint','gentoo','kali','nixos','void',
     'opensuse','manjaro','endeavour','slackware','alpine','tails','qubes',
     'solus','cachyos','nobara','popos','artix','garuda','peppermint',
-    'zorin','elementary','deepin','parrot','omarchy','mx'
+    'zorin','elementary','deepin','parrot','omarchy','mx','windows','mac' 
   ];
   document.addEventListener('keydown', function(e) {
     const activeEl = document.activeElement;

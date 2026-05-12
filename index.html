@@ -667,13 +667,13 @@ body{
   <div style="width:260px;height:2px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-bottom:40px;">
     <div id="revBar" style="height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--mint));border-radius:99px;transition:width .08s linear;box-shadow:0 0 12px var(--mint);"></div>
   </div>
-  <div id="revPodium" style="display:none;text-align:center;width:100%;max-width:780px;">
+  <div id="revPodium" style="display:none;text-align:center;width:100%;max-width:780px;overflow-y:auto;max-height:90vh;">
     <div style="background:rgba(10,15,30,.85);border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:36px 20px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 4px 48px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);position:relative;z-index:2;">
       <div id="revPodiumTitle" style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;margin-bottom:28px;
         background:linear-gradient(135deg,var(--mint),#fff,var(--violet));
         -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
       </div>
-      <div style="display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:0 16px;" id="revPodiumCards"></div>
+      <div style="display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:0 16px;overflow-y:auto;max-height:70vh;" id="revPodiumCards"></div>
       <div id="revBreakdown" style="width:100%;max-width:500px;margin:28px auto 0;opacity:0;transform:translateY(20px);transition:opacity .5s ease .8s,transform .5s ease .8s;"></div>
     </div>
   </div>
@@ -1132,7 +1132,7 @@ function lev(a,b) {
 }
 
 const QS = [
-  // Part 1: Ease & Stability — Q1, Q2, Q3, Q4, Q5 (indices 0-4)
+  // Part 1: Ease & Stability — Q1-Q5 (indices 0-4)
   {id:1, text:"What's your experience with Linux?", hasTried:true,
    opts:[
     {l:'A',i:'🌱',m:'Never used it', s:'Complete beginner — first time', v:{ease:3,light:1}, sig:['beginner','noTerminal','wantsEase']},
@@ -1166,7 +1166,7 @@ const QS = [
     {l:'D',i:'😒',m:'Lack of customisation', s:'I need full control', v:{custom:2,cli:1}, sig:['fearBoring','wantsCustom']},
    ]},
 
-  // Part 2: Performance & Lightweight — Q6, Q7, Q8 (indices 5-7)
+  // Part 2: Performance & Lightweight — Q6-Q10 (indices 5-9)
   {id:6, text:"How powerful is your machine?",
    opts:[
     {l:'A',i:'💾',m:'Old / low-end', s:'Under 4 GB RAM, old CPU', v:{light:3}, sig:['oldHardware']},
@@ -1188,60 +1188,14 @@ const QS = [
     {l:'C',i:'🎨',m:'Rice my desktop for hours', s:'Make it look perfect', v:{custom:3,beauty:2}, sig:['advanced','wantsCustom','fearBoring']},
     {l:'D',i:'🔬',m:'Read docs and configure', s:'Deep-dive into config files', v:{cli:2,custom:2}, sig:['advanced','poweruser','configLot','liveTerminal']},
    ]},
-
-  // Part 3: Privacy & Security — Q9, Q10, Q11 (indices 8-10)
-  {id:9, text:"How important is privacy to you?",
-   opts:[
-    {l:'A',i:'😐',m:'Not really', s:'I use Google & Windows anyway', v:{ease:1}, sig:['privacyNone']},
-    {l:'B',i:'🔒',m:'Somewhat', s:'I use a VPN sometimes', v:{priv:1}, sig:['privacyLow']},
-    {l:'C',i:'🛡️',m:'Very important', s:'FOSS only, no telemetry', v:{priv:2}, sig:['privacyMed','wantsPrivacy']},
-    {l:'D',i:'👻',m:'Critical — anonymity first', s:'Leave zero trace online', v:{priv:3,cli:1}, sig:['privacyHigh','wantsPrivacy','security']},
-   ]},
-  {id:10,text:"What's your philosophy on software freedom?",
-   opts:[
-    {l:'A',i:'🔓',m:'FOSS only — no proprietary code', s:'I want a fully free system', v:{priv:2,custom:1}, sig:['freedomPurist','privacyMed']},
-    {l:'B',i:'🔄',m:'Open source, but pragmatic', s:'Happy to use NVIDIA drivers, Steam, etc.', v:{ease:1,gaming:1}, sig:['intermediate','pragmatic']},
-    {l:'C',i:'💼',m:'I don\'t care as long as it works', s:'Proprietary or open — just get it done', v:{ease:2}, sig:['beginner','privacyNone']},
-    {l:'D',i:'🚫',m:'Avoid blobs, prefer community', s:'Debian main, no non-free', v:{priv:2,custom:2}, sig:['privacyMed','advanced']},
-   ]},
-  {id:11,text:"How do you approach system security?",
-   opts:[
-    {l:'A',i:'🔓',m:'I trust the OS defaults', s:'Whatever comes out of the box', v:{ease:1}, sig:['privacyNone']},
-    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense', v:{priv:1,stable:1}, sig:['privacyLow','intermediate']},
-    {l:'C',i:'🔒',m:'I harden my system and disable services', s:'Kernel hardening, apparmor/selinux', v:{priv:2,custom:2,cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
-    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs', v:{priv:3,custom:3,cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
-   ]},
-
-  // Part 4: Custom & CLI — Q12, Q13, Q14, Q15, Q16 (indices 11-15)
-  {id:12, text:"How do you feel about the terminal?",
-   opts:[
-    {l:'A',i:'😰',m:'Please, no.', s:'GUI all the way, always', v:{ease:2}, sig:['noTerminal']},
-    {l:'B',i:'🤷',m:'I use it when forced', s:'Only when there\'s no other way', v:{ease:1,cli:1}, sig:['someTerminal']},
-    {l:'C',i:'😄',m:'I like it', s:'Comfortable with bash & co.', v:{cli:2,custom:1}, sig:['likeTerminal']},
-    {l:'D',i:'🖤',m:'I live in it', s:'tmux, neovim, zsh — home.', v:{cli:3,custom:2}, sig:['liveTerminal','wantsCustom']},
-   ]},
-  {id:13, text:"How much time will you invest in setup?",
+  {id:9, text:"How much time will you invest in setup?",
    opts:[
     {l:'A',i:'⚡',m:'Zero — boot and go', s:'If I configure, I quit', v:{ease:3}, sig:['configNone','wantsEase']},
     {l:'B',i:'☕',m:'A couple of hours', s:'Basic tweaks and done', v:{ease:1,custom:1}, sig:['configLittle']},
     {l:'C',i:'🌙',m:'A whole weekend', s:'I want it exactly right', v:{custom:2,cli:1}, sig:['configMore']},
     {l:'D',i:'∞',m:'As long as it takes', s:'Configuring IS the hobby', v:{custom:3,cli:3}, sig:['configLot','wantsCustom','liveTerminal']},
    ]},
-  {id:14,text:"How do you install software?",
-   opts:[
-    {l:'A',i:'🏪',m:'App store / GUI only', s:'Click install, done', v:{ease:3}, sig:['wantsEase','noTerminal','beginner']},
-    {l:'B',i:'📦',m:'Package manager in terminal', s:'apt, dnf, pacman — no problem', v:{cli:2,custom:1}, sig:['someTerminal','likeTerminal','intermediate']},
-    {l:'C',i:'🔨',m:'Compile from source', s:'I read Makefiles for fun', v:{perf:2,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
-    {l:'D',i:'📦',m:'Flatpak / Snap / AppImage', s:'Universal packages please', v:{ease:2,stable:1}, sig:['beginner','intermediate','wantsEase']},
-   ]},
-  {id:15,text:"How do you feel about system customisation via config files?",
-   opts:[
-    {l:'A',i:'🚫',m:'I never touch configs', s:'GUI settings are enough', v:{ease:2}, sig:['beginner','configNone']},
-    {l:'B',i:'🖱️',m:'I edit some settings with GUI tools', s:'A few tweaks in a settings app', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
-    {l:'C',i:'📝',m:'I enjoy tweaking config files', s:'vim /etc/... is second nature', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','configMore']},
-    {l:'D',i:'📄',m:'I manage my entire OS declaratively', s:'Nix, Ansible, or dotfiles repos', v:{cli:3,custom:3}, sig:['poweruser','configLot','liveTerminal','wantsCustom']},
-   ]},
-  {id:16,text:"How do you want your system configured out of the box?",
+  {id:10,text:"How do you want your system configured out of the box?",
    opts:[
     {l:'A',i:'✨',m:'Fully pre-configured', s:'Everything works immediately', v:{ease:3,beauty:1}, sig:['beginner','wantsEase','configNone']},
     {l:'B',i:'🧰',m:'Sensible defaults, tweakable', s:'Some setup, nothing scary', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
@@ -1249,69 +1203,115 @@ const QS = [
     {l:'D',i:'📄',m:'A config file defines it all', s:'Declarative, reproducible', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']},
    ]},
 
-  // Part 5: Gaming & Beauty — Q17, Q18, Q19, Q20, Q21, Q22, Q23, Q24, Q25 (indices 16-24)
-  {id:17, text:"What's your main use case?",
+  // Part 3: Privacy & Security — Q11-Q15 (indices 10-14)
+  {id:11, text:"How important is privacy to you?",
    opts:[
-    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office', v:{ease:2,beauty:1}, sig:['dailyUse','wantsEase']},
-    {l:'B',i:'💼',m:'Dev / work productivity', s:'Code, containers, servers', v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
-    {l:'C',i:'🎮',m:'Gaming & high FPS', s:'Steam, Proton, latest GPU', v:{gaming:3,perf:2}, sig:['gaming','wantsPerf']},
-    {l:'D',i:'🔐',m:'Security & privacy', s:'Pentest, anonymity, CTF', v:{priv:3,cli:2}, sig:['security','wantsPrivacy','likeTerminal']},
+    {l:'A',i:'😐',m:'Not really', s:'I use Google & Windows anyway', v:{ease:1}, sig:['privacyNone']},
+    {l:'B',i:'🔒',m:'Somewhat', s:'I use a VPN sometimes', v:{priv:1}, sig:['privacyLow']},
+    {l:'C',i:'🛡️',m:'Very important', s:'FOSS only, no telemetry', v:{priv:2}, sig:['privacyMed','wantsPrivacy']},
+    {l:'D',i:'👻',m:'Critical — anonymity first', s:'Leave zero trace online', v:{priv:3,cli:1}, sig:['privacyHigh','wantsPrivacy','security']},
    ]},
-  {id:18,text:"How important is visual polish to you?",
+  {id:12,text:"What's your philosophy on software freedom?",
    opts:[
-    {l:'A',i:'🖥️',m:'Function over form', s:'I don\'t care how it looks', v:{ease:1}, sig:['pragmatic']},
-    {l:'B',i:'✨',m:'Nice defaults are appreciated', s:'I like it to look good out of the box', v:{beauty:2,ease:1}, sig:['intermediate','dailyUse']},
-    {l:'C',i:'🎨',m:'I spend hours ricing', s:'Custom themes, icons, everything', v:{beauty:3,custom:2,cli:1}, sig:['advanced','wantsCustom','fearBoring']},
-    {l:'D',i:'💎',m:'Visuals are a dealbreaker', s:'If it\'s ugly, I won\'t use it', v:{beauty:3,ease:1}, sig:['wantsEase','dailyUse']},
+    {l:'A',i:'🔓',m:'FOSS only — no proprietary code', s:'I want a fully free system', v:{priv:2,custom:1}, sig:['freedomPurist','privacyMed']},
+    {l:'B',i:'🔄',m:'Open source, but pragmatic', s:'Happy to use NVIDIA drivers, Steam, etc.', v:{ease:1,gaming:1}, sig:['intermediate','pragmatic']},
+    {l:'C',i:'💼',m:'I don\'t care as long as it works', s:'Proprietary or open — just get it done', v:{ease:2}, sig:['beginner','privacyNone']},
+    {l:'D',i:'🚫',m:'Avoid blobs, prefer community', s:'Debian main, no non-free', v:{priv:2,custom:2}, sig:['privacyMed','advanced']},
    ]},
-  {id:19,text:"What kind of default apps do you prefer?",
+  {id:13,text:"How do you approach system security?",
    opts:[
-    {l:'A',i:'📦',m:'Full suite included', s:'Office, browser, media player out of the box', v:{ease:3}, sig:['beginner','wantsEase','configNone']},
-    {l:'B',i:'🎯',m:'Curated essentials', s:'Only the best, pre-selected', v:{ease:2,beauty:1}, sig:['intermediate','dailyUse']},
-    {l:'C',i:'🔧',m:'Minimal — I choose my own', s:'Bare system, install what I need', v:{custom:2,cli:1}, sig:['advanced','configMore','wantsCustom']},
-    {l:'D',i:'☁️',m:'Web apps over native', s:'Browser-based workflow', v:{light:2,ease:2}, sig:['beginner','dailyUse']},
+    {l:'A',i:'🔓',m:'I trust the OS defaults', s:'Whatever comes out of the box', v:{ease:1}, sig:['privacyNone']},
+    {l:'B',i:'🛡️',m:'I install a firewall and use basic precautions', s:'UFW, common sense', v:{priv:1,stable:1}, sig:['privacyLow','intermediate']},
+    {l:'C',i:'🔒',m:'I harden my system and disable services', s:'Kernel hardening, apparmor/selinux', v:{priv:2,custom:2,cli:1}, sig:['privacyMed','advanced','wantsPrivacy']},
+    {l:'D',i:'⚛️',m:'I use compartmentalisation (VMs, containers)', s:'Qubes-like or micro‑VMs', v:{priv:3,custom:3,cli:2}, sig:['privacyHigh','security','poweruser','liveTerminal']},
    ]},
-  {id:20,text:"How do you feel about systemd?",
+  {id:14,text:"How do you feel about systemd?",
    opts:[
     {l:'A',i:'🤷',m:'What\'s systemd?', s:'I don\'t know or care', v:{ease:2}, sig:['beginner','wantsEase']},
     {l:'B',i:'👍',m:'It works fine for me', s:'Modern init, no complaints', v:{stable:1,ease:1}, sig:['intermediate']},
     {l:'C',i:'🤔',m:'I\'ve heard the debates', s:'Curious about alternatives', v:{custom:1,cli:1}, sig:['advanced','wantsCustom']},
     {l:'D',i:'🚫',m:'Actively avoid it', s:'runit, OpenRC, or s6 please', v:{custom:3,cli:2,priv:1}, sig:['poweruser','liveTerminal','wantsPrivacy']},
    ]},
-  {id:21,text:"How important is out-of-the-box hardware support?",
-   opts:[
-    {l:'A',i:'🔌',m:'Essential — everything works immediately', s:'Wi‑Fi, GPU, printers — no tinkering', v:{ease:3}, sig:['wantsEase','beginner']},
-    {l:'B',i:'🔧',m:'I can tweak a few things', s:'Happy to run a script or two', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
-    {l:'C',i:'📟',m:'I\'m okay with manual driver installs', s:'Terminal doesn\'t scare me', v:{cli:1,custom:2}, sig:['advanced','likeTerminal']},
-    {l:'D',i:'⚙️',m:'I\'ll compile my own kernel', s:'Total control over hardware', v:{custom:3,cli:3,perf:1}, sig:['poweruser','liveTerminal','wantsCustom']},
-   ]},
-  {id:22,text:"How do you feel about reading documentation?",
-   opts:[
-    {l:'A',i:'😅',m:'YouTube tutorials only', s:'Videos are easier for me', v:{ease:2}, sig:['beginner','wantsEase']},
-    {l:'B',i:'🌐',m:'Google it when stuck', s:'Forums and Reddit are fine', v:{ease:1,stable:1}, sig:['intermediate']},
-    {l:'C',i:'🤖',m:'I use AI', s:'ChatGPT / Claude solves it', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
-    {l:'D',i:'📚',m:'I read the whole wiki', s:'Arch Wiki is my homepage', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal','configLot']},
-  ]},
-  {id:23,text:"What kind of community and support matters most?",
-   opts:[
-    {l:'A',i:'🤖',m:'I use AI', s:'ChatGPT fixes everything', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
-    {l:'B',i:'🔍',m:'As long as I find my problem', s:'Any source that works', v:{ease:1,cli:1}, sig:['intermediate']},
-    {l:'C',i:'👥',m:'Active but smaller, expert community', s:'IRC, mailing lists — deep knowledge', v:{custom:2,priv:1}, sig:['advanced','wantsCustom']},
-    {l:'D',i:'🔧',m:'I solve my own problems', s:'Debug without external help', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal']},
-   ]},
-  {id:24,text:"How important is corporate backing?",
+  {id:15,text:"How important is corporate backing?",
    opts:[
     {l:'A',i:'🏢',m:'I want a company behind it', s:'Enterprise support & funding', v:{stable:2,ease:1}, sig:['wantsStable','intermediate']},
     {l:'B',i:'🤷',m:'Doesn\'t matter much', s:'Community or corp, both fine', v:{custom:1}, sig:[]},
     {l:'C',i:'🌍',m:'Community-driven only', s:'No corporate influence', v:{priv:1,custom:2}, sig:['privacyMed','wantsCustom']},
     {l:'D',i:'🚫',m:'Actively avoid big tech', s:'Independence is crucial', v:{priv:2,custom:2}, sig:['privacyHigh','wantsPrivacy']},
    ]},
+
+  // Part 4: Custom & CLI — Q16-Q20 (indices 15-19)
+  {id:16, text:"How do you feel about the terminal?",
+   opts:[
+    {l:'A',i:'😰',m:'Please, no.', s:'GUI all the way, always', v:{ease:2}, sig:['noTerminal']},
+    {l:'B',i:'🤷',m:'I use it when forced', s:'Only when there\'s no other way', v:{ease:1,cli:1}, sig:['someTerminal']},
+    {l:'C',i:'😄',m:'I like it', s:'Comfortable with bash & co.', v:{cli:2,custom:1}, sig:['likeTerminal']},
+    {l:'D',i:'🖤',m:'I live in it', s:'tmux, neovim, zsh — home.', v:{cli:3,custom:2}, sig:['liveTerminal','wantsCustom']},
+   ]},
+  {id:17,text:"How do you install software?",
+   opts:[
+    {l:'A',i:'🏪',m:'App store / GUI only', s:'Click install, done', v:{ease:3}, sig:['wantsEase','noTerminal','beginner']},
+    {l:'B',i:'📦',m:'Package manager in terminal', s:'apt, dnf, pacman — no problem', v:{cli:2,custom:1}, sig:['someTerminal','likeTerminal','intermediate']},
+    {l:'C',i:'🔨',m:'Compile from source', s:'I read Makefiles for fun', v:{perf:2,custom:3,cli:3}, sig:['poweruser','liveTerminal','wantsCustom']},
+    {l:'D',i:'📦',m:'Flatpak / Snap / AppImage', s:'Universal packages please', v:{ease:2,stable:1}, sig:['beginner','intermediate','wantsEase']},
+   ]},
+  {id:18,text:"How do you feel about system customisation via config files?",
+   opts:[
+    {l:'A',i:'🚫',m:'I never touch configs', s:'GUI settings are enough', v:{ease:2}, sig:['beginner','configNone']},
+    {l:'B',i:'🖱️',m:'I edit some settings with GUI tools', s:'A few tweaks in a settings app', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
+    {l:'C',i:'📝',m:'I enjoy tweaking config files', s:'vim /etc/... is second nature', v:{cli:2,custom:2}, sig:['advanced','likeTerminal','configMore']},
+    {l:'D',i:'📄',m:'I manage my entire OS declaratively', s:'Nix, Ansible, or dotfiles repos', v:{cli:3,custom:3}, sig:['poweruser','configLot','liveTerminal','wantsCustom']},
+   ]},
+  {id:19,text:"How important is out-of-the-box hardware support?",
+   opts:[
+    {l:'A',i:'🔌',m:'Essential — everything works immediately', s:'Wi‑Fi, GPU, printers — no tinkering', v:{ease:3}, sig:['wantsEase','beginner']},
+    {l:'B',i:'🔧',m:'I can tweak a few things', s:'Happy to run a script or two', v:{ease:1,custom:1}, sig:['intermediate','configLittle']},
+    {l:'C',i:'📟',m:'I\'m okay with manual driver installs', s:'Terminal doesn\'t scare me', v:{cli:1,custom:2}, sig:['advanced','likeTerminal']},
+    {l:'D',i:'⚙️',m:'I\'ll compile my own kernel', s:'Total control over hardware', v:{custom:3,cli:3,perf:1}, sig:['poweruser','liveTerminal','wantsCustom']},
+   ]},
+  {id:20,text:"How do you feel about reading documentation?",
+   opts:[
+    {l:'A',i:'😅',m:'YouTube tutorials only', s:'Videos are easier for me', v:{ease:2}, sig:['beginner','wantsEase']},
+    {l:'B',i:'🌐',m:'Google it when stuck', s:'Forums and Reddit are fine', v:{ease:1,stable:1}, sig:['intermediate']},
+    {l:'C',i:'🤖',m:'I use AI', s:'ChatGPT / Claude solves it', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
+    {l:'D',i:'📚',m:'I read the whole wiki', s:'Arch Wiki is my homepage', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal','configLot']},
+  ]},
+
+  // Part 5: Gaming & Beauty — Q21-Q25 (indices 20-24)
+  {id:21, text:"What's your main use case?",
+   opts:[
+    {l:'A',i:'🌐',m:'Daily desktop / browsing', s:'Web, media, school, office', v:{ease:2,beauty:1}, sig:['dailyUse','wantsEase']},
+    {l:'B',i:'💼',m:'Dev / work productivity', s:'Code, containers, servers', v:{stable:1,perf:1,cli:1}, sig:['devWork','someTerminal']},
+    {l:'C',i:'🎮',m:'Gaming & high FPS', s:'Steam, Proton, latest GPU', v:{gaming:3,perf:2}, sig:['gaming','wantsPerf']},
+    {l:'D',i:'🔐',m:'Security & privacy', s:'Pentest, anonymity, CTF', v:{priv:3,cli:2}, sig:['security','wantsPrivacy','likeTerminal']},
+   ]},
+  {id:22,text:"How important is visual polish to you?",
+   opts:[
+    {l:'A',i:'🖥️',m:'Function over form', s:'I don\'t care how it looks', v:{ease:1}, sig:['pragmatic']},
+    {l:'B',i:'✨',m:'Nice defaults are appreciated', s:'I like it to look good out of the box', v:{beauty:2,ease:1}, sig:['intermediate','dailyUse']},
+    {l:'C',i:'🎨',m:'I spend hours ricing', s:'Custom themes, icons, everything', v:{beauty:3,custom:2,cli:1}, sig:['advanced','wantsCustom','fearBoring']},
+    {l:'D',i:'💎',m:'Visuals are a dealbreaker', s:'If it\'s ugly, I won\'t use it', v:{beauty:3,ease:1}, sig:['wantsEase','dailyUse']},
+   ]},
+  {id:23,text:"What kind of default apps do you prefer?",
+   opts:[
+    {l:'A',i:'📦',m:'Full suite included', s:'Office, browser, media player out of the box', v:{ease:3}, sig:['beginner','wantsEase','configNone']},
+    {l:'B',i:'🎯',m:'Curated essentials', s:'Only the best, pre-selected', v:{ease:2,beauty:1}, sig:['intermediate','dailyUse']},
+    {l:'C',i:'🔧',m:'Minimal — I choose my own', s:'Bare system, install what I need', v:{custom:2,cli:1}, sig:['advanced','configMore','wantsCustom']},
+    {l:'D',i:'☁️',m:'Web apps over native', s:'Browser-based workflow', v:{light:2,ease:2}, sig:['beginner','dailyUse']},
+   ]},
+  {id:24,text:"What kind of community and support matters most?",
+   opts:[
+    {l:'A',i:'🤖',m:'I use AI', s:'ChatGPT fixes everything', v:{ease:3,cli:-1}, sig:['beginner','noTerminal'], popup:true},
+    {l:'B',i:'🔍',m:'As long as I find my problem', s:'Any source that works', v:{ease:1,cli:1}, sig:['intermediate']},
+    {l:'C',i:'👥',m:'Active but smaller, expert community', s:'IRC, mailing lists — deep knowledge', v:{custom:2,priv:1}, sig:['advanced','wantsCustom']},
+    {l:'D',i:'🔧',m:'I solve my own problems', s:'Debug without external help', v:{cli:2,custom:2}, sig:['poweruser','liveTerminal']},
+   ]},
   {id:25,text:"What's your long-term plan with Linux?",
    opts:[
     {l:'A',i:'🎯',m:'Find one distro and stay', s:'Settle down, stop distro-hopping', v:{stable:2,ease:1}, sig:['wantsStable','fearBreaking','intermediate']},
     {l:'B',i:'🌱',m:'Keep learning and evolving', s:'Grow into more advanced distros', v:{custom:2,cli:1}, sig:['advanced','configMore','fearBoring']},
     {l:'C',i:'🔬',m:'Experiment constantly', s:'Try everything, chase the new', v:{rolling:2,custom:2}, sig:['poweruser','wantsRolling','fearOutdated']},
-    {l:'D',i:'🏠',m:'Build my own eventually', s:'LFS, Gentoo, or custom derivative', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']},
+    {l:'D',i:'🏠',m:'Build my own eventually', s:'LFS, Gentoo, or custom derivative', v:{custom:3,cli:3}, sig:['poweruser','configLot','liveTerminal']}
    ]}
 ];
 
@@ -1410,26 +1410,23 @@ let quizStartTime      = null;
 
 const QUIZ_PARTS = [
   { name: 'Ease & Stability', name_fr: 'Simplicité & Stabilité', questions: [0,1,2,3,4] },
-  { name: 'Performance & Lightweight', name_fr: 'Performance & Légèreté', questions: [5,6,7,8,9] },
+  { name: 'Setup & Workflow', name_fr: 'Configuration & Flux', questions: [5,6,7,8,9] },
   { name: 'Privacy & Security', name_fr: 'Vie privée & Sécurité', questions: [10,11,12,13,14] },
   { name: 'Custom & CLI', name_fr: 'Customisation & CLI', questions: [15,16,17,18,19] },
   { name: 'Gaming & Beauty', name_fr: 'Gaming & Esthétique', questions: [20,21,22,23,24] },
 ];
 
 function getCurrentPart() {
-  let count = 0;
   for (let i = 0; i < QUIZ_PARTS.length; i++) {
-    count += QUIZ_PARTS[i].questions.length;
-    if (mainAnswered < count) return i;
+    if (QUIZ_PARTS[i].questions.includes(qIdx)) return i;
   }
   return QUIZ_PARTS.length - 1;
 }
 
 function getQuestionInPart() {
   const partIdx = getCurrentPart();
-  let count = 0;
-  for (let i = 0; i < partIdx; i++) count += QUIZ_PARTS[i].questions.length;
-  return mainAnswered - count;
+  const firstIdx = QUIZ_PARTS[partIdx].questions[0];
+  return qIdx - firstIdx;
 }
 let lockWasOverridden  = false;
 let locksEnabled       = true;
@@ -1440,13 +1437,13 @@ const BADGES = [
   { id:'completionist', icon:'🏆', name:'Completionist', desc:'Answered all 25 questions without skipping', check:()=> !history.some(h=>h.skipped) && mainAnswered === 25 },
   { id:'speed-demon', icon:'💨', name:'Speed Demon', desc:'Finished in under 90 seconds', check:()=> quizStartTime && (Date.now()-quizStartTime) < 90000 },
   { id:'wanderer', icon:'🚶', name:'The Wanderer', desc:'Skipped 5+ questions', check:()=> history.filter(h=>h.skipped).length >= 5 },
-  { id:'terminal-lover', icon:'🖤', name:'Terminal Lover', desc:'Maxed out CLI dimension', check:()=> userDimensions.cli >= 6 },
+  { id:'terminal-lover', icon:'🖤', name:'Terminal Lover', desc:'Maxed out CLI dimension', check:()=> userDimensions.cli >= 40 },
   { id:'gui-only', icon:'🖱️', name:'GUI Only Please', desc:'Scored 0 on CLI', check:()=> userDimensions.cli === 0 },
   { id:'purist', icon:'🔓', name:'Purist', desc:'Picked FOSS-only options', check:()=> userSignals.includes('freedomPurist') },
   { id:'distro-hopper', icon:'🐇', name:'Distro Hopper', desc:'Listed 5+ distros in Already Tried', check:()=> triedDistros.length >= 5 },
   { id:'beginner-mind', icon:'🌱', name:"Beginner's Mind", desc:'Identified as complete beginner', check:()=> userSignals.includes('beginner') },
-  { id:'gamer', icon:'🎮', name:'Gamer', desc:'Maxed out gaming dimension', check:()=> userDimensions.gaming >= 5 },
-  { id:'privacy-paranoid', icon:'👻', name:'Privacy Paranoid', desc:'Maxed privacy + chose security distro', check:()=> userDimensions.priv >= 5 && (userSignals.includes('privacyHigh') || userSignals.includes('security')) },
+  { id:'gamer', icon:'🎮', name:'Gamer', desc:'Maxed out gaming dimension', check:()=> userDimensions.gaming >= 8 },
+  { id:'privacy-paranoid', icon:'👻', name:'Privacy Paranoid', desc:'Maxed privacy + chose security distro', check:()=> userDimensions.priv >= 18 && (userSignals.includes('privacyHigh') || userSignals.includes('security')) },
   { id:'ricer', icon:'🎨', name:'Ricer', desc:'Maxed both Custom and Beauty', check:()=> userDimensions.custom >= 5 && userDimensions.beauty >= 4 },
   { id:'old-hardware-hero', icon:'💾', name:'Old Hardware Hero', desc:'Rocking 4GB RAM or less', check:()=> userSignals.includes('oldHardware') },
   { id:'corporate-hater', icon:'🚫', name:'Corporate Hater', desc:'Actively avoids big tech backing', check:()=> userSignals.includes('privacyHigh') && userSignals.includes('wantsPrivacy') },
@@ -1461,9 +1458,9 @@ const BADGES = [
   { id:'gentoo-grinder', icon:'⚙️', name:'Gentoo Grinder', desc:'Matched with Gentoo', check:()=> currentTopThree.includes('gentoo') },
   { id:'the-one-percent', icon:'💎', name:'The 1%', desc:'Matched with Alpine, Slackware, or Clear', check:()=> currentTopThree.some(k=>['alpine','slackware','clear'].includes(k)) },
   { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) >= 3 },
-  { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q16 and Q18', check:()=> userSignals.filter(s=>s==='beginner').length >= 2 && userSignals.includes('noTerminal') },
+  { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q20 and Q24', check:()=> { let hasAI20 = false, hasAI24 = false; history.forEach(h => { if(!h.skipped && h.selected) { const q = QS[h.qIdx]; if(q.id===20) h.selected.forEach(i => { if(q.opts[i].l==='C') hasAI20 = true; }); if(q.id===24) h.selected.forEach(i => { if(q.opts[i].l==='A') hasAI24 = true; }); } }); return hasAI20 && hasAI24; } },
   { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) >= 5 },
-  { id:'indecisive', icon:'🤔', name:'Indecisive', desc:'Used Previous button 10+ times in one quiz', check:()=> history.filter(h=>!h.skipped).length >= 10 },
+  { id:'indecisive', icon:'🤔', name:'Indecisive', desc:'Used Previous button 10+ times in one quiz', check:()=> (window._backCount || 0) >= 10 },
 ,
 ];
 
@@ -1667,11 +1664,10 @@ function showBadgeWall() {
   const cardsHTML = BADGES.map(b => {
     const has = earned.includes(b.id);
     const isSecret = secretBadges.includes(b.id);
-    const showDesc = has || !isSecret;
     return `<div style="background:rgba(255,255,255,${has?'.06':'.02'});border:1px solid rgba(255,255,255,${has?'.12':'.05'});border-radius:12px;padding:16px 12px;text-align:center;transition:all .2s;cursor:default;${has?'':'opacity:.4;filter:grayscale(1)'}">
       <div style="font-size:2rem;margin-bottom:6px">${has?b.icon:'❓'}</div>
-      <div style="font-family:var(--mono);font-size:.65rem;color:var(--txt);margin-bottom:3px">${has?b.name:'???'}</div>
-      <div style="font-family:var(--mono);font-size:.5rem;color:var(--muted);line-height:1.4">${showDesc?b.desc:'???'}</div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--txt);margin-bottom:3px">${has||!isSecret?b.name:'???'}</div>
+      <div style="font-family:var(--mono);font-size:.5rem;color:var(--muted);line-height:1.4">${has?b.desc:'???'}</div>
     </div>`;
   }).join('');
   $card().innerHTML = `<div class="screen">
@@ -2273,7 +2269,7 @@ function pickOpt(i) {
     if (o.popup) { triggerJumpscare(); }
     selectedOpts.push(i);
     Object.entries(o.v).forEach(([dim,val]) => {
-  userDimensions[dim] = Math.max(userDimensions[dim], val);
+  userDimensions[dim] += val;
 });
     if (o.sig) userSignals.push(...o.sig);
     if (qIdx===0 && q1Ans===-1) q1Ans = i;
@@ -2302,6 +2298,7 @@ function skipQuestion() {
 
 function goBack() {
   if (!history.length) return;
+  window._backCount = (window._backCount || 0) + 1;
   const prev = history.pop();
   if (!prev.skipped) {
     const q = QS[prev.qIdx];
@@ -2555,7 +2552,7 @@ function revealFromPodium(key) {
 }
 
 function goBackToPodium() {
-  if (!_podiumTopThree || !_podiumTopThree.length) {
+  if ((!_podiumTopThree || !_podiumTopThree.length) && (!currentTopThree || !currentTopThree.length)) {
     showPickScreen();
     return;
   }
@@ -2647,9 +2644,9 @@ function tweakAnswers() {
 }
 
 function recomputeFromPodium() {
-  currentTopThree = computeTopThree(false, true);
   activeMode = null;
   lockWasOverridden = true;
+  currentTopThree = computeTopThree(false, true);
   showPodium(currentTopThree);
 }
 
@@ -2970,28 +2967,28 @@ const TRANSLATIONS = {
     of: 'of',
     q1: "What's your experience with Linux?",
     q2: "What matters most in your ideal OS?",
-    q3: "How do you feel about the terminal?",
-    q4: "What's your main use case?",
-    q5: "How do you want updates delivered?",
+    q3: "How do you want updates delivered?",
+    q4: "What's your relationship with system crashes?",
+    q5: "What would make you switch distros?",
     q6: "How powerful is your machine?",
     q7: "Which desktop style speaks to you?",
-    q8: "How important is privacy to you?",
+    q8: "Pick your ideal weekend Linux activity:",
     q9: "How much time will you invest in setup?",
-    q10: "What's your philosophy on software freedom?",
-    q11: "How important is out-of-the-box hardware support?",
-    q12: "How do you install software?",
-    q13: "What's your relationship with system crashes?",
-    q14: "Pick your ideal weekend Linux activity:",
-    q15: "How do you feel about system customisation via config files?",
-    q16: "How do you feel about reading documentation?",
-    q17: "What would make you switch distros?",
-    q18: "What kind of community and support matters most?",
-    q19: "How do you want your system configured out of the box?",
-    q20: "How do you approach system security?",
-    q21: "How important is corporate backing?",
+    q10: "How do you want your system configured out of the box?",
+    q11: "How important is privacy to you?",
+    q12: "What's your philosophy on software freedom?",
+    q13: "How do you approach system security?",
+    q14: "How do you feel about systemd?",
+    q15: "How important is corporate backing?",
+    q16: "How do you feel about the terminal?",
+    q17: "How do you install software?",
+    q18: "How do you feel about system customisation via config files?",
+    q19: "How important is out-of-the-box hardware support?",
+    q20: "How do you feel about reading documentation?",
+    q21: "What's your main use case?",
     q22: "How important is visual polish to you?",
     q23: "What kind of default apps do you prefer?",
-    q24: "How do you feel about systemd?",
+    q24: "What kind of community and support matters most?",
     q25: "What's your long-term plan with Linux?"
   },
   fr: {
@@ -3076,28 +3073,28 @@ const TRANSLATIONS = {
     of: 'sur',
     q1: "Quelle est ton expérience avec Linux ?",
     q2: "Qu'est-ce qui compte le plus dans ton OS idéal ?",
-    q3: "Que penses-tu du terminal ?",
-    q4: "Quel est ton cas d'usage principal ?",
-    q5: "Comment veux-tu recevoir les mises à jour ?",
+    q3: "Comment veux-tu recevoir les mises à jour ?",
+    q4: "Quelle est ta relation avec les crashs système ?",
+    q5: "Qu'est-ce qui te ferait changer de distro ?",
     q6: "Quelle est la puissance de ta machine ?",
     q7: "Quel style de bureau te parle ?",
-    q8: "Quelle importance accordes-tu à la vie privée ?",
+    q8: "Choisis ton activité Linux du week-end idéale :",
     q9: "Combien de temps investiras-tu dans la configuration ?",
-    q10: "Quelle est ta philosophie sur la liberté logicielle ?",
-    q11: "Quelle importance pour le support matériel immédiat ?",
-    q12: "Comment installes-tu tes logiciels ?",
-    q13: "Quelle est ta relation avec les crashs système ?",
-    q14: "Choisis ton activité Linux du week-end idéale :",
-    q15: "Que penses-tu de la personnalisation via les fichiers de config ?",
-    q16: "Que penses-tu de la lecture de documentation ?",
-    q17: "Qu'est-ce qui te ferait changer de distro ?",
-    q18: "Quel type de communauté et de support compte le plus ?",
-    q19: "Comment veux-tu ton système configuré dès le départ ?",
-    q20: "Quelle est ton approche de la sécurité système ?",
-    q21: "Quelle importance pour le soutien d'une entreprise ?",
+    q10: "Comment veux-tu ton système configuré dès le départ ?",
+    q11: "Quelle importance accordes-tu à la vie privée ?",
+    q12: "Quelle est ta philosophie sur la liberté logicielle ?",
+    q13: "Quelle est ton approche de la sécurité système ?",
+    q14: "Que penses-tu de systemd ?",
+    q15: "Quelle importance pour le soutien d'une entreprise ?",
+    q16: "Que penses-tu du terminal ?",
+    q17: "Comment installes-tu tes logiciels ?",
+    q18: "Que penses-tu de la personnalisation via les fichiers de config ?",
+    q19: "Quelle importance pour le support matériel immédiat ?",
+    q20: "Que penses-tu de la lecture de documentation ?",
+    q21: "Quel est ton cas d'usage principal ?",
     q22: "Quelle importance pour le polish visuel ?",
     q23: "Quel type d'applications par défaut préfères-tu ?",
-    q24: "Que penses-tu de systemd ?",
+    q24: "Quel type de communauté et de support compte le plus ?",
     q25: "Quel est ton plan à long terme avec Linux ?",
     q1_optAm: 'Jamais utilisé',
     q1_optAs: 'Débutant complet — première fois',
@@ -3109,30 +3106,30 @@ const TRANSLATIONS = {
     q2_optCs: 'Exploite chaque cycle CPU',
     q2_optDm: 'Personnalisation totale',
     q2_optDs: 'Mon système, mes règles',
-    q3_optAm: 'Pitié, non.',
-    q3_optAs: 'Du GUI tout le temps',
-    q3_optBm: "Je l'utilise quand je suis forcé",
-    q3_optBs: "Seulement quand il n'y a pas d'autre moyen",
-    q3_optCm: "Je l'aime bien",
-    q3_optCs: 'À laise avec bash & co.',
-    q3_optDm: "J'y vis",
-    q3_optDs: 'tmux, neovim, zsh — chez moi.',
-    q4_optAm: 'Bureau quotidien / navigation',
-    q4_optAs: 'Web, médias, école, bureau',
-    q4_optBm: 'Dév / productivité pro',
-    q4_optBs: 'Code, conteneurs, serveurs',
-    q4_optCm: 'Gaming & FPS élevés',
-    q4_optCs: 'Steam, Proton, dernier GPU',
-    q4_optDm: 'Sécurité & vie privée',
-    q4_optDs: 'Pentest, anonymat, CTF',
-    q5_optAm: 'Rares & testées',
-    q5_optAs: 'Une mise à jour par an suffit',
-    q5_optBm: 'Versions ponctuelles régulières',
-    q5_optBs: 'Tous les 6–12 mois, parfait',
-    q5_optCm: 'Rolling release',
-    q5_optCs: 'Toujours les derniers paquets',
-    q5_optDm: 'À la pointe',
-    q5_optDs: "Je le veux avant que ce soit stable",
+    q3_optAm: 'Rares & testées',
+    q3_optAs: 'Une mise à jour par an suffit',
+    q3_optBm: 'Versions ponctuelles régulières',
+    q3_optBs: 'Tous les 6–12 mois, parfait',
+    q3_optCm: 'Rolling release',
+    q3_optCs: 'Toujours les derniers paquets',
+    q3_optDm: 'À la pointe',
+    q3_optDs: "Je le veux avant que ce soit stable",
+    q4_optAm: 'Un crash et je repasse à autre chose',
+    q4_optAs: 'La stabilité est non négociable',
+    q4_optBm: 'Énervant mais je répare',
+    q4_optBs: 'Je peux gérer des problèmes occasionnels',
+    q4_optCm: "Une opportunité d'apprendre",
+    q4_optCs: 'Débugger est la moitié du plaisir',
+    q4_optDm: "Je l'ai causé exprès",
+    q4_optDs: "Restaurer des snapshots c'est amusant",
+    q5_optAm: 'Une mauvaise mise à jour qui casse tout',
+    q5_optAs: 'La stabilité avant tout',
+    q5_optBm: 'Ça commence à ramer',
+    q5_optBs: 'La performance compte pour moi',
+    q5_optCm: 'Je voulais juste quelque chose de nouveau',
+    q5_optCs: 'Aucune plainte, juste explorer',
+    q5_optDm: 'Manque de personnalisation',
+    q5_optDs: "J'ai besoin d'un contrôle total",
     q6_optAm: 'Vieux / bas de gamme',
     q6_optAs: 'Moins de 4 Go RAM, vieux CPU',
     q6_optBm: 'Portable moyen',
@@ -3149,14 +3146,14 @@ const TRANSLATIONS = {
     q7_optCs: 'i3, Hyprland, Sway — clavier avant tout',
     q7_optDm: 'DE léger',
     q7_optDs: 'XFCE / LXDE — rapide sur tout matériel',
-    q8_optAm: 'Pas vraiment',
-    q8_optAs: "J'utilise Google & Windows de toute façon",
-    q8_optBm: 'Un peu',
-    q8_optBs: "J'utilise un VPN parfois",
-    q8_optCm: 'Très important',
-    q8_optCs: 'FOSS uniquement, pas de télémétrie',
-    q8_optDm: "Critique — l'anonymat d'abord",
-    q8_optDs: 'Ne laisse aucune trace en ligne',
+    q8_optAm: 'Regarder des vidéos, naviguer',
+    q8_optAs: 'Juste utiliser normalement',
+    q8_optBm: 'Jouer sur Steam / Proton',
+    q8_optBs: 'Faire tourner des jeux sur Linux',
+    q8_optCm: 'Ricer mon bureau pendant des heures',
+    q8_optCs: 'Le rendre parfait visuellement',
+    q8_optDm: 'Lire la doc et configurer',
+    q8_optDs: 'Plongée profonde dans les fichiers de config',
     q9_optAm: 'Zéro — démarrer et partir',
     q9_optAs: 'Si je configure, je quitte',
     q9_optBm: 'Quelques heures',
@@ -3165,102 +3162,102 @@ const TRANSLATIONS = {
     q9_optCs: 'Je le veux exactement comme il faut',
     q9_optDm: "Autant de temps qu'il faut",
     q9_optDs: 'Configurer EST le hobby',
-    q10_optAm: 'FOSS uniquement — aucun code propriétaire',
-    q10_optAs: 'Je veux un système entièrement libre',
-    q10_optBm: 'Open source, mais pragmatique',
-    q10_optBs: "Content d'utiliser les drivers NVIDIA, Steam, etc.",
-    q10_optCm: "Je m'en fiche tant que ça marche",
-    q10_optCs: 'Propriétaire ou open — fais le job',
-    q10_optDm: 'Éviter les blobs, préférer la communauté',
-    q10_optDs: 'Debian main, pas de non-free',
-    q11_optAm: 'Essentiel — tout marche immédiatement',
-    q11_optAs: 'Wi‑Fi, GPU, imprimantes — sans bricolage',
-    q11_optBm: 'Je peux modifier quelques trucs',
-    q11_optBs: "Content d'exécuter un script ou deux",
-    q11_optCm: "Ça me va d'installer les drivers manuellement",
-    q11_optCs: 'Le terminal ne me fait pas peur',
-    q11_optDm: 'Je compile mon propre noyau',
-    q11_optDs: 'Contrôle total sur le matériel',
-    q12_optAm: 'Store GUI uniquement',
-    q12_optAs: 'Cliquer installer, terminé',
-    q12_optBm: 'Gestionnaire de paquets en terminal',
-    q12_optBs: 'apt, dnf, pacman — pas de problème',
-    q12_optCm: 'Compiler depuis les sources',
-    q12_optCs: "Je lis les Makefiles pour le plaisir",
-    q12_optDm: 'Flatpak / Snap / AppImage',
-    q12_optDs: 'Des paquets universels svp',
-    q13_optAm: 'Un crash et je repasse à autre chose',
-    q13_optAs: 'La stabilité est non négociable',
-    q13_optBm: 'Énervant mais je répare',
-    q13_optBs: 'Je peux gérer des problèmes occasionnels',
-    q13_optCm: "Une opportunité d'apprendre",
-    q13_optCs: 'Débugger est la moitié du plaisir',
-    q13_optDm: "Je l'ai causé exprès",
-    q13_optDs: "Restaurer des snapshots c'est amusant",
-    q14_optAm: 'Regarder des vidéos, naviguer',
-    q14_optAs: 'Juste utiliser normalement',
-    q14_optBm: 'Jouer sur Steam / Proton',
-    q14_optBs: 'Faire tourner des jeux sur Linux',
-    q14_optCm: 'Ricer mon bureau pendant des heures',
-    q14_optCs: 'Le rendre parfait visuellement',
-    q14_optDm: 'Lire la doc et configurer',
-    q14_optDs: 'Plongée profonde dans les fichiers de config',
-    q15_optAm: 'Je ne touche jamais aux configs',
-    q15_optAs: 'Les réglages GUI suffisent',
-    q15_optBm: "Je modifie quelques réglages avec des outils GUI",
-    q15_optBs: 'Quelques ajustements dans une appli de réglages',
-    q15_optCm: "J'aime modifier les fichiers de config",
-    q15_optCs: 'vim /etc/... est une seconde nature',
-    q15_optDm: 'Je gère tout mon OS de façon déclarative',
-    q15_optDs: 'Nix, Ansible, ou dépôts dotfiles',
-    q16_optAm: 'Tutoriels YouTube uniquement',
-    q16_optAs: 'Les vidéos sont plus faciles pour moi',
-    q16_optBm: 'Google quand je suis bloqué',
-    q16_optBs: 'Les forums et Reddit ça va',
-    q16_optCm: "J'utilise l'IA",
-    q16_optCs: 'ChatGPT / Claude résout tout',
-    q16_optDm: 'Je lis tout le wiki',
-    q16_optDs: "Le Arch Wiki est ma page d'accueil",
-    q17_optAm: 'Une mauvaise mise à jour qui casse tout',
-    q17_optAs: 'La stabilité avant tout',
-    q17_optBm: 'Ça commence à ramer',
-    q17_optBs: 'La performance compte pour moi',
-    q17_optCm: 'Je voulais juste quelque chose de nouveau',
-    q17_optCs: 'Aucune plainte, juste explorer',
-    q17_optDm: 'Manque de personnalisation',
-    q17_optDs: "J'ai besoin d'un contrôle total",
-    q18_optAm: "J'utilise l'IA",
-    q18_optAs: 'ChatGPT règle tout',
-    q18_optBm: "Tant que je trouve mon problème",
-    q18_optBs: "N'importe quelle source qui marche",
-    q18_optCm: 'Communauté active mais plus petite, experte',
-    q18_optCs: 'IRC, listes de diffusion — connaissance profonde',
-    q18_optDm: 'Je résous mes propres problèmes',
-    q18_optDs: 'Débugger sans aide extérieure',
-    q19_optAm: 'Entièrement pré-configuré',
-    q19_optAs: 'Tout fonctionne immédiatement',
-    q19_optBm: 'Défauts raisonnables, ajustables',
-    q19_optBs: 'Un peu de configuration, rien de flippant',
-    q19_optCm: 'Base minimale, je construis dessus',
-    q19_optCs: "Démarrer nu, ajouter ce que je veux",
-    q19_optDm: 'Un fichier de config définit tout',
-    q19_optDs: 'Déclaratif, reproductible',
-    q20_optAm: 'Je fais confiance aux défauts de l\'OS',
-    q20_optAs: 'Ce qui vient par défaut',
-    q20_optBm: "J'installe un firewall et prends des précautions basiques",
-    q20_optBs: 'UFW, bon sens',
-    q20_optCm: 'Je durcis mon système et désactive des services',
-    q20_optCs: 'Durcissement noyau, apparmor/selinux',
-    q20_optDm: "J'utilise la compartimentalisation (VMs, conteneurs)",
-    q20_optDs: 'Style Qubes ou micro‑VMs',
-    q21_optAm: 'Je veux une entreprise derrière',
-    q21_optAs: 'Support entreprise & financement',
-    q21_optBm: "Peu importe",
-    q21_optBs: 'Communauté ou entreprise, les deux vont bien',
-    q21_optCm: 'Uniquement piloté par la communauté',
-    q21_optCs: "Pas d'influence corporate",
-    q21_optDm: 'Éviter activement les big tech',
-    q21_optDs: "L'indépendance est cruciale",
+    q10_optAm: 'Entièrement pré-configuré',
+    q10_optAs: 'Tout fonctionne immédiatement',
+    q10_optBm: 'Défauts raisonnables, ajustables',
+    q10_optBs: 'Un peu de configuration, rien de flippant',
+    q10_optCm: 'Base minimale, je construis dessus',
+    q10_optCs: "Démarrer nu, ajouter ce que je veux",
+    q10_optDm: 'Un fichier de config définit tout',
+    q10_optDs: 'Déclaratif, reproductible',
+    q11_optAm: 'Pas vraiment',
+    q11_optAs: "J'utilise Google & Windows de toute façon",
+    q11_optBm: 'Un peu',
+    q11_optBs: "J'utilise un VPN parfois",
+    q11_optCm: 'Très important',
+    q11_optCs: 'FOSS uniquement, pas de télémétrie',
+    q11_optDm: "Critique — l'anonymat d'abord",
+    q11_optDs: 'Ne laisse aucune trace en ligne',
+    q12_optAm: 'FOSS uniquement — aucun code propriétaire',
+    q12_optAs: 'Je veux un système entièrement libre',
+    q12_optBm: 'Open source, mais pragmatique',
+    q12_optBs: "Content d'utiliser les drivers NVIDIA, Steam, etc.",
+    q12_optCm: "Je m'en fiche tant que ça marche",
+    q12_optCs: 'Propriétaire ou open — fais le job',
+    q12_optDm: 'Éviter les blobs, préférer la communauté',
+    q12_optDs: 'Debian main, pas de non-free',
+    q13_optAm: 'Je fais confiance aux défauts de l\'OS',
+    q13_optAs: 'Ce qui vient par défaut',
+    q13_optBm: "J'installe un firewall et prends des précautions basiques",
+    q13_optBs: 'UFW, bon sens',
+    q13_optCm: 'Je durcis mon système et désactive des services',
+    q13_optCs: 'Durcissement noyau, apparmor/selinux',
+    q13_optDm: "J'utilise la compartimentalisation (VMs, conteneurs)",
+    q13_optDs: 'Style Qubes ou micro‑VMs',
+    q14_optAm: "C'est quoi systemd ?",
+    q14_optAs: 'Je ne sais pas et je men fiche',
+    q14_optBm: 'Ça marche bien pour moi',
+    q14_optBs: 'Init moderne, pas de plaintes',
+    q14_optCm: "J'ai entendu les débats",
+    q14_optCs: 'Curieux des alternatives',
+    q14_optDm: 'Éviter activement',
+    q14_optDs: 'runit, OpenRC, ou s6 svp',
+    q15_optAm: 'Je veux une entreprise derrière',
+    q15_optAs: 'Support entreprise & financement',
+    q15_optBm: "Peu importe",
+    q15_optBs: 'Communauté ou entreprise, les deux vont bien',
+    q15_optCm: 'Uniquement piloté par la communauté',
+    q15_optCs: "Pas d'influence corporate",
+    q15_optDm: 'Éviter activement les big tech',
+    q15_optDs: "L'indépendance est cruciale",
+    q16_optAm: 'Pitié, non.',
+    q16_optAs: 'Du GUI tout le temps',
+    q16_optBm: "Je l'utilise quand je suis forcé",
+    q16_optBs: "Seulement quand il n'y a pas d'autre moyen",
+    q16_optCm: "Je l'aime bien",
+    q16_optCs: 'À laise avec bash & co.',
+    q16_optDm: "J'y vis",
+    q16_optDs: 'tmux, neovim, zsh — chez moi.',
+    q17_optAm: 'Store GUI uniquement',
+    q17_optAs: 'Cliquer installer, terminé',
+    q17_optBm: 'Gestionnaire de paquets en terminal',
+    q17_optBs: 'apt, dnf, pacman — pas de problème',
+    q17_optCm: 'Compiler depuis les sources',
+    q17_optCs: "Je lis les Makefiles pour le plaisir",
+    q17_optDm: 'Flatpak / Snap / AppImage',
+    q17_optDs: 'Des paquets universels svp',
+    q18_optAm: 'Je ne touche jamais aux configs',
+    q18_optAs: 'Les réglages GUI suffisent',
+    q18_optBm: "Je modifie quelques réglages avec des outils GUI",
+    q18_optBs: 'Quelques ajustements dans une appli de réglages',
+    q18_optCm: "J'aime modifier les fichiers de config",
+    q18_optCs: 'vim /etc/... est une seconde nature',
+    q18_optDm: 'Je gère tout mon OS de façon déclarative',
+    q18_optDs: 'Nix, Ansible, ou dépôts dotfiles',
+    q19_optAm: 'Essentiel — tout marche immédiatement',
+    q19_optAs: 'Wi‑Fi, GPU, imprimantes — sans bricolage',
+    q19_optBm: 'Je peux modifier quelques trucs',
+    q19_optBs: "Content d'exécuter un script ou deux",
+    q19_optCm: "Ça me va d'installer les drivers manuellement",
+    q19_optCs: 'Le terminal ne me fait pas peur',
+    q19_optDm: 'Je compile mon propre noyau',
+    q19_optDs: 'Contrôle total sur le matériel',
+    q20_optAm: 'Tutoriels YouTube uniquement',
+    q20_optAs: 'Les vidéos sont plus faciles pour moi',
+    q20_optBm: 'Google quand je suis bloqué',
+    q20_optBs: 'Les forums et Reddit ça va',
+    q20_optCm: "J'utilise l'IA",
+    q20_optCs: 'ChatGPT / Claude résout tout',
+    q20_optDm: 'Je lis tout le wiki',
+    q20_optDs: "Le Arch Wiki est ma page d'accueil",
+    q21_optAm: 'Bureau quotidien / navigation',
+    q21_optAs: 'Web, médias, école, bureau',
+    q21_optBm: 'Dév / productivité pro',
+    q21_optBs: 'Code, conteneurs, serveurs',
+    q21_optCm: 'Gaming & FPS élevés',
+    q21_optCs: 'Steam, Proton, dernier GPU',
+    q21_optDm: 'Sécurité & vie privée',
+    q21_optDs: 'Pentest, anonymat, CTF',
     q22_optAm: 'La fonction avant la forme',
     q22_optAs: "Je me fiche de l'apparence",
     q22_optBm: "De bons défauts sont appréciés",
@@ -3277,14 +3274,14 @@ const TRANSLATIONS = {
     q23_optCs: "Système nu, j'installe ce dont j'ai besoin",
     q23_optDm: 'Apps web plutôt que natives',
     q23_optDs: 'Flux de travail basé sur le navigateur',
-    q24_optAm: "C'est quoi systemd ?",
-    q24_optAs: 'Je ne sais pas et je men fiche',
-    q24_optBm: 'Ça marche bien pour moi',
-    q24_optBs: 'Init moderne, pas de plaintes',
-    q24_optCm: "J'ai entendu les débats",
-    q24_optCs: 'Curieux des alternatives',
-    q24_optDm: 'Éviter activement',
-    q24_optDs: 'runit, OpenRC, ou s6 svp',
+    q24_optAm: "J'utilise l'IA",
+    q24_optAs: 'ChatGPT règle tout',
+    q24_optBm: "Tant que je trouve mon problème",
+    q24_optBs: "N'importe quelle source qui marche",
+    q24_optCm: 'Communauté active mais plus petite, experte',
+    q24_optCs: 'IRC, listes de diffusion — connaissance profonde',
+    q24_optDm: 'Je résous mes propres problèmes',
+    q24_optDs: 'Débugger sans aide extérieure',
     q25_optAm: 'Trouver une distro et y rester',
     q25_optAs: "S'installer, arrêter le distro-hopping",
     q25_optBm: "Continuer à apprendre et évoluer",

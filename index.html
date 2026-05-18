@@ -699,14 +699,19 @@ body{
     <span id="lockToggleLabel">Profile Locks</span>
   </label>
   <p id="settingsLockDesc" style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin:0 0 14px 26px;line-height:1.5;opacity:.7">When enabled, strong preferences for gaming, privacy or lightweight hardware narrow results to specialised distros only.</p>
+  <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;color:var(--muted);cursor:pointer;margin-bottom:4px">
+    <input type="checkbox" id="archModeToggle" onchange="toggleArchMode(this.checked)">
+    <span>Ultra secret beta feature with life changing changes</span>
+  </label>
+  <p style="font-family:var(--mono);font-size:.6rem;color:var(--muted);margin:0 0 14px 26px;line-height:1.5;opacity:.7">Replaces all questions with extremely scientific ones. You'll probably get Arch anyway.</p>
 </div>
 <div class="bg"><div class="stars"></div><div class="orb"></div></div>
 <div class="particles" id="particles"></div>
 <div class="app">
   <div class="brand" id="brand">
-    <div class="brand-tag">// distro.match</div>
-    <h1>Find Your Linux</h1>
-    <p>25 questions . 30 distros . your perfect match</p>
+    <div class="brand-tag" id="brandTag">// distro.match</div>
+    <h1 id="brandTitle">Find Your Linux</h1>
+    <p id="brandSubtitle">25 questions . 30 distros . your perfect match</p>
   </div>
   <div class="prog-wrap" id="progWrap" style="display:none">
     <div class="prog-meta">
@@ -717,6 +722,7 @@ body{
   </div>
   <div class="card" id="card"></div>
   <div class="footer" id="footerText">made with 💚 for the linux community</div>
+  <div class="footer" id="footerArchText" style="display:none">made with 💚 and absolutely no scientific methodology</div>
 </div>
 
 <script>
@@ -1430,6 +1436,7 @@ function getQuestionInPart() {
 }
 let lockWasOverridden  = false;
 let locksEnabled       = true;
+let archModeEnabled    = false;
 
 // ═══ BADGE SYSTEM ═══
 const BADGES = [
@@ -1610,7 +1617,7 @@ function formatTime(ms){
 
 function updateProgress() {
   document.getElementById('progLabel').textContent = t('progress');
-  const total = QS.length;
+  const total = archModeEnabled ? ARCH_QUESTIONS.length : QS.length;
   const done = mainAnswered;
   const pct = Math.round((done / total) * 100);
   $progFill().style.width = pct + '%';
@@ -1620,8 +1627,13 @@ function updateProgress() {
 function showStart() {
   document.getElementById('brand').style.display = '';
   document.getElementById('progWrap').style.display = 'none';
-  document.querySelector('.brand h1').textContent = t('tagline');
-  document.querySelector('.brand p').textContent = t('subtitle');
+  if (!archModeEnabled) {
+    document.getElementById('brandTag').textContent = '// distro.match';
+    document.getElementById('brandTitle').textContent = t('tagline');
+    document.getElementById('brandSubtitle').textContent = t('subtitle');
+    document.getElementById('footerText').style.display = '';
+    document.getElementById('footerArchText').style.display = 'none';
+  }
   document.getElementById('footerText').textContent = t('footer');
   document.getElementById('settingsThemeLabel').textContent = t('settingsTheme');
   document.getElementById('settingsLangLabel').textContent = t('settingsLang');
@@ -1716,8 +1728,16 @@ function beginQuiz() {
   ignoreLightweightMode = false; followUpSelected = [];
   window._tierDone = false;
   lockWasOverridden = false;
+  window._archModeActive = archModeEnabled;
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
+  if (archModeEnabled) {
+    document.getElementById('brandTag').textContent = '// definitely.accurate';
+    document.getElementById('brandTitle').textContent = 'What Linux Distro Are You?';
+    document.getElementById('brandSubtitle').textContent = "25 questions . zero science . you'll get Arch anyway";
+    document.getElementById('footerText').style.display = 'none';
+    document.getElementById('footerArchText').style.display = '';
+  }
   tick();
 }
 
@@ -1733,7 +1753,8 @@ function tick() {
 }
 
 function showNormalQ() {
-  const q = QS[qIdx];
+  const source = archModeEnabled ? ARCH_QUESTIONS : QS;
+  const q = source[qIdx];
   const isLast = qIdx === QS.length - 1;
   // Show 25/25 on the last question
   if (isLast) {
@@ -1744,11 +1765,11 @@ function showNormalQ() {
   }
 
   const optsHTML = q.opts.map((o,i) => {
-    const ico = o.isDE ? ICONS[o.ico] : `<span style="font-size:1.3rem;line-height:1">${o.i}</span>`;
+    const ico = o.isDE ? ICONS[o.ico] : o.ico ? `<span style="font-size:1.3rem;line-height:1">${o.ico}</span>` : `<span style="font-size:1.3rem;line-height:1">${o.i}</span>`;
     const sel = selectedOpts.includes(i);
     const optKey = 'q' + q.id + '_opt' + o.l;
-    const mainText = t(optKey + 'm') || o.m;
-    const subText = t(optKey + 's') || o.s;
+    const mainText = archModeEnabled ? (currentLang==='fr'&&o.m_fr?o.m_fr:o.m) : (t(optKey + 'm') || o.m);
+    const subText = archModeEnabled ? (currentLang==='fr'&&o.s_fr?o.s_fr:o.s) : (t(optKey + 's') || o.s);
     return `<button class="opt${sel ? ' on' : ''}" style="animation-delay:${i*60}ms" onclick="pickOpt(${i})">
       <span class="opt-ltr">${o.l}</span>${ico}
       <span class="opt-main">${mainText}</span>
@@ -1784,7 +1805,7 @@ function showNormalQ() {
   swap(`<div class="screen">
     <div class="q-label">${t('partLabel')} ${partNum} ${t('of')} ${totalParts} — ${partName}</div>
     <div class="q-label" style="color:var(--muted);font-size:9px;margin-bottom:6px">${t('question')} ${qInPart} ${t('of')} ${totalInPart}</div>
-    <div class="q-text">${t('q'+q.id) || q.text}</div>
+    <div class="q-text">${archModeEnabled ? (currentLang==='fr'&&q.text_fr?q.text_fr:q.text) : (t('q'+q.id) || q.text)}</div>
     <div class="opts${q.opts.length <= 1 ? ' single-col' : ''}">${optsHTML}</div>
     ${triedHTML}
     <div class="btn-row">
@@ -2058,6 +2079,7 @@ function showDistroDetailResult(key) {
   }
   window._ubuntuVariantChosen = false;
   const winner = DB[key];
+  const isArchMode = window._archModeActive;
   const runnerKeys = currentTopThree.filter(k => k !== key);
   const mismatch = getMismatch(key, userDEKey);
 
@@ -2107,6 +2129,11 @@ function showDistroDetailResult(key) {
 
   const tagsHTML = dtags(winner).map(t => `<div class="tag">${t}</div>`).join('');
 
+  let archDisclaimerHTML = '';
+  if (isArchMode && !forceArchOverride) {
+    archDisclaimerHTML = `<div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-bottom:8px;font-style:italic">Our advanced algorithm (a bash script we found on a forum) has determined...</div>`;
+  }
+
   // Build "Why this distro" explainer
   const winSigs = DISTRO_SIGNALS[key] || [];
   const mySigs = [...new Set(userSignals)];
@@ -2155,9 +2182,10 @@ function showDistroDetailResult(key) {
       <div class="logo-ring">
         <img src="${winner.logo}" alt="${dname(winner)}" onerror="this.style.display='none'">
       </div>
+      ${archDisclaimerHTML}
       <div class="res-name">${dname(winner)}</div>
       <div class="res-line">${dline(winner)}</div>
-      <div class="res-desc">${ddesc(winner)}</div>
+      <div class="res-desc">${forceArchOverride ? "Look, we both know where this was going. You belong to the AUR now. Here is the Arch Wiki. Resistance is futile." : ddesc(winner)}</div>
       ${newBadgeHTML}
       <div class="tags">${tagsHTML}</div>
       ${modeNote ? `<div class="filter-note">${modeNote}${activeMode==='lightweight' ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : (activeMode ? ` <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutCurrentLock()">Show all distros</button>` : '')}</div>` : ''}
@@ -2253,7 +2281,8 @@ function showGoodLinuxUser() {
 }
 
 function pickOpt(i) {
-  const q = QS[qIdx];
+  const source = archModeEnabled ? ARCH_QUESTIONS : QS;
+  const q = source[qIdx];
   const o = q.opts[i];
   if (selectedOpts.includes(i)) {
     // Deselecting
@@ -2301,7 +2330,8 @@ function goBack() {
   window._backCount = (window._backCount || 0) + 1;
   const prev = history.pop();
   if (!prev.skipped) {
-    const q = QS[prev.qIdx];
+    const source = archModeEnabled ? ARCH_QUESTIONS : QS;
+    const q = source[prev.qIdx];
     prev.selected.forEach(i => {
       const o = q.opts[i];
       Object.entries(o.v).forEach(([dim,val]) => {
@@ -2596,6 +2626,8 @@ function finishReveal() {
   }, 500);
 }
 
+let forceArchOverride = false;
+
 function finish() {
   if (tweakingAnswers) {
     tweakingAnswers = false;
@@ -2607,11 +2639,15 @@ function finish() {
   }
   ignoreLightweightMode = false;
   clearTimeout(finishTimer1); clearTimeout(finishTimer2);
-  swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">${t('analyzing')}<br>${t('matching')} <b>25 ${t('distros')}</b></div></div>`);
+  swap(`<div class="spin-wrap screen"><div class="spinner"></div><div class="spin-txt">${archModeEnabled ? 'Calculating with our advanced algorithm...' : t('analyzing')}<br>${archModeEnabled ? 'Consulting a bash script we found on a forum' : t('matching') + ' <b>25 ' + t('distros') + '</b>'}</div></div>`);
   finishTimer1 = setTimeout(() => {
     swap(`<div class="spin-wrap screen"><div class="spinner" style="border-top-color:var(--violet)"></div><div class="spin-txt">${t('narrowing')}<br><b>${t('almostThere')}</b></div></div>`);
     finishTimer2 = setTimeout(() => {
-      const topThree = computeTopThree(false);
+      let topThree = computeTopThree(false);
+      if (archModeEnabled) {
+        forceArchOverride = true;
+        topThree = ['arch','arch','arch'];
+      }
       startReveal(topThree);
     }, 1400);
   }, 1300);
@@ -2881,6 +2917,207 @@ function toggleLocks(enabled) {
   }
   localStorage.setItem('distromatch-locks', enabled);
 }
+
+let ARCH_QUESTIONS = [];
+
+function toggleArchMode(enabled) {
+  archModeEnabled = enabled;
+  localStorage.setItem('distromatch-archmode', enabled);
+  if (enabled) {
+    document.getElementById('brandTag').textContent = '// definitely.accurate';
+    document.getElementById('brandTitle').textContent = 'What Linux Distro Are You?';
+    document.getElementById('brandSubtitle').textContent = "25 questions . zero science . you'll get Arch anyway";
+    document.getElementById('footerText').style.display = 'none';
+    document.getElementById('footerArchText').style.display = '';
+  } else {
+    document.getElementById('brandTag').textContent = '// distro.match';
+    document.getElementById('brandTitle').textContent = t('tagline');
+    document.getElementById('brandSubtitle').textContent = t('subtitle');
+    document.getElementById('footerText').style.display = '';
+    document.getElementById('footerArchText').style.display = 'none';
+  }
+}
+
+function initArchQuestions() {
+  ARCH_QUESTIONS = [
+  {id:'q1',text:'How do you feel about the number 8?',text_fr:'Que pensez-vous du chiffre 8 ?',
+   opts:[
+    {l:'A',ico:'🧮',m:"It's fine.",m_fr:'Ça va.',s:'An even number. Does its job.',s_fr:'Un nombre pair. Il fait son travail.',v:{ease:1,stable:1}},
+    {l:'B',ico:'🎱',m:'Powerful. Mysterious.',m_fr:'Puissant. Mystérieux.',s:'The octopus agrees.',s_fr:'La pieuvre est d\'accord.',v:{custom:2,cli:1}},
+    {l:'C',ico:'♾️',m:'Turn it sideways.',m_fr:'Tournez-le sur le côté.',s:"Now we're talking.",s_fr:'Maintenant on parle.',v:{rolling:2,perf:1}},
+    {l:'D',ico:'🍀',m:'7 ate 9. 8 is an accomplice.',m_fr:'7 a mangé 9. 8 est complice.',s:'Never trusted it.',s_fr:'Je ne lui ai jamais fait confiance.',v:{priv:3,gaming:1}}
+   ]},
+  {id:'q2',text:"You're in a forest. Do you compile from source or download a binary?",text_fr:'Vous êtes dans une forêt. Compilez-vous depuis la source ou téléchargez-vous un binaire ?',
+   opts:[
+    {l:'A',ico:'🔨',m:'Compile from source.',m_fr:'Compiler depuis la source.',s:'I have time. The forest can wait.',s_fr:"J'ai le temps. La forêt peut attendre.",v:{custom:3,cli:3,perf:2}},
+    {l:'B',ico:'📦',m:'Download the binary.',m_fr:'Télécharger le binaire.',s:'I want to leave this forest today.',s_fr:"Je veux quitter cette forêt aujourd'hui.",v:{ease:3,stable:1}},
+    {l:'C',ico:'🔥',m:'I am the forest now.',m_fr:'Je suis la forêt maintenant.',s:'The trees speak in assembly.',s_fr:'Les arbres parlent en assembleur.',v:{rolling:3,priv:2}},
+    {l:'D',ico:'🧙',m:'Cast a spell.',m_fr:'Lancer un sort.',s:'sudo apt install escape-reality',s_fr:'sudo apt install echapper-realite',v:{gaming:2,beauty:2}}
+   ]},
+  {id:'q3',text:'What is your opinion on parentheses?',text_fr:'Quelle est votre opinion sur les parenthèses ?',
+   opts:[
+    {l:'A',ico:'()',m:'Necessary and beautiful.',m_fr:'Nécessaires et belles.',s:'Lisp is poetry.',s_fr:"Lisp c'est de la poésie.",v:{cli:3,custom:3}},
+    {l:'B',ico:'{}',m:'Curly braces only.',m_fr:'Accolades uniquement.',s:'I have taste.',s_fr:"J'ai du goût.",v:{ease:2,stable:2}},
+    {l:'C',ico:'🤷',m:"I don't think about them.",m_fr:"Je n'y pense pas.",s:'They just exist.',s_fr:"Elles existent, c'est tout.",v:{ease:3,gaming:1}},
+    {l:'D',ico:'💀',m:'I fear them.',m_fr:"J'en ai peur.",s:'Unmatched parenthesis haunts my dreams.',s_fr:"Une parenthèse non fermée hante mes rêves.",v:{priv:2,perf:1}}
+   ]},
+  {id:'q4',text:'systemd: discuss. You have 3 seconds.',text_fr:'systemd : discutez. Vous avez 3 secondes.',
+   opts:[
+    {l:'A',ico:'😤',m:"It's fine. It works.",m_fr:"C'est bien. Ça fonctionne.",s:'Can we move on?',s_fr:'On peut passer à autre chose ?',v:{ease:2,stable:2}},
+    {l:'B',ico:'🔥',m:'BINARY BLOATED NONSENSE',m_fr:"N'IMPORTE QUOI BINAIRE GONFLÉ",s:'I use Artix, obviously.',s_fr:"J'utilise Artix, évidemment.",v:{custom:3,cli:3,perf:2}},
+    {l:'C',ico:'🧘',m:'I have transcended this debate.',m_fr:"J'ai transcendé ce débat.",s:'I use OpenBSD now.',s_fr:"J'utilise OpenBSD maintenant.",v:{priv:3,perf:2}},
+    {l:'D',ico:'🍿',m:"I'm just here for the comments.",m_fr:'Je suis juste là pour les commentaires.',s:'*sorts by controversial*',s_fr:'*trie par controversé*',v:{gaming:1,ease:1}}
+   ]},
+  {id:'q5',text:'A wild dependency conflict appears! What do you do?',text_fr:'Un conflit de dépendances sauvage apparaît ! Que faites-vous ?',
+   opts:[
+    {l:'A',ico:'🏃',m:'Run away.',m_fr:'Fuir.',s:'Maybe it will resolve itself.',s_fr:"Peut-être que ça va se résoudre tout seul.",v:{ease:3,stable:1}},
+    {l:'B',ico:'⚔️',m:'Fight it manually.',m_fr:'Le combattre manuellement.',s:'I was born in the dependency hell.',s_fr:"Je suis né dans l'enfer des dépendances.",v:{cli:3,custom:2}},
+    {l:'C',ico:'🧙',m:'Use magic.',m_fr:'Utiliser la magie.',s:'sudo apt --fix-broken install --allow-remove-essential --yes',s_fr:'sudo apt --fix-broken install --allow-remove-essential --yes',v:{rolling:2,perf:1}},
+    {l:'D',ico:'🔄',m:'Switch distros.',m_fr:'Changer de distro.',s:'This one is clearly broken.',s_fr:"Celle-ci est clairement cassée.",v:{rolling:3,custom:1}}
+   ]},
+  {id:'q6',text:'How many monitors is too many?',text_fr:"Combien d'écrans, c'est trop ?",
+   opts:[
+    {l:'A',ico:'🖥️',m:'One is enough.',m_fr:'Un seul suffit.',s:'I am at peace.',s_fr:'Je suis en paix.',v:{ease:2,light:2}},
+    {l:'B',ico:'🖥️🖥️',m:'Two. The sweet spot.',m_fr:'Deux. Le point parfait.',s:'Productivity maximized.',s_fr:'Productivité maximisée.',v:{ease:1,stable:2}},
+    {l:'C',ico:'🖥️🖥️🖥️',m:'Three minimum.',m_fr:'Trois minimum.',s:'One for code, one for docs, one for logs.',s_fr:'Un pour le code, un pour la doc, un pour les logs.',v:{custom:2,cli:2}},
+    {l:'D',ico:'🕹️',m:'There is no upper limit.',m_fr:"Il n'y a pas de limite supérieure.",s:'My desk is a spaceship cockpit.',s_fr:"Mon bureau est un cockpit de vaisseau spatial.",v:{gaming:3,perf:2}}
+   ]},
+  {id:'q7',text:'What is your preferred caffeine source?',text_fr:'Quelle est votre source de caféine préférée ?',
+   opts:[
+    {l:'A',ico:'☕',m:'Coffee. Black.',m_fr:'Café. Noir.',s:'Like my terminal background.',s_fr:'Comme le fond de mon terminal.',v:{cli:2,perf:2}},
+    {l:'B',ico:'🍵',m:'Tea. Earl Grey. Hot.',m_fr:'Thé. Earl Grey. Chaud.',s:'Make it so.',s_fr:'Faites-le.',v:{stable:3,ease:2}},
+    {l:'C',ico:'🧃',m:'Energy drinks.',m_fr:'Boissons énergisantes.',s:'The neon green ones.',s_fr:'Les vert fluo.',v:{gaming:3,rolling:1}},
+    {l:'D',ico:'💧',m:'I do not consume caffeine.',m_fr:'Je ne consomme pas de caféine.',s:'My energy comes from pure rage.',s_fr:"Mon énergie vient de la rage pure.",v:{priv:3,light:2}}
+   ]},
+  {id:'q8',text:'Tabs or spaces?',text_fr:'Tabulations ou espaces ?',
+   opts:[
+    {l:'A',ico:'↹',m:'Tabs.',m_fr:'Tabulations.',s:'Superior in every way.',s_fr:'Supérieures à tous égards.',v:{custom:2,perf:1}},
+    {l:'B',ico:'␣',m:'Spaces.',m_fr:'Espaces.',s:'I am a person of culture.',s_fr:'Je suis une personne de culture.',v:{stable:2,ease:1}},
+    {l:'C',ico:'🤷',m:'Whatever the linter says.',m_fr:'Ce que dit le linter.',s:'I have no strong opinions.',s_fr:"Je n'ai pas d'opinion forte.",v:{ease:3}},
+    {l:'D',ico:'💀',m:'I mix them randomly.',m_fr:'Je les mélange aléatoirement.',s:'Some people just want to watch the world burn.',s_fr:'Certaines personnes veulent juste voir le monde brûler.',v:{rolling:3,priv:1}}
+   ]},
+  {id:'q9',text:'Your terminal just printed "Segmentation fault (core dumped)". Your reaction?',text_fr:'Votre terminal vient d\'afficher "Segmentation fault (core dumped)". Votre réaction ?',
+   opts:[
+    {l:'A',ico:'😱',m:'Panic.',m_fr:'Paniquer.',s:'What did I break?!',s_fr:"Qu'est-ce que j'ai cassé ?!",v:{ease:3}},
+    {l:'B',ico:'🔍',m:'Start debugging.',m_fr:'Commencer à déboguer.',s:'gdb time.',s_fr:"C'est l'heure de gdb.",v:{cli:3,custom:2}},
+    {l:'C',ico:'🧘',m:'Accept it.',m_fr:"L'accepter.",s:'This is my life now.',s_fr:"C'est ma vie maintenant.",v:{perf:2,rolling:1}},
+    {l:'D',ico:'🎉',m:'Celebrate.',m_fr:'Célébrer.',s:'I got a core dump! I can analyze this!',s_fr:"J'ai un core dump ! Je peux analyser ça !",v:{cli:3,perf:2}}
+   ]},
+  {id:'q10',text:'Pick a package manager you would trust with your life.',text_fr:'Choisissez un gestionnaire de paquets à qui vous confieriez votre vie.',
+   opts:[
+    {l:'A',ico:'📦',m:'apt',m_fr:'apt',s:'Old reliable.',s_fr:'Le vieux fiable.',v:{stable:3,ease:2}},
+    {l:'B',ico:'🐂',m:'pacman',m_fr:'pacman',s:'It has never failed me.',s_fr:"Il ne m'a jamais trahi.",v:{rolling:3,custom:2}},
+    {l:'C',ico:'🌀',m:'portage',m_fr:'portage',s:'I enjoy watching code compile.',s_fr:"J'aime regarder le code compiler.",v:{custom:3,perf:3}},
+    {l:'D',ico:'❄️',m:'nix',m_fr:'nix',s:'Reproducible or death.',s_fr:'Reproductible ou la mort.',v:{custom:3,cli:3}}
+   ]},
+  {id:'q11',text:'What does your ideal desktop look like?',text_fr:'À quoi ressemble votre bureau idéal ?',
+   opts:[
+    {l:'A',ico:'🪟',m:'Clean and familiar.',m_fr:'Propre et familier.',s:'Taskbar at the bottom. Icons. Peace.',s_fr:'Barre des tâches en bas. Icônes. Paix.',v:{ease:3,stable:2}},
+    {l:'B',ico:'🍎',m:'Elegant and minimal.',m_fr:'Élégant et minimal.',s:'A dock. Beautiful shadows. Silence.',s_fr:'Un dock. De belles ombres. Silence.',v:{beauty:3,ease:2}},
+    {l:'C',ico:'🖥️🖥️',m:'Tiling windows everywhere.',m_fr:'Fenêtres tuilées partout.',s:'No mouse. No mercy.',s_fr:'Pas de souris. Pas de pitié.',v:{cli:3,perf:3}},
+    {l:'D',ico:'🎮',m:'RGB everything.',m_fr:'RGB partout.',s:'My desktop has more lights than a casino.',s_fr:"Mon bureau a plus de lumières qu'un casino.",v:{gaming:3,beauty:2}}
+   ]},
+  {id:'q12',text:'How often do you update your system?',text_fr:'À quelle fréquence mettez-vous votre système à jour ?',
+   opts:[
+    {l:'A',ico:'📅',m:'When it asks me to.',m_fr:'Quand il me le demande.',s:'The notification appears and I obey.',s_fr:"La notification apparaît et j'obéis.",v:{ease:3,stable:2}},
+    {l:'B',ico:'☕',m:'Every morning with coffee.',m_fr:'Chaque matin avec le café.',s:'sudo pacman -Syu is my ritual.',s_fr:'sudo pacman -Syu est mon rituel.',v:{rolling:3,cli:2}},
+    {l:'C',ico:'⚡',m:'Every hour.',m_fr:'Chaque heure.',s:'I have a cron job.',s_fr:"J'ai une tâche cron.",v:{rolling:3,perf:2}},
+    {l:'D',ico:'🦥',m:'Never.',m_fr:'Jamais.',s:'If it works, do not touch it.',s_fr:"Si ça marche, on n'y touche pas.",v:{stable:3,light:2}}
+   ]},
+  {id:'q13',text:'You encounter a problem. Where do you look first?',text_fr:'Vous rencontrez un problème. Où cherchez-vous en premier ?',
+   opts:[
+    {l:'A',ico:'📖',m:'The Arch Wiki.',m_fr:'Le Arch Wiki.',s:'Even though I use Ubuntu.',s_fr:"Même si j'utilise Ubuntu.",v:{cli:2,custom:2}},
+    {l:'B',ico:'🔍',m:'Google.',m_fr:'Google.',s:'Like a normal person.',s_fr:'Comme une personne normale.',v:{ease:3}},
+    {l:'C',ico:'💬',m:'A forum.',m_fr:'Un forum.',s:'Where someone will tell me to read the wiki.',s_fr:"Où quelqu'un me dira de lire le wiki.",v:{stable:2,priv:1}},
+    {l:'D',ico:'🧠',m:'My own brain.',m_fr:'Mon propre cerveau.',s:'I will fix it with pure intellect.',s_fr:"Je vais le réparer avec l'intellect pur.",v:{cli:3,perf:2}}
+   ]},
+  {id:'q14',text:'What is your relationship with documentation?',text_fr:'Quelle est votre relation avec la documentation ?',
+   opts:[
+    {l:'A',ico:'📚',m:'I read it thoroughly.',m_fr:'Je la lis attentivement.',s:'Before doing anything.',s_fr:'Avant de faire quoi que ce soit.',v:{stable:3,ease:2}},
+    {l:'B',ico:'👀',m:'I skim it.',m_fr:'Je la parcours.',s:'Just enough to be dangerous.',s_fr:"Juste assez pour être dangereux.",v:{rolling:2,gaming:1}},
+    {l:'C',ico:'🚫',m:'Documentation is a suggestion.',m_fr:'La documentation est une suggestion.',s:'I will figure it out.',s_fr:'Je vais me débrouiller.',v:{custom:3,cli:2}},
+    {l:'D',ico:'✍️',m:'I write the documentation.',m_fr:"J'écris la documentation.",s:'Someone has to.',s_fr:'Il faut bien que quelqu\'un le fasse.',v:{cli:3,custom:2}}
+   ]},
+  {id:'q15',text:'Pick your ideal text editor.',text_fr:'Choisissez votre éditeur de texte idéal.',
+   opts:[
+    {l:'A',ico:'💙',m:'VS Code.',m_fr:'VS Code.',s:'It just works.',s_fr:"Ça marche, tout simplement.",v:{ease:3,gaming:1}},
+    {l:'B',ico:'🧙',m:'Vim.',m_fr:'Vim.',s:'I have not left it since 2003.',s_fr:"Je ne l'ai pas quitté depuis 2003.",v:{cli:3,custom:2}},
+    {l:'C',ico:'⚡',m:'Neovim.',m_fr:'Neovim.',s:'Vim but make it modern.',s_fr:'Vim mais moderne.',v:{cli:3,perf:2}},
+    {l:'D',ico:'🏰',m:'Emacs.',m_fr:'Emacs.',s:'It is my operating system.',s_fr:"C'est mon système d'exploitation.",v:{custom:3,cli:3}}
+   ]},
+  {id:'q16',text:'What do you name your computer?',text_fr:'Comment nommez-vous votre ordinateur ?',
+   opts:[
+    {l:'A',ico:'🏠',m:'Something sensible.',m_fr:'Quelque chose de sensé.',s:'desktop, laptop, server.',s_fr:'desktop, laptop, server.',v:{ease:3,stable:2}},
+    {l:'B',ico:'🐉',m:'Mythological creatures.',m_fr:'Créatures mythologiques.',s:'This is "Fafnir".',s_fr:'Voici "Fafnir".',v:{gaming:2,beauty:1}},
+    {l:'C',ico:'🤖',m:'Sci-fi references.',m_fr:'Références de science-fiction.',s:'HAL9000, Skynet, GLaDOS.',s_fr:'HAL9000, Skynet, GLaDOS.',v:{rolling:2,priv:1}},
+    {l:'D',ico:'🎲',m:'Random characters.',m_fr:'Caractères aléatoires.',s:'xkcd-4-7-bravo-delta.',s_fr:'xkcd-4-7-bravo-delta.',v:{priv:3,custom:2}}
+   ]},
+  {id:'q17',text:"A stranger asks you to install their distro. Your reaction?",text_fr:"Un inconnu vous demande d'installer sa distro. Votre réaction ?",
+   opts:[
+    {l:'A',ico:'🤝',m:'Happy to help!',m_fr:'Avec plaisir !',s:'Let me show you the way.',s_fr:'Laissez-moi vous montrer le chemin.',v:{ease:3,stable:2}},
+    {l:'B',ico:'⚠️',m:'Cautious but willing.',m_fr:'Prudent mais partant.',s:'Let me check DistroWatch first.',s_fr:"Laissez-moi vérifier DistroWatch d'abord.",v:{stable:2,priv:1}},
+    {l:'C',ico:'🚫',m:'Absolutely not.',m_fr:'Absolument pas.',s:'They must find their own path.',s_fr:'Ils doivent trouver leur propre chemin.',v:{cli:2,perf:1}},
+    {l:'D',ico:'📢',m:'I will convert them to my distro.',m_fr:'Je vais les convertir à ma distro.',s:'They will see the light.',s_fr:'Ils verront la lumière.',v:{custom:3,rolling:2}}
+   ]},
+  {id:'q18',text:'What keeps you up at night?',text_fr:"Qu'est-ce qui vous empêche de dormir la nuit ?",
+   opts:[
+    {l:'A',ico:'😴',m:'Nothing. I sleep well.',m_fr:'Rien. Je dors bien.',s:'Stable distro, stable life.',s_fr:'Distro stable, vie stable.',v:{stable:3,ease:2}},
+    {l:'B',ico:'🔄',m:'Pending updates.',m_fr:'Les mises à jour en attente.',s:'What if they break everything?',s_fr:'Et si elles cassent tout ?',v:{rolling:2,priv:1}},
+    {l:'C',ico:'🐛',m:'That one bug.',m_fr:'Ce bug-là.',s:'I will find you. And I will fix you.',s_fr:'Je te trouverai. Et je te corrigerai.',v:{cli:3,perf:2}},
+    {l:'D',ico:'💭',m:'The next side project.',m_fr:'Le prochain projet perso.',s:'I have seventeen already.',s_fr:"J'en ai déjà dix-sept.",v:{custom:3,gaming:1}}
+   ]},
+  {id:'q19',text:'How do you feel about snap packages?',text_fr:'Que pensez-vous des paquets snap ?',
+   opts:[
+    {l:'A',ico:'👍',m:'They are convenient.',m_fr:"C'est pratique.",s:'One command and done.',s_fr:"Une commande et c'est fait.",v:{ease:3}},
+    {l:'B',ico:'😐',m:'I tolerate them.',m_fr:'Je les tolère.',s:'They have their place.',s_fr:'Ils ont leur place.',v:{stable:2}},
+    {l:'C',ico:'🔥',m:'I will not use them.',m_fr:'Je ne les utiliserai pas.',s:'Flatpak is right there.',s_fr:'Flatpak est juste là.',v:{custom:2,priv:2}},
+    {l:'D',ico:'💀',m:'I removed snapd completely.',m_fr:"J'ai complètement supprimé snapd.",s:'From my cold, dead hands.',s_fr:'De mes mains froides et mortes.',v:{cli:3,custom:3}}
+   ]},
+  {id:'q20',text:'What is your backup strategy?',text_fr:'Quelle est votre stratégie de sauvegarde ?',
+   opts:[
+    {l:'A',ico:'☁️',m:'Cloud backups.',m_fr:'Sauvegardes cloud.',s:'Set it and forget it.',s_fr:'On configure et on oublie.',v:{ease:3,stable:2}},
+    {l:'B',ico:'💾',m:'External drive.',m_fr:'Disque externe.',s:'Plugged in once a month.',s_fr:'Branché une fois par mois.',v:{stable:2,priv:1}},
+    {l:'C',ico:'🔄',m:'BTRFS snapshots.',m_fr:'Snapshots BTRFS.',s:'Rollback is my safety net.',s_fr:'Le rollback est mon filet de sécurité.',v:{rolling:2,custom:2}},
+    {l:'D',ico:'🎲',m:'Backup? What backup?',m_fr:'Sauvegarde ? Quelle sauvegarde ?',s:'I live on the edge.',s_fr:'Je vis dangereusement.',v:{rolling:3,gaming:2}}
+   ]},
+  {id:'q21',text:'How many terminal windows do you have open right now?',text_fr:"Combien de fenêtres de terminal avez-vous ouvertes en ce moment ?",
+   opts:[
+    {l:'A',ico:'1️⃣',m:'Zero.',m_fr:'Zéro.',s:'I use GUI apps exclusively.',s_fr:"J'utilise exclusivement des apps GUI.",v:{ease:3}},
+    {l:'B',ico:'2️⃣',m:'One or two.',m_fr:'Une ou deux.',s:'Just enough to get things done.',s_fr:'Juste assez pour faire le nécessaire.',v:{stable:2,ease:1}},
+    {l:'C',ico:'5️⃣',m:'Five to ten.',m_fr:'Cinq à dix.',s:'Each with a different purpose.',s_fr:'Chacune avec un but différent.',v:{cli:2,custom:2}},
+    {l:'D',ico:'♾️',m:'I lost count.',m_fr:"J'ai perdu le compte.",s:'They are in a tmux session inside another tmux session.',s_fr:'Elles sont dans une session tmux dans une autre session tmux.',v:{cli:3,perf:2}}
+   ]},
+  {id:'q22',text:'What would you do with 64 GB of RAM?',text_fr:'Que feriez-vous avec 64 Go de RAM ?',
+   opts:[
+    {l:'A',ico:'😌',m:'Run everything comfortably.',m_fr:'Tout faire tourner confortablement.',s:'No more closing tabs.',s_fr:"Plus besoin de fermer des onglets.",v:{ease:2,gaming:1}},
+    {l:'B',ico:'🎮',m:'Game at maximum settings.',m_fr:'Jouer en paramètres maximum.',s:'And stream. And record. Simultaneously.',s_fr:'Et streamer. Et enregistrer. Simultanément.',v:{gaming:3,perf:2}},
+    {l:'C',ico:'🐳',m:'Run virtual machines.',m_fr:'Faire tourner des machines virtuelles.',s:'A VM for every occasion.',s_fr:'Une VM pour chaque occasion.',v:{custom:3,cli:2}},
+    {l:'D',ico:'🧠',m:'It is not enough.',m_fr:"Ce n'est pas assez.",s:'I need more.',s_fr:"J'ai besoin de plus.",v:{perf:3,rolling:2}}
+   ]},
+  {id:'q23',text:'You discover a new distro. Your reaction?',text_fr:'Vous découvrez une nouvelle distro. Votre réaction ?',
+   opts:[
+    {l:'A',ico:'😊',m:'Good for them.',m_fr:'Content pour eux.',s:'I will stick with mine.',s_fr:'Je vais garder la mienne.',v:{stable:3,ease:2}},
+    {l:'B',ico:'👀',m:'Interesting...',m_fr:'Intéressant...',s:'Downloads the ISO immediately.',s_fr:"Télécharge l'ISO immédiatement.",v:{rolling:3,custom:1}},
+    {l:'C',ico:'🔬',m:'Analyze it thoroughly.',m_fr:"L'analyser en profondeur.",s:'What init system? What package manager?',s_fr:"Quel système d'init ? Quel gestionnaire de paquets ?",v:{cli:3,custom:2}},
+    {l:'D',ico:'💬',m:'Post about it on forums.',m_fr:'En parler sur les forums.',s:'"Has anyone tried this?"',s_fr:'"Quelqu\'un a essayé ça ?"',v:{priv:1,gaming:1}}
+   ]},
+  {id:'q24',text:'Your computer does not boot. What is your first move?',text_fr:'Votre ordinateur ne démarre pas. Quelle est votre première action ?',
+   opts:[
+    {l:'A',ico:'😰',m:'Ask for help.',m_fr:"Demander de l'aide.",s:'Reddit, forums, a friend.',s_fr:'Reddit, forums, un ami.',v:{ease:3}},
+    {l:'B',ico:'💿',m:'Boot from a live USB.',m_fr:"Démarrer depuis une clé USB live.",s:'Chroot and fix it.',s_fr:'Chroot et réparer.',v:{cli:2,custom:2}},
+    {l:'C',ico:'🛠️',m:'Enter recovery mode.',m_fr:'Entrer en mode recovery.',s:'I have prepared for this day.',s_fr:'Je me suis préparé pour ce jour.',v:{stable:2,cli:2}},
+    {l:'D',ico:'🎉',m:'Reinstall completely.',m_fr:'Réinstaller complètement.',s:'Fresh start. New me.',s_fr:'Nouveau départ. Nouveau moi.',v:{rolling:3,gaming:1}}
+   ]},
+  {id:'q25',text:'Final question: why are you really taking this quiz?',text_fr:'Dernière question : pourquoi faites-vous vraiment ce quiz ?',
+   opts:[
+    {l:'A',ico:'🎯',m:'I genuinely need a distro recommendation.',m_fr:"J'ai vraiment besoin d'une recommandation.",s:'Help me find my perfect match.',s_fr:'Aidez-moi à trouver la perle rare.',v:{ease:3,stable:2}},
+    {l:'B',ico:'🍿',m:'I am bored.',m_fr:"Je m'ennuie.",s:'Entertain me.',s_fr:'Divertissez-moi.',v:{gaming:2,rolling:1}},
+    {l:'C',ico:'✅',m:'I want confirmation.',m_fr:'Je veux une confirmation.',s:'I already know my distro. Validate me.',s_fr:'Je connais déjà ma distro. Validez-moi.',v:{custom:2,priv:1}},
+    {l:'D',ico:'🏆',m:'I want to see if the quiz is wrong.',m_fr:'Je veux voir si le quiz se trompe.',s:'It will probably say Arch.',s_fr:'Il va probablement dire Arch.',v:{cli:2,perf:1}}
+   ]}
+  ];
+}
+initArchQuestions();
 
 
 
@@ -3332,6 +3569,11 @@ if (savedLang && TRANSLATIONS[savedLang]) {
 } else {
   currentLang = 'en';
   document.getElementById('langSelect').value = 'en';
+}
+
+archModeEnabled = localStorage.getItem('distromatch-archmode') === 'true';
+if (archModeEnabled) {
+  document.getElementById('archModeToggle').checked = true;
 }
 
 // ═══════════════════════════════════════════════════════════════

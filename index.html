@@ -2908,6 +2908,12 @@ if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
 locksEnabled = localStorage.getItem('distromatch-locks') !== 'false';
 document.getElementById('lockToggle').checked = locksEnabled;
+document.getElementById('lockToggle').checked = true;
+locksEnabled = true;
+
+archModeEnabled = false;
+document.getElementById('archModeToggle').checked = false;
+localStorage.setItem('distromatch-archmode', false);
 
 function toggleLocks(enabled) {
   locksEnabled = enabled;
@@ -3571,10 +3577,7 @@ if (savedLang && TRANSLATIONS[savedLang]) {
   document.getElementById('langSelect').value = 'en';
 }
 
-archModeEnabled = localStorage.getItem('distromatch-archmode') === 'true';
-if (archModeEnabled) {
-  document.getElementById('archModeToggle').checked = true;
-}
+// Arch mode always starts off
 
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 8: Initialisation

@@ -2906,10 +2906,9 @@ function setTheme(name) {
 const savedTheme = localStorage.getItem('distromatch-theme');
 if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
-locksEnabled = localStorage.getItem('distromatch-locks') !== 'false';
-document.getElementById('lockToggle').checked = locksEnabled;
-document.getElementById('lockToggle').checked = true;
-locksEnabled = true;
+locksEnabled = false;
+document.getElementById('lockToggle').checked = false;
+localStorage.setItem('distromatch-locks', false);
 
 archModeEnabled = false;
 document.getElementById('archModeToggle').checked = false;

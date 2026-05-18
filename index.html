@@ -1729,6 +1729,7 @@ function beginQuiz() {
   window._tierDone = false;
   lockWasOverridden = false;
   window._archModeActive = archModeEnabled;
+  forceArchOverride = false;
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   if (archModeEnabled) {
@@ -1754,8 +1755,14 @@ function tick() {
 
 function showNormalQ() {
   const source = archModeEnabled ? ARCH_QUESTIONS : QS;
+  if (!archModeEnabled && qIdx === 17 && userSignals.includes('beginner')) {
+    mainAnswered++;
+    qIdx++;
+    tick();
+    return;
+  }
   const q = source[qIdx];
-  const isLast = qIdx === QS.length - 1;
+  const isLast = qIdx === (source.length - 1);
   // Show 25/25 on the last question
   if (isLast) {
     document.getElementById('progFill').style.width = '100%';

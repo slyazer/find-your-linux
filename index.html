@@ -2784,7 +2784,7 @@ function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 
 function shareResult(distroKey) {
   const d = DB[distroKey];
-  const text = `I got matched with ${dname(d)} on I Love Linux ! 🐧 Find your Linux at ${window.location.href}`;
+  const text = `I got matched with ${dname(d)} on Find your linux ! 🐧 Find your Linux at ${window.location.href}`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       const toast = document.createElement('div');

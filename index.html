@@ -1733,11 +1733,12 @@ function beginQuiz() {
   _tierBangers = []; _tierTrash = []; _tierUnsorted = [];
   document.getElementById('progWrap').style.display = '';
   if (archModeEnabled) {
-    document.getElementById('brandTag').textContent = '// definitely.accurate';
-    document.getElementById('brandTitle').textContent = 'What Linux Distro Are You?';
-    document.getElementById('brandSubtitle').textContent = "25 questions . zero science . you'll get Arch anyway";
+    document.getElementById('brandTag').textContent = t('archTagline');
+    document.getElementById('brandTitle').textContent = t('archTitle');
+    document.getElementById('brandSubtitle').textContent = t('archSubtitle');
     document.getElementById('footerText').style.display = 'none';
     document.getElementById('footerArchText').style.display = '';
+    document.getElementById('footerArchText').textContent = t('footerArch');
   }
   tick();
 }
@@ -2179,7 +2180,7 @@ function showDistroDetailResult(key) {
   const newBadges = checkBadges();
   let newBadgeHTML = '';
   if (newBadges.length > 0) {
-    newBadgeHTML = `<div class="filter-note" style="text-align:center;margin-bottom:16px">🏅 ${newBadges.length} new badge${newBadges.length>1?'s':''} earned! ${newBadges.map(b=>b.icon).join(' ')}</div>`;
+    newBadgeHTML = `<div class="filter-note" style="text-align:center;margin-bottom:16px">🏅 ${newBadges.length} ${t('newBadge')} ${newBadges.map(b=>b.icon).join(' ')}</div>`;
   }
 
   launchConfetti();
@@ -2192,7 +2193,7 @@ function showDistroDetailResult(key) {
       ${archDisclaimerHTML}
       <div class="res-name">${dname(winner)}</div>
       <div class="res-line">${dline(winner)}</div>
-      <div class="res-desc">${forceArchOverride ? "Look, we both know where this was going. You belong to the AUR now. Here is the Arch Wiki. Resistance is futile." : ddesc(winner)}</div>
+      <div class="res-desc">${forceArchOverride ? t('archForcedDesc') : ddesc(winner)}</div>
       ${newBadgeHTML}
       <div class="tags">${tagsHTML}</div>
       ${modeNote ? `<div class="filter-note">${modeNote}${activeMode==='lightweight' ? ' <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutLightweight()">'+t('whatIfNoSpeed')+'</button>' : (activeMode ? ` <button class="btn-skip" style="display:inline;margin-left:8px;color:var(--mint);text-decoration:underline;cursor:pointer" onclick="recomputeWithoutCurrentLock()">Show all distros</button>` : '')}</div>` : ''}
@@ -2936,11 +2937,12 @@ function toggleArchMode(enabled) {
   archModeEnabled = enabled;
   localStorage.setItem('distromatch-archmode', enabled);
   if (enabled) {
-    document.getElementById('brandTag').textContent = '// definitely.accurate';
-    document.getElementById('brandTitle').textContent = 'What Linux Distro Are You?';
-    document.getElementById('brandSubtitle').textContent = "25 questions . zero science . you'll get Arch anyway";
+    document.getElementById('brandTag').textContent = t('archTagline');
+    document.getElementById('brandTitle').textContent = t('archTitle');
+    document.getElementById('brandSubtitle').textContent = t('archSubtitle');
     document.getElementById('footerText').style.display = 'none';
     document.getElementById('footerArchText').style.display = '';
+    document.getElementById('footerArchText').textContent = t('footerArch');
   } else {
     document.getElementById('brandTag').textContent = '// distro.match';
     document.getElementById('brandTitle').textContent = t('tagline');
@@ -3205,6 +3207,12 @@ const TRANSLATIONS = {
     flavourSubtitle: 'Ubuntu comes in many desktop flavours',
     skipShowStandard: 'Skip, show standard Ubuntu',
     footer: 'made with 💚 for the linux community',
+    footerArch: 'made with 💚 and absolutely no scientific methodology',
+    archForcedDesc: "Look, we both know where this was going. You belong to the AUR now. Here is the Arch Wiki. Resistance is futile.",
+    archTagline: '// definitely.accurate',
+    archTitle: 'What Linux Distro Are You?',
+    archSubtitle: "25 questions . zero science . you'll get Arch anyway",
+    newBadge: 'new badge earned!',
     badge: '✦ 30 distros . 25 questions . your perfect match',
     startDesc: "Answer 25 smart questions and we'll match you with one of 30 Linux distributions — from beginner‑friendly Ubuntu to hardcore Gentoo.",
     settingsTheme: 'Theme',
@@ -3311,6 +3319,12 @@ const TRANSLATIONS = {
     flavourSubtitle: 'Ubuntu existe en plusieurs saveurs',
     skipShowStandard: 'Passer, montrer Ubuntu standard',
     footer: 'fait avec 💚 pour la communauté Linux',
+    footerArch: 'fait avec 💚 et absolument aucune méthodologie scientifique',
+    archForcedDesc: 'Regardons les choses en face, on savait tous les deux où ça allait. Tu appartiens à l\'AUR maintenant. Voici le Arch Wiki. La résistance est futile.',
+    archTagline: '// totalement.precise',
+    archTitle: 'Quel Linux Es-Tu Vraiment ?',
+    archSubtitle: '25 questions . zero science . tu vas avoir Arch de toute façon',
+    newBadge: 'nouveau badge gagné !',
     badge: '✦ 30 distros . 25 questions . ton match parfait',
     startDesc: "Réponds à 25 questions intelligentes et on te trouvera la distribution Linux parfaite parmi 30 distributions — de Ubuntu pour débutants à Gentoo pour les plus acharnés.",
     settingsTheme: 'Thème',

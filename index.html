@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DistroMatch — Find Your Linux</title>
+<title>I Love Linux  — Find Your Linux</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -709,7 +709,7 @@ body{
 <div class="particles" id="particles"></div>
 <div class="app">
   <div class="brand" id="brand">
-    <div class="brand-tag" id="brandTag">// distro.match</div>
+    <div class="brand-tag" id="brandTag">// I.Love.Linux </div>
     <h1 id="brandTitle">Find Your Linux</h1>
     <p id="brandSubtitle">25 questions . 30 distros . your perfect match</p>
   </div>
@@ -1464,15 +1464,15 @@ const BADGES = [
   { id:'ubuntu-universe', icon:'🟠', name:'Ubuntu Universe', desc:'Matched with any Ubuntu flavor', check:()=> currentTopThree.includes('ubuntu') },
   { id:'gentoo-grinder', icon:'⚙️', name:'Gentoo Grinder', desc:'Matched with Gentoo', check:()=> currentTopThree.includes('gentoo') },
   { id:'the-one-percent', icon:'💎', name:'The 1%', desc:'Matched with Alpine, Slackware, or Clear', check:()=> currentTopThree.some(k=>['alpine','slackware','clear'].includes(k)) },
-  { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) >= 3 },
+  { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('I Love Linux -easteregg-count')||'0')) >= 3 },
   { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q20 and Q24', check:()=> { let hasAI20 = false, hasAI24 = false; history.forEach(h => { if(!h.skipped && h.selected) { const q = QS[h.qIdx]; if(q.id===20) h.selected.forEach(i => { if(q.opts[i].l==='C') hasAI20 = true; }); if(q.id===24) h.selected.forEach(i => { if(q.opts[i].l==='A') hasAI24 = true; }); } }); return hasAI20 && hasAI24; } },
-  { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) >= 5 },
+  { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('I Love Linux -quiz-count')||'0')) >= 5 },
   { id:'indecisive', icon:'🤔', name:'Indecisive', desc:'Used Previous button 10+ times in one quiz', check:()=> (window._backCount || 0) >= 10 },
 ,
 ];
 
 function checkBadges() {
-  let earned = JSON.parse(localStorage.getItem('distromatch-badges') || '[]');
+  let earned = JSON.parse(localStorage.getItem('I Love Linux -badges') || '[]');
   let newBadges = [];
   BADGES.forEach(b => {
     if (!earned.includes(b.id) && b.check()) {
@@ -1480,17 +1480,17 @@ function checkBadges() {
       newBadges.push(b);
     }
   });
-  localStorage.setItem('distromatch-badges', JSON.stringify(earned));
+  localStorage.setItem('I Love Linux -badges', JSON.stringify(earned));
   // Save top 3 for full-circle
-  localStorage.setItem('distromatch-last-top3', JSON.stringify([...currentTopThree].sort()));
+  localStorage.setItem('I Love Linux -last-top3', JSON.stringify([...currentTopThree].sort()));
   // Increment quiz count
-  const count = (parseInt(localStorage.getItem('distromatch-quiz-count')||'0')) + 1;
-  localStorage.setItem('distromatch-quiz-count', count);
+  const count = (parseInt(localStorage.getItem('I Love Linux -quiz-count')||'0')) + 1;
+  localStorage.setItem('I Love Linux -quiz-count', count);
   return newBadges;
 }
 
 function getEarnedBadges() {
-  return JSON.parse(localStorage.getItem('distromatch-badges') || '[]');
+  return JSON.parse(localStorage.getItem('I Love Linux -badges') || '[]');
 }
 
 
@@ -1628,7 +1628,7 @@ function showStart() {
   document.getElementById('brand').style.display = '';
   document.getElementById('progWrap').style.display = 'none';
   if (!archModeEnabled) {
-    document.getElementById('brandTag').textContent = '// distro.match';
+    document.getElementById('brandTag').textContent = '// I.Love.Linux ';
     document.getElementById('brandTitle').textContent = t('tagline');
     document.getElementById('brandSubtitle').textContent = t('subtitle');
     document.getElementById('footerText').style.display = '';
@@ -2784,7 +2784,7 @@ function skipDislike() { followUpSelected = []; dislikeDone = true; tick(); }
 
 function shareResult(distroKey) {
   const d = DB[distroKey];
-  const text = `I got matched with ${dname(d)} on DistroMatch! 🐧 Find your Linux at ${window.location.href}`;
+  const text = `I got matched with ${dname(d)} on I Love Linux ! 🐧 Find your Linux at ${window.location.href}`;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
       const toast = document.createElement('div');
@@ -2908,19 +2908,19 @@ function setTheme(name) {
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`.theme-btn.${name}`);
   if (btn) btn.classList.add('active');
-  localStorage.setItem('distromatch-theme', name);
+  localStorage.setItem('I Love Linux -theme', name);
 }
 
-const savedTheme = localStorage.getItem('distromatch-theme');
+const savedTheme = localStorage.getItem('I Love Linux -theme');
 if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
 locksEnabled = false;
 document.getElementById('lockToggle').checked = false;
-localStorage.setItem('distromatch-locks', false);
+localStorage.setItem('I Love Linux -locks', false);
 
 archModeEnabled = false;
 document.getElementById('archModeToggle').checked = false;
-localStorage.setItem('distromatch-archmode', false);
+localStorage.setItem('I Love Linux -archmode', false);
 
 function toggleLocks(enabled) {
   locksEnabled = enabled;
@@ -2928,14 +2928,14 @@ function toggleLocks(enabled) {
     activeMode = null;
     lockWasOverridden = false;
   }
-  localStorage.setItem('distromatch-locks', enabled);
+  localStorage.setItem('I Love Linux -locks', enabled);
 }
 
 let ARCH_QUESTIONS = [];
 
 function toggleArchMode(enabled) {
   archModeEnabled = enabled;
-  localStorage.setItem('distromatch-archmode', enabled);
+  localStorage.setItem('I Love Linux -archmode', enabled);
   if (enabled) {
     document.getElementById('brandTag').textContent = t('archTagline');
     document.getElementById('brandTitle').textContent = t('archTitle');
@@ -2944,7 +2944,7 @@ function toggleArchMode(enabled) {
     document.getElementById('footerArchText').style.display = '';
     document.getElementById('footerArchText').textContent = t('footerArch');
   } else {
-    document.getElementById('brandTag').textContent = '// distro.match';
+    document.getElementById('brandTag').textContent = '// I.Love.Linux ';
     document.getElementById('brandTitle').textContent = t('tagline');
     document.getElementById('brandSubtitle').textContent = t('subtitle');
     document.getElementById('footerText').style.display = '';
@@ -3568,7 +3568,7 @@ function t(key) {
 }
 function setLanguage(lang) {
   currentLang = lang;
-  localStorage.setItem('distromatch-lang', lang);
+  localStorage.setItem('I Love Linux -lang', lang);
   document.getElementById('langSelect').value = lang;
   document.getElementById('progLabel').textContent = t('progress');
   document.getElementById('footerText').textContent = t('footer');
@@ -3588,7 +3588,7 @@ showStart();
   }
 }
 
-const savedLang = localStorage.getItem('distromatch-lang');
+const savedLang = localStorage.getItem('I Love Linux -lang');
 if (savedLang && TRANSLATIONS[savedLang]) {
   currentLang = savedLang;
   document.getElementById('langSelect').value = savedLang;
@@ -3634,8 +3634,8 @@ if (savedLang && TRANSLATIONS[savedLang]) {
       for (const t of triggers) {
         if (buffer.endsWith(t)) {
           triggerJumpscare(t);
-          const eeCount = (parseInt(localStorage.getItem('distromatch-easteregg-count')||'0')) + 1;
-          localStorage.setItem('distromatch-easteregg-count', eeCount);
+          const eeCount = (parseInt(localStorage.getItem('I Love Linux -easteregg-count')||'0')) + 1;
+          localStorage.setItem('I Love Linux -easteregg-count', eeCount);
           buffer = '';
           return;
         }

@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "distro-match",
+  "name": "find-your",
   "compatibility_date": "2026-05-19",
   "observability": {
     "enabled": true

@@ -613,6 +613,16 @@ body{
 }
 .light-mode .distro-detail .back-link { color: #6A6D72 !important; }
 .light-mode .distro-detail .back-link:hover { color: #5A7590 !important; }
+.light-mode .score-breakdown { background: #CBCDD0 !important; border-color: #BEC0C3 !important; }
+.light-mode .score-breakdown-title { color: #5A7590 !important; }
+.light-mode .score-bar-label { color: #6A6D72 !important; }
+.light-mode .score-bar-track { background: rgba(0,0,0,.06) !important; }
+.light-mode .score-bar-fill { background: linear-gradient(90deg, #5A7590, #6B7D8E) !important; box-shadow: 0 0 8px #5A7590 !important; }
+.light-mode .score-bar-val { color: #5A7590 !important; }
+.light-mode .timer-badge { color: #5A7590 !important; background: rgba(90,117,144,.1) !important; border-color: rgba(90,117,144,.25) !important; }
+.light-mode .pick-badge { color: #5A7590 !important; background: rgba(90,117,144,.1) !important; }
+.light-mode table { color: #3A3D42 !important; }
+.light-mode table th, .light-mode table td { border-color: rgba(0,0,0,.08) !important; color: #4A4D52 !important; }
 .confetti-piece { position:fixed; pointer-events:none; z-index:9999; border-radius:2px; animation:confettiFall linear forwards; }
 @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
 .footer{text-align:center;margin-top:22px;font-family:var(--mono);font-size:.7rem;
@@ -1375,7 +1385,7 @@ const DISTROSEA_KEYS = {
   endeavour:'endeavouros', garuda:'garuda', arch:'archlinux', nixos:'nixos',
   void:'void', gentoo:'gentoo', slackware:'slackware', alpine:'alpine',
   kali:null, parrot:null, tails:'tails', qubes:null, clear:null,
-  artix:null, solus:null, cachyos:null, bunsenlabs:null, nobara:null
+  artix:null, solus:null, cachyos:null, nobara:null, omarchy:'omarchy'
 };
 
 const DE_INSTALL = {
@@ -1466,13 +1476,12 @@ const BADGES = [
   { id:'the-one-percent', icon:'💎', name:'The 1%', desc:'Matched with Alpine, Slackware, or Clear', check:()=> currentTopThree.some(k=>['alpine','slackware','clear'].includes(k)) },
   { id:'linux-detective', icon:'🕵️', name:'Linux Detective', desc:'Triggered the easter egg 3+ times', check:()=> (parseInt(localStorage.getItem('I Love Linux -easteregg-count')||'0')) >= 3 },
   { id:'ai-abuser', icon:'🤖', name:'AI Abuser', desc:'Selected I use AI on both Q20 and Q24', check:()=> { let hasAI20 = false, hasAI24 = false; history.forEach(h => { if(!h.skipped && h.selected) { const q = QS[h.qIdx]; if(q.id===20) h.selected.forEach(i => { if(q.opts[i].l==='C') hasAI20 = true; }); if(q.id===24) h.selected.forEach(i => { if(q.opts[i].l==='A') hasAI24 = true; }); } }); return hasAI20 && hasAI24; } },
-  { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('I Love Linux -quiz-count')||'0')) >= 5 },
+  { id:'loyalist', icon:'💚', name:'Loyalist', desc:'Took the quiz 5+ times', check:()=> (parseInt(localStorage.getItem('ilovelinux-quiz-count')||'0')) >= 5 },
   { id:'indecisive', icon:'🤔', name:'Indecisive', desc:'Used Previous button 10+ times in one quiz', check:()=> (window._backCount || 0) >= 10 },
-,
 ];
 
 function checkBadges() {
-  let earned = JSON.parse(localStorage.getItem('I Love Linux -badges') || '[]');
+  let earned = JSON.parse(localStorage.getItem('ilovelinux-badges') || '[]');
   let newBadges = [];
   BADGES.forEach(b => {
     if (!earned.includes(b.id) && b.check()) {
@@ -1480,12 +1489,12 @@ function checkBadges() {
       newBadges.push(b);
     }
   });
-  localStorage.setItem('I Love Linux -badges', JSON.stringify(earned));
+  localStorage.setItem('ilovelinux-badges', JSON.stringify(earned));
   // Save top 3 for full-circle
-  localStorage.setItem('I Love Linux -last-top3', JSON.stringify([...currentTopThree].sort()));
+  localStorage.setItem('ilovelinux-last-top3', JSON.stringify([...currentTopThree].sort()));
   // Increment quiz count
   const count = (parseInt(localStorage.getItem('I Love Linux -quiz-count')||'0')) + 1;
-  localStorage.setItem('I Love Linux -quiz-count', count);
+  localStorage.setItem('ilovelinux-quiz-count', count);
   return newBadges;
 }
 
@@ -1756,18 +1765,14 @@ function tick() {
 
 function showNormalQ() {
   const source = archModeEnabled ? ARCH_QUESTIONS : QS;
-  if (!archModeEnabled && qIdx === 17 && userSignals.includes('beginner')) {
-    mainAnswered++;
-    qIdx++;
-    tick();
-    return;
-  }
   const q = source[qIdx];
   const isLast = qIdx === (source.length - 1);
   // Show 25/25 on the last question
   if (isLast) {
     document.getElementById('progFill').style.width = '100%';
-    document.getElementById('progNum').textContent = t('partLabel') + ' 5 ' + t('of') + ' 5 — ' + (currentLang==='fr'?'Gaming & Esthétique':'Gaming & Beauty');
+    const lastPart = QUIZ_PARTS[QUIZ_PARTS.length-1];
+    const lastPartName = currentLang==='fr' && lastPart.name_fr ? lastPart.name_fr : lastPart.name;
+    document.getElementById('progNum').textContent = t('partLabel') + ' 5 ' + t('of') + ' 5 — ' + lastPartName;
   } else {
     updateProgress();
   }
@@ -2278,15 +2283,7 @@ function triggerJumpscare(name) {
   }
 }
 
-let goodLinuxTimeout = null;
-function showGoodLinuxUser() {
-  const msg = currentLang==='fr' ? 'bcp mieux 😇' : 'better isn\'t it? 😇';
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(79,255,176,.15);border:1px solid rgba(79,255,176,.35);color:var(--mint);font-family:var(--mono);font-size:.85rem;padding:10px 24px;border-radius:99px;animation:panelIn .3s ease-out;pointer-events:none';
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity .4s'; setTimeout(()=>toast.remove(),400); }, 2000);
-}
+
 
 function pickOpt(i) {
   const source = archModeEnabled ? ARCH_QUESTIONS : QS;
@@ -2594,6 +2591,10 @@ function goBackToPodium() {
     showPickScreen();
     return;
   }
+  // Prevent lock note from reappearing after an override
+  if (lockWasOverridden) {
+    activeMode = null;
+  }
   const overlay = document.getElementById('reveal-overlay');
   overlay.style.display = 'flex';
   overlay.style.opacity = '0';
@@ -2614,25 +2615,7 @@ function goBackToPodium() {
   updateRevealParticles();
 }
 
-function finishReveal() {
-  const overlay = document.getElementById('reveal-overlay');
-  overlay.style.transition = 'opacity .5s ease';
-  overlay.style.opacity = '0';
-  setTimeout(() => {
-    overlay.style.display = 'none';
-    overlay.style.opacity = '';
-    overlay.style.transition = '';
-    document.getElementById('revScanText').style.display = '';
-    document.getElementById('revBar').parentElement.style.display = '';
-    document.getElementById('revPodium').style.display = 'none';
-    document.getElementById('revContinue').style.opacity = '0';
-    if (_revealData) {
-      currentTopThree = _revealData;
-      showPickScreen();
-      _revealData = null;
-    }
-  }, 500);
-}
+
 
 let forceArchOverride = false;
 
@@ -2672,7 +2655,7 @@ function recomputeWithoutCurrentLock() {
   currentTopThree = computeTopThree(false, true);
   activeMode = null;
   lockWasOverridden = true;
-  showPickScreen();
+  startReveal(currentTopThree);
 }
 
 let tweakingAnswers = false;
@@ -2908,19 +2891,19 @@ function setTheme(name) {
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`.theme-btn.${name}`);
   if (btn) btn.classList.add('active');
-  localStorage.setItem('I Love Linux -theme', name);
+  localStorage.setItem('ilovelinux-theme', name);
 }
 
-const savedTheme = localStorage.getItem('I Love Linux -theme');
+const savedTheme = localStorage.getItem('ilovelinux-theme');
 if (savedTheme && THEMES[savedTheme]) setTheme(savedTheme);
 
 locksEnabled = false;
 document.getElementById('lockToggle').checked = false;
-localStorage.setItem('I Love Linux -locks', false);
+localStorage.setItem('ilovelinux-locks', false);
 
 archModeEnabled = false;
 document.getElementById('archModeToggle').checked = false;
-localStorage.setItem('I Love Linux -archmode', false);
+localStorage.setItem('ilovelinux-archmode', false);
 
 function toggleLocks(enabled) {
   locksEnabled = enabled;
@@ -3588,7 +3571,7 @@ showStart();
   }
 }
 
-const savedLang = localStorage.getItem('I Love Linux -lang');
+const savedLang = localStorage.getItem('ilovelinux-lang');
 if (savedLang && TRANSLATIONS[savedLang]) {
   currentLang = savedLang;
   document.getElementById('langSelect').value = savedLang;
@@ -3634,8 +3617,8 @@ if (savedLang && TRANSLATIONS[savedLang]) {
       for (const t of triggers) {
         if (buffer.endsWith(t)) {
           triggerJumpscare(t);
-          const eeCount = (parseInt(localStorage.getItem('I Love Linux -easteregg-count')||'0')) + 1;
-          localStorage.setItem('I Love Linux -easteregg-count', eeCount);
+          const eeCount = (parseInt(localStorage.getItem('ilovelinux-easteregg-count')||'0')) + 1;
+          localStorage.setItem('ilovelinux-easteregg-count', eeCount);
           buffer = '';
           return;
         }

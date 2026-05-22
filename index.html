@@ -2359,6 +2359,7 @@ const SCAN_MESSAGES_FR = ['Analyse de ton profil…','Comparaison avec 25 distro
 
 function startReveal(topThree) {
   _revealData = topThree;
+  document.body.style.overflow = 'hidden';
   const overlay = document.getElementById('reveal-overlay');
   overlay.style.display = 'flex';
   document.getElementById('revPodium').style.display = 'none';
@@ -2579,6 +2580,7 @@ function revealFromPodium(key) {
       document.getElementById('revScanText').style.display = '';
       document.getElementById('revBar').parentElement.style.display = '';
       document.getElementById('revPodium').style.display = 'none';
+      document.body.style.overflow = '';
       revealParticlesActive = false;
       revealParticles.forEach(p => p.el.remove());
       revealParticles = [];
@@ -2595,6 +2597,7 @@ function goBackToPodium() {
   if (lockWasOverridden) {
     activeMode = null;
   }
+  document.body.style.overflow = 'hidden';
   const overlay = document.getElementById('reveal-overlay');
   overlay.style.display = 'flex';
   overlay.style.opacity = '0';

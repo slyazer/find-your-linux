@@ -1512,6 +1512,7 @@ const UBUNTU_BASED = ['ubuntu','mint','zorin','elementary','popos'];
 const ADVANCED_DISTROS = ['arch','gentoo','void','nixos','slackware','alpine'];
 
 function computeTopThree(ignoreLightweight, ignoreAllLocks = false) {
+  // ── locks & filters (unchanged) ──────────────────────────────
   const secLock = locksEnabled && (!ignoreAllLocks) && (userSignals.includes('security') || userSignals.includes('privacyHigh'));
   const gamLock = locksEnabled && (!ignoreAllLocks) && userSignals.includes('gaming');
   const liteLock = locksEnabled && (!ignoreLightweight && !ignoreAllLocks) && userSignals.includes('oldHardware');
@@ -1543,43 +1544,71 @@ function computeTopThree(ignoreLightweight, ignoreAllLocks = false) {
     });
   }
 
-  const thresholds = { priv:4, gaming:3, light:4, perf:3, stable:4, custom:4, cli:4 };
-  let passed2 = candidates.filter(k => {
-    for (let dim in thresholds) {
-      if (userDimensions[dim] >= thresholds[dim] && DB[k].p[dim] === 0) return false;
-    }
-    return true;
+  // ── build user importance weights & target levels (0-10) ──────
+  const dims = ['ease','stable','rolling','perf','priv','custom','cli','gaming','light','beauty'];
+  // approximate max possible per dimension after 25 questions
+  const maxVals = {ease:30, stable:25, rolling:15, perf:20, priv:20, custom:20, cli:20, gaming:10, light:10, beauty:15};
+  const userVec = {};
+  dims.forEach(d => {
+    userVec[d] = Math.min(1, userDimensions[d] / maxVals[d]) * 10; // 0-10
   });
 
-  // Exclude tried distros AND banger/trash distros
+  // importance from signals (0-1)
+  let imp = {ease:0, stable:0, rolling:0, perf:0, priv:0, custom:0, cli:0, gaming:0, light:0, beauty:0};
+  userSignals.forEach(s => {
+    switch(s) {
+      case 'wantsEase': imp.ease += 0.3; break;
+      case 'beginner': imp.ease += 0.2; break;
+      case 'noTerminal': imp.ease += 0.1; imp.cli = Math.max(0,imp.cli-0.3); break;
+      case 'wantsStable': case 'fearBreaking': imp.stable += 0.3; break;
+      case 'wantsStableRelease': imp.stable += 0.2; break;
+      case 'wantsRolling': imp.rolling += 0.3; break;
+      case 'wantsPerf': imp.perf += 0.3; break;
+      case 'fearOutdated': imp.rolling += 0.1; imp.perf += 0.1; break;
+      case 'gaming': imp.gaming += 0.4; imp.perf += 0.2; break;
+      case 'wantsPrivacy': case 'privacyHigh': imp.priv += 0.4; break;
+      case 'privacyMed': imp.priv += 0.2; break;
+      case 'security': imp.priv += 0.3; imp.priv += 0.2; break;
+      case 'wantsCustom': imp.custom += 0.3; break;
+      case 'likeTerminal': imp.cli += 0.2; break;
+      case 'liveTerminal': imp.cli += 0.4; imp.custom += 0.1; break;
+      case 'configLot': imp.custom += 0.3; break;
+      case 'oldHardware': imp.light += 0.4; break;
+      case 'wantsLight': imp.light += 0.3; break;
+      case 'beauty': imp.beauty += 0.3; break;
+    }
+  });
+  // normalize importance so they sum to number of dimensions
+  const impSum = dims.reduce((s,d)=> s+imp[d], 0) || 1;
+  dims.forEach(d => { imp[d] = imp[d] / impSum * dims.length; });
+  // ensure minimum importance so every dimension counts a bit
+  dims.forEach(d => { if (imp[d] < 0.2) imp[d] = 0.2; });
+
+  // ── scoring ──────────────────────────────────────────────────
   const excludeList = [...triedDistros, ...(window._excludedDistros || [])];
-  let survivors = (passed2.length >= 3 ? passed2 : candidates).filter(k => !excludeList.includes(k));
-  // If filtering removed too many, only exclude trash
-  if (survivors.length < 3) {
-    survivors = (passed2.length >= 3 ? passed2 : candidates).filter(k => !_tierTrash.includes(k));
-  }
-  // If filtering removed too many, fall back to including them
-  const finalSurvivors = survivors.length >= 3 ? survivors : (passed2.length >= 3 ? passed2 : candidates);
+  const survivors = candidates.filter(k => !excludeList.includes(k));
+  const finalPool = survivors.length >= 3 ? survivors : candidates;
 
-  const dimKeys = Object.keys(userDimensions);
-  const mag = Math.sqrt(dimKeys.reduce((s,d) => s + userDimensions[d]*userDimensions[d], 0)) || 1;
-  const uniqueSigs = [...new Set(userSignals)];
-
-  const scored = finalSurvivors.map(key => {
+  const scored = finalPool.map(key => {
     const dist = DB[key];
-    const dot = dimKeys.reduce((s,d) => s + userDimensions[d] * dist.p[d], 0);
-    const dmag = Math.sqrt(dimKeys.reduce((s,d) => s + dist.p[d]*dist.p[d], 0)) || 1;
-    let score = (dot / (mag * dmag)) * 100;
+    let sqDist = 0;
+    dims.forEach(d => {
+      const diff = (userVec[d] - dist.p[d] * (10/3)); // scale distro 0-3 -> 0-10
+      sqDist += imp[d] * diff * diff;
+    });
+    const rawScore = 100 - Math.sqrt(sqDist) * 10;
+    const clamped = Math.max(0, Math.min(100, rawScore));
+    // small signal bonus
+    const uniqueSigs = [...new Set(userSignals)];
     const sigMatches = (DISTRO_SIGNALS[key] || []).filter(s => uniqueSigs.includes(s)).length;
-    score += sigMatches * 3;
-    if (triedDistros.includes(key)) score -= 25;
-    return { key, score };
+    let finalScore = clamped + sigMatches * 1.5;
+    if (triedDistros.includes(key)) finalScore -= 25;
+    return { key, score: finalScore };
   });
 
   scored.sort((a,b) => b.score - a.score);
   return scored.slice(0, 3).map(e => e.key);
 }
-
 // ═══════════════════════════════════════════════════════════════
 //  SECTION 4: UI Rendering
 // ═══════════════════════════════════════════════════════════════
